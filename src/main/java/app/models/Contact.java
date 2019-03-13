@@ -20,9 +20,7 @@ public class Contact extends Entity {
     @NonNull private String surname;
     private String familyName;
     private LocalDateTime dateOfBirth;
-
-    //TODO gender? boolean or enum or string or int?
-
+    private boolean isMale;
     private String citizenship;
     private String relationship;
     private String webSite;
@@ -34,6 +32,4 @@ public class Contact extends Entity {
     private int residenceHouseNumber;
     private int residenceApartmentNumber;
     private int index;
-
-
 }
