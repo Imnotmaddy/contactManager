@@ -17,8 +17,13 @@ public class PooledConnection implements Connection {
         this.connection = connection;
     }
 
-    public Connection getConnection(){
+    public Connection getConnection() {
         return connection;
+    }
+
+    @Override
+    public void close() throws SQLException {
+        ConnectionPool.getInstance().releaseConnection(this);
     }
 
     @Override
@@ -59,17 +64,11 @@ public class PooledConnection implements Connection {
     @Override
     public void commit() throws SQLException {
         connection.commit();
-
     }
 
     @Override
     public void rollback() throws SQLException {
         connection.rollback();
-    }
-
-    @Override
-    public void close() throws SQLException {
-        ConnectionPool.getInstance().freeConnection(this);
     }
 
     @Override
