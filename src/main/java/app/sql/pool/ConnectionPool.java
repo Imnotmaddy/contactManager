@@ -126,7 +126,7 @@ final public class ConnectionPool {
         }
     }
 
-    private void destroy() throws SQLException {
+    public void destroy() throws SQLException {
         lock.lock();
         try {
             for (PooledConnection connection : freeConnections) {
