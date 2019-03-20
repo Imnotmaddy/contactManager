@@ -19,7 +19,7 @@ class DbInitializer {
 
     private final String DB_PASSWORD = "1234";
 
-    private final String DB_DRIVER = "com.mysql.jdbc.Driver";
+    private final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
 
     private final int DB_INITIAL_CAPACITY = 10;
 

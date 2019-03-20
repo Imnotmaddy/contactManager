@@ -1,34 +1,32 @@
 package app.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
+import lombok.*;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-//TODO rename Contact->User ?
 @Data
 @EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Contact extends Entity {
-    @NonNull private String telephoneNumber;
-
-    //TODO mobile phone number or stationary phone?
-
+    private List<PhoneNumber> phoneNumbers = new ArrayList<>();
     private String email;
     @NonNull private String name;
     @NonNull private String surname;
     private String familyName;
-    private LocalDateTime dateOfBirth;
-    private boolean isMale;
+    private Date dateOfBirth;
+    private char sex; // F- female, M - Male
     private String citizenship;
     private String relationship;
     private String webSite;
     private String currentJob;
-    private String jobAdress;
+    private String jobAddress;
     private String residenceCountry;
     private String residenceCity;
-    private String street;
+    private String residenceStreet;
     private int residenceHouseNumber;
     private int residenceApartmentNumber;
     private int index;

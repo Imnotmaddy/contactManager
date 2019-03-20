@@ -1,5 +1,6 @@
 package app.sql.pool;
 
+import com.mysql.cj.xdevapi.SqlDataResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -130,10 +131,18 @@ final public class ConnectionPool {
         lock.lock();
         try {
             for (PooledConnection connection : freeConnections) {
-                connection.getConnection().close();
+                try {
+                    connection.getConnection().close();
+                } catch (SQLException e) {
+                    LOGGER.error("Error destroying connections\n" + e);
+                }
             }
             for (PooledConnection connection : usedConnections) {
-                connection.getConnection().close();
+                try {
+                    connection.getConnection().close();
+                } catch (SQLException e) {
+                    LOGGER.error("Error destroying connections\n" + e);
+                }
             }
             freeConnections.clear();
             usedConnections.clear();
