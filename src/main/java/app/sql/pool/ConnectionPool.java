@@ -1,6 +1,5 @@
 package app.sql.pool;
 
-import com.mysql.cj.xdevapi.SqlDataResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,29 +16,20 @@ final public class ConnectionPool {
 
     private DbInitializer dbInitializer;
 
-    private ArrayBlockingQueue<PooledConnection> freeConnections;
-    private ArrayBlockingQueue<PooledConnection> usedConnections;
+    private ArrayBlockingQueue<Connection> freeConnections;
+    private ArrayBlockingQueue<Connection> usedConnections;
 
     private static ReentrantLock lock = new ReentrantLock();
 
-    private volatile static ConnectionPool instance = null;
-
-    public static ConnectionPool getInstance() {
-        if (instance != null) {
-            return instance;
-        }
-        lock.lock();
-        try {
-            instance = new ConnectionPool();
-        } catch (SQLException e) {
-            LOGGER.error("Error initiating ConnectionPool instance", e);
-        } finally {
-            lock.unlock();
-        }
-        return instance;
+    private static class ConnectionPoolHolder {
+        private static final ConnectionPool INSTANCE = new ConnectionPool();
     }
 
-    private ConnectionPool() throws SQLException {
+    public static ConnectionPool getInstance() {
+        return ConnectionPoolHolder.INSTANCE;
+    }
+
+    private ConnectionPool() {
         try {
             dbInitializer = new DbInitializer();
             freeConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_INITIAL_CAPACITY());
@@ -55,8 +45,11 @@ final public class ConnectionPool {
 
         for (int i = 0; i < dbInitializer.getDB_INITIAL_CAPACITY(); i++) {
             try {
-                Connection connection = DriverManager.getConnection(dbInitializer.getDB_URL(), dbInitializer.getDB_USER(), dbInitializer.getDB_PASSWORD());
-                freeConnections.add(new PooledConnection(connection));
+                Connection connection = DriverManager.getConnection(
+                        dbInitializer.getDB_URL(),
+                        dbInitializer.getDB_USER(),
+                        dbInitializer.getDB_PASSWORD());
+                freeConnections.add(connection);
             } catch (SQLException e) {
                 LOGGER.error("Error initiating PoolConnection with initial connections", e);
             }
@@ -64,21 +57,21 @@ final public class ConnectionPool {
 
     }
 
-    private PooledConnection createConnection() throws SQLException {
-        return new PooledConnection(DriverManager.getConnection(dbInitializer.getDB_URL(),
+    private Connection createConnection() throws SQLException {
+        return DriverManager.getConnection(dbInitializer.getDB_URL(),
                 dbInitializer.getDB_USER(),
-                dbInitializer.getDB_PASSWORD()));
+                dbInitializer.getDB_PASSWORD());
     }
 
     public Connection getConnection() {
         lock.lock();
-        PooledConnection connection = null;
+        Connection connection = null;
         try {
             while (connection == null) {
                 if (!freeConnections.isEmpty()) {
                     connection = freeConnections.take();
                     if (!connection.isValid(dbInitializer.getDB_CONNECTION_TIMEOUT())) {
-                        connection.getConnection().close();
+                        connection.close();
                         connection = null;
                     }
                 } else if (usedConnections.size() < dbInitializer.getDB_MAX_CAPACITY()) {
@@ -104,7 +97,7 @@ final public class ConnectionPool {
         return connection;
     }
 
-    void releaseConnection(PooledConnection connection) throws SQLException {
+    public void releaseConnection(Connection connection) {
         lock.lock();
         try {
             if (connection.isValid(dbInitializer.getDB_CONNECTION_TIMEOUT())) {
@@ -121,23 +114,22 @@ final public class ConnectionPool {
             }
         } catch (SQLException e) {
             LOGGER.error("Failed to return a Connection to freeConnections");
-            connection.getConnection().close();
         } finally {
             lock.unlock();
         }
     }
 
     public void destroy() throws SQLException {
-        for (PooledConnection connection : freeConnections) {
+        for (Connection connection : freeConnections) {
             try {
-                connection.getConnection().close();
+                connection.close();
             } catch (SQLException e) {
                 LOGGER.error("Error destroying connections\n" + e);
             }
         }
-        for (PooledConnection connection : usedConnections) {
+        for (Connection connection : usedConnections) {
             try {
-                connection.getConnection().close();
+                connection.close();
             } catch (SQLException e) {
                 LOGGER.error("Error destroying connections\n" + e);
             }
