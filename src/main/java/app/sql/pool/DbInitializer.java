@@ -14,7 +14,7 @@ class DbInitializer {
 
     private static Logger LOGGER = LogManager.getLogger(DbInitializer.class);
 
-    private final String DB_URL = "jdbc:mysql://localhost:3306/contactManager?useSSL=false&autoReconnect=true&serverTimezone=UTC";
+    private final String DB_URL = "jdbc:mysql://localhost:3306/contactManager?useSSL=false&autoReconnect=true&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8";
     private final String DB_USER = "root";
 
     private final String DB_PASSWORD = "1234";
@@ -25,7 +25,7 @@ class DbInitializer {
 
     private final int DB_MAX_CAPACITY = 1000;
 
-    private final int DB_CONNECTION_TIMEOUT = 0;
+    private final int DB_CONNECTION_TIMEOUT = 3000;
 
     DbInitializer() {
         /*try {

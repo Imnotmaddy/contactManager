@@ -14,7 +14,8 @@ public class PhoneNumber extends Entity {
 
     private String commentary;
 
-    private int contactId;
+    @NonNull
+    private Integer contactId;
 
     @NonNull
     private String countryCode;

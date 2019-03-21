@@ -1,8 +1,14 @@
 package app.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Data
+@NoArgsConstructor
 public abstract class Entity {
-    private int id;
+    @NonNull
+    private Integer id;
+
+
 }

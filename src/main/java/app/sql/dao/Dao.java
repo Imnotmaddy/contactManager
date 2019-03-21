@@ -4,6 +4,7 @@ import app.models.Entity;
 import app.servlets.ControllerServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +14,7 @@ public interface Dao<T extends Entity> {
 
     List<T> findAll();
 
-    T findById(int id);
+    T findById(Integer id);
 
-    void delete(int id);
+    void delete(T entity);
 }

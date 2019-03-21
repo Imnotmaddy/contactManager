@@ -1,10 +1,10 @@
 package app.servlets;
 
 import app.models.Contact;
-import app.sql.dao.implementation.ContactDaoImpl;
+import app.sql.dao.mysql.ContactDaoImpl;
 import app.sql.pool.ConnectionPool;
+import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
 import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
-import com.mysql.cj.jdbc.exceptions.ConnectionFeatureNotAvailableException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,11 +27,6 @@ public class ControllerServlet extends HttpServlet {
     @Override
     public void init() {
         ConnectionPool.getInstance();
-       /* Contact contact = new Contact(null, "mail3", "mike", "alifanov",
-                "Viktorovich", Date.valueOf(LocalDate.now()), 'F', "Minsk",
-                "single", "www.whatever.getofmyhair.com", "unemployed",
-                "none", "belarus", "minsk", "street",
-                1, 2, 3); */
     }
 
     @Override
@@ -47,11 +41,16 @@ public class ControllerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<String> strings = new ArrayList<String>();
-        strings.add("Mike");
-        strings.add("John");
-        strings.add("Whatever");
-        req.setAttribute("data", strings);
+        Contact contact = new Contact(null, "mail3", "mike", "alifanov",
+                "Viktorovich", Date.valueOf(LocalDate.now()), "Male", "Minsk",
+                "single", "www.whatever.getofmyhair.com", "unemployed",
+                "none", "belarus", "minsk", "street",
+                1, 2, 3);
+        ContactDaoImpl contactDao = new ContactDaoImpl();
+        contactDao.findAll();
+        contactDao.save(contact);
+        contactDao.findById(18);
+        contactDao.delete(contact);
         getServletContext().getRequestDispatcher("/views/addContact.jsp").forward(req, resp);
     }
 }

@@ -43,7 +43,7 @@ final public class ConnectionPool {
         try {
             dbInitializer = new DbInitializer();
             freeConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_INITIAL_CAPACITY());
-            usedConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_INITIAL_CAPACITY());
+            usedConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_MAX_CAPACITY());
             Class.forName(dbInitializer.getDB_DRIVER());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -128,37 +128,33 @@ final public class ConnectionPool {
     }
 
     public void destroy() throws SQLException {
-        lock.lock();
-        try {
-            for (PooledConnection connection : freeConnections) {
-                try {
-                    connection.getConnection().close();
-                } catch (SQLException e) {
-                    LOGGER.error("Error destroying connections\n" + e);
-                }
+        for (PooledConnection connection : freeConnections) {
+            try {
+                connection.getConnection().close();
+            } catch (SQLException e) {
+                LOGGER.error("Error destroying connections\n" + e);
             }
-            for (PooledConnection connection : usedConnections) {
-                try {
-                    connection.getConnection().close();
-                } catch (SQLException e) {
-                    LOGGER.error("Error destroying connections\n" + e);
-                }
-            }
-            freeConnections.clear();
-            usedConnections.clear();
-
-            Enumeration<Driver> drivers = DriverManager.getDrivers();
-            while (drivers.hasMoreElements()) {
-                Driver driver = drivers.nextElement();
-                try {
-                    DriverManager.deregisterDriver(driver);
-                } catch (SQLException e) {
-                    LOGGER.error("Failed to deregister driver");
-                }
-            }
-        } finally {
-            lock.unlock();
         }
+        for (PooledConnection connection : usedConnections) {
+            try {
+                connection.getConnection().close();
+            } catch (SQLException e) {
+                LOGGER.error("Error destroying connections\n" + e);
+            }
+        }
+        freeConnections.clear();
+        usedConnections.clear();
+
+        Enumeration<Driver> drivers = DriverManager.getDrivers();
+        while (drivers.hasMoreElements()) {
+            Driver driver = drivers.nextElement();
+            try {
+                DriverManager.deregisterDriver(driver);
+            } catch (SQLException e) {
+                LOGGER.error("Failed to deregister driver");
+            }
+        }
+
     }
 
 }
