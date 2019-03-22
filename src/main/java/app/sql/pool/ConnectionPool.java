@@ -119,7 +119,7 @@ final public class ConnectionPool {
         }
     }
 
-    public void destroy() throws SQLException {
+    public void destroy(){
         for (Connection connection : freeConnections) {
             try {
                 connection.close();
@@ -146,6 +146,8 @@ final public class ConnectionPool {
                 LOGGER.error("Failed to deregister driver");
             }
         }
+
+        LOGGER.info("Every connection to DB is closed");
 
     }
 

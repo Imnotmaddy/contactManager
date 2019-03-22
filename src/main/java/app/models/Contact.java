@@ -18,7 +18,8 @@ public class Contact extends Entity {
     @NonNull private String surname;
     private String familyName;
     private Date dateOfBirth;
-    private ContactSex sex;
+    //private ContactSex sex;
+    private String sex;
     private String citizenship;
     private String relationship;
     private String webSite;

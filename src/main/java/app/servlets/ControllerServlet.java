@@ -1,10 +1,8 @@
 package app.servlets;
 
 import app.models.Contact;
-import app.models.ContactSex;
 import app.sql.dao.mysql.ContactDaoImpl;
 import app.sql.pool.ConnectionPool;
-import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
 import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,8 +16,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @WebServlet("/add")
 public class ControllerServlet extends HttpServlet {
@@ -27,24 +23,20 @@ public class ControllerServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        try {
-            ConnectionPool.getInstance().destroy();
-            AbandonedConnectionCleanupThread.checkedShutdown();
-        } catch (SQLException e) {
-            LOGGER.error("failed to destroy connections");
-        }
+        ConnectionPool.getInstance().destroy();
+        AbandonedConnectionCleanupThread.checkedShutdown();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Contact contact = new Contact(null, "mail6", "mike", "alifanov",
-                "Viktorovich", Date.valueOf(LocalDate.now()), ContactSex.MALE, "Minsk",
+        Contact contact = new Contact(null, "mail", "mike", "alifanov",
+                "Viktorovich", Date.valueOf(LocalDate.now()), "Male", "Minsk",
                 "single", "www.whatever.getofmyhair.com", "unemployed",
                 "none", "belarus", "minsk", "street",
                 1, 2, 3);
-        System.out.println(ContactDaoImpl.getInstance().findAll().get(0).getSex());
+        System.out.println(ContactDaoImpl.getInstance().findAll().get(1).getId());
         ContactDaoImpl.getInstance().save(contact);
-        System.out.println(ContactDaoImpl.getInstance().findById(48).getSex());
+        System.out.println(ContactDaoImpl.getInstance().findById(48).getId());
         ContactDaoImpl.getInstance().delete(contact);
 
         getServletContext().getRequestDispatcher("/views/addContact.jsp").forward(req, resp);

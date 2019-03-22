@@ -1,13 +1,11 @@
 package app.sql.dao.mysql;
 
 import app.models.Contact;
-import app.models.ContactSex;
 import app.sql.dao.ContactDao;
 import app.sql.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.xml.ws.Holder;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +24,7 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     private static final String CONTACTS = "`contacts`";
-    private static final Map<Long, Function<Contact, Object>> fields;
+    private static final Map<Integer, Function<Contact, Object>> fields;
     private static final String SQL_INSERT_CONTACT = "INSERT INTO " + CONTACTS + "  (`email`, `name`,`surname`, `familyName`, " +
             "`dateOfBirth`, `sex`, `citizenship`, `relationShip`, `webSite`, `currentJob`, " +
             "`jobAddress`, `residenceCountry`, `residenceCity`, `residenceStreet`, " +
@@ -38,24 +36,24 @@ public class ContactDaoImpl implements ContactDao {
 
     static {
         fields = new HashMap<>();
-        fields.put(0L, Contact::getId);
-        fields.put(1L, Contact::getEmail);
-        fields.put(2L, Contact::getName);
-        fields.put(3L, Contact::getSurname);
-        fields.put(4L, Contact::getFamilyName);
-        fields.put(5L, Contact::getDateOfBirth);
-        fields.put(6L, Contact::getSex);
-        fields.put(7L, Contact::getCitizenship);
-        fields.put(8L, Contact::getRelationship);
-        fields.put(9L, Contact::getWebSite);
-        fields.put(10L, Contact::getCurrentJob);
-        fields.put(11L, Contact::getJobAddress);
-        fields.put(12L, Contact::getResidenceCountry);
-        fields.put(13L, Contact::getResidenceCity);
-        fields.put(14L, Contact::getResidenceStreet);
-        fields.put(15L, Contact::getResidenceHouseNumber);
-        fields.put(16L, Contact::getResidenceApartmentNumber);
-        fields.put(17L, Contact::getIndex);
+        fields.put(0, Contact::getId);
+        fields.put(1, Contact::getEmail);
+        fields.put(2, Contact::getName);
+        fields.put(3, Contact::getSurname);
+        fields.put(4, Contact::getFamilyName);
+        fields.put(5, Contact::getDateOfBirth);
+        fields.put(6, Contact::getSex);
+        fields.put(7, Contact::getCitizenship);
+        fields.put(8, Contact::getRelationship);
+        fields.put(9, Contact::getWebSite);
+        fields.put(10, Contact::getCurrentJob);
+        fields.put(11, Contact::getJobAddress);
+        fields.put(12, Contact::getResidenceCountry);
+        fields.put(13, Contact::getResidenceCity);
+        fields.put(14, Contact::getResidenceStreet);
+        fields.put(15, Contact::getResidenceHouseNumber);
+        fields.put(16, Contact::getResidenceApartmentNumber);
+        fields.put(17, Contact::getIndex);
     }
 
     public static ContactDaoImpl getInstance() {
@@ -67,35 +65,20 @@ public class ContactDaoImpl implements ContactDao {
         Connection connection = ConnectionPool.getInstance().getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_INSERT_CONTACT, Statement.RETURN_GENERATED_KEYS)
         ) {
-
-            statement.setString(1, entity.getEmail());
-            statement.setString(2, entity.getName());
-            statement.setString(3, entity.getSurname());
-            statement.setString(4, entity.getFamilyName());
-            statement.setDate(5, entity.getDateOfBirth());
-            statement.setString(6, entity.getSex().name());
-            statement.setString(7, entity.getCitizenship());
-            statement.setString(8, entity.getRelationship());
-            statement.setString(9, entity.getWebSite());
-            statement.setString(10, entity.getCurrentJob());
-            statement.setString(11, entity.getJobAddress());
-            statement.setString(12, entity.getResidenceCountry());
-            statement.setString(13, entity.getResidenceCity());
-            statement.setString(14, entity.getResidenceStreet());
-            statement.setInt(15, entity.getResidenceHouseNumber());
-            statement.setInt(16, entity.getResidenceApartmentNumber());
-            statement.setInt(17, entity.getIndex());
+            fields.forEach((field,value) -> {
+                try {
+                    statement.setObject(field, value.apply(entity));
+                } catch (SQLException e) {
+                    LOGGER.error(e);
+                }
+            });
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
-
-
             if (resultSet.next()) {
                 entity.setId(resultSet.getInt(1));
                 LOGGER.info("added contact successfully");
                 return true;
             }
-
-
         } catch (SQLException e) {
             LOGGER.error(e);
         } finally {
@@ -156,12 +139,13 @@ public class ContactDaoImpl implements ContactDao {
 
     private Contact buildContact(ResultSet resultSet) throws SQLException {
         Contact contact = new Contact();
+        contact.setId(resultSet.getInt("id"));
         contact.setEmail(resultSet.getString("email"));
         contact.setName(resultSet.getString("name"));
         contact.setSurname(resultSet.getString("surname"));
         contact.setFamilyName(resultSet.getString("familyName"));
         contact.setDateOfBirth(resultSet.getDate("dateOfBirth"));
-        contact.setSex(ContactSex.valueOf(resultSet.getString("sex")));
+        contact.setSex(resultSet.getString("sex"));
         contact.setCitizenship(resultSet.getString("citizenship"));
         contact.setRelationship(resultSet.getString("relationship"));
         contact.setWebSite(resultSet.getString("webSite"));
