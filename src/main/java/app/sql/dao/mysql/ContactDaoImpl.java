@@ -1,19 +1,23 @@
 package app.sql.dao.mysql;
 
+import app.exception.AppException;
 import app.models.Contact;
 import app.sql.dao.ContactDao;
 import app.sql.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class ContactDaoImpl implements ContactDao {
+public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactDao {
     private static final Logger LOGGER = LogManager.getLogger(ContactDaoImpl.class);
 
     private ContactDaoImpl() {
@@ -29,14 +33,13 @@ public class ContactDaoImpl implements ContactDao {
             "`dateOfBirth`, `sex`, `citizenship`, `relationShip`, `webSite`, `currentJob`, " +
             "`jobAddress`, `residenceCountry`, `residenceCity`, `residenceStreet`, " +
             "`residenceHouseNumber`, `residenceApartmentNumber`, `index`)" +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?)";
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_DELETE_CONTACT = "DELETE FROM " + CONTACTS + "WHERE `id` = ?";
     private static final String SQL_FIND_ALL = "SELECT *  FROM" + CONTACTS;
     private static final String SQL_FIND_BY_ID = "SELECT *  FROM" + CONTACTS + "WHERE `id` = ? ";
 
     static {
         fields = new HashMap<>();
-        fields.put(0, Contact::getId);
         fields.put(1, Contact::getEmail);
         fields.put(2, Contact::getName);
         fields.put(3, Contact::getSurname);
@@ -61,30 +64,13 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
-    public boolean save(Contact entity) {
-        Connection connection = ConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_INSERT_CONTACT, Statement.RETURN_GENERATED_KEYS)
-        ) {
-            fields.forEach((field,value) -> {
-                try {
-                    statement.setObject(field, value.apply(entity));
-                } catch (SQLException e) {
-                    LOGGER.error(e);
-                }
-            });
-            statement.executeUpdate();
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                entity.setId(resultSet.getInt(1));
-                LOGGER.info("added contact successfully");
-                return true;
-            }
+    public Contact save(Contact entity) throws AppException {
+        try {
+            return super.save(entity, SQL_INSERT_CONTACT, fields);
         } catch (SQLException e) {
             LOGGER.error(e);
-        } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
+            throw new AppException("An error occurred during contact saving");
         }
-        return false;
     }
 
     @Override
@@ -159,6 +145,4 @@ public class ContactDaoImpl implements ContactDao {
         contact.setIndex(resultSet.getInt("index"));
         return contact;
     }
-
-
 }

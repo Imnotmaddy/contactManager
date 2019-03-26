@@ -1,16 +1,12 @@
 package app.sql.dao;
 
+import app.exception.AppException;
 import app.models.Entity;
-import app.servlets.ControllerServlet;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface Dao<T extends Entity> {
-    boolean save(T entity);
+    T save(T entity) throws AppException;
 
     List<T> findAll();
 

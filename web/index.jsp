@@ -1,20 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <meta charset="UTF-8">
-    <title>My super project!</title>
+    <title>Contact Manager</title>
 </head>
 <body>
-<!-- header -->
-<div>
-    <h1>Main page</h1>
-</div>
-
-<div>       <!-- content -->
-    <div>    <!-- buttons holder -->
-        <button onclick="location.href='/list'">List users</button>
-        <button onclick="location.href='/add'">Add user</button>
-    </div>
-</div>
+<c:redirect url="/add"></c:redirect>
 </body>
 </html>
