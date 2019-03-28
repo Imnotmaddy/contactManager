@@ -6,6 +6,6 @@
     <title>Contact Manager</title>
 </head>
 <body>
-<c:redirect url="/add"></c:redirect>
+<c:redirect url="/contactManager"></c:redirect>
 </body>
 </html>

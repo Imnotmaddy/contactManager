@@ -18,10 +18,9 @@
 <div class="container">
     <h2>Contacts</h2>
 
-
-    <form action="/add" method="post" id="contactForm" role="form">
+    <form action="/contactManager?command=delete" method="post" id="contactForm" role="form">
         <input type="hidden" id="contactId" name="contactId">
-        <input type="hidden" id="action" name="action">
+
         <table class="table table-striped">
             <thead>
             <tr>
@@ -33,7 +32,7 @@
                 <td></td>
             </tr>
             </thead>
-            <c:forEach var="contact" items="${contactList}">
+            <c:forEach var="contact" items="${requestScope.contacts}">
                 <tr>
                     <td><input type="checkbox" name="contactSelect" id="${contact.id}"></td>
                     <td>${contact.surname} ${contact.name} ${contact.familyName}</td>
@@ -51,6 +50,15 @@
             </c:forEach>
         </table>
     </form>
+    <div>
+        <br/>
+        <form role="form" id="showAddContact">
+        <button type="submit" class="btn btn-primary  btn-md"
+                onclick="<c:redirect url="/contactManager"></c:redirect>">
+            New contact
+        </button>
+        </form>
+    </div>
 </div>
 </body>
 </html>

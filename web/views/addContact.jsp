@@ -14,8 +14,7 @@
 </head>
 <body>
 <div class="container">
-    <form action="/add" method="post" role="form" data-toggle="validator">
-        <input type="hidden" id="action" name="action" value="${action}">
+    <form action="/contactManager" method="post" role="form" data-toggle="validator">
         <input type="hidden" id="contactId" name="contactId" value="${contact.id}">
         <h2>New Contact</h2>
         <div class="form-group col-xs-4">
@@ -39,7 +38,7 @@
                    placeholder="smith@aol.com" required="true"/>
 
             <br></br>
-            <button type="submit" class="btn btn-primary  btn-md" onclick="document.getElementById('action').value = 'add';
+            <button type="submit" class="btn btn-primary  btn-md" onclick="
                     document.getElementById('contactForm').submit();">Accept
             </button>
         </div>
