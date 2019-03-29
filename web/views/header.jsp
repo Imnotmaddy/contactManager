@@ -18,10 +18,10 @@
             <a class="navbar-brand" href="/">Contact Manager</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#">Page 1</a></li>
-            <li><a href="#">Page 2</a></li>
-            <li><a href="#">Page 3</a></li>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Add Contact</a></li>
+            <li><a href="#">Search</a></li>
+            <li><a href="#">Delete</a></li>
         </ul>
     </div>
 </nav>

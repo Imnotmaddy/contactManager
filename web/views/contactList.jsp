@@ -14,10 +14,8 @@
     <title>Contacts</title>
 </head>
 <body>
-
+<jsp:include page="header.jsp"/>
 <div class="container">
-    <h2>Contacts</h2>
-
     <form action="/contactManager?command=delete" method="post" id="contactForm" role="form">
         <input type="hidden" id="contactId" name="contactId">
 
@@ -32,9 +30,9 @@
                 <td></td>
             </tr>
             </thead>
-            <c:forEach var="contact" items="${requestScope.contacts}">
+            <c:forEach var="contact" items='${contacts}'>
                 <tr>
-                    <td><input type="checkbox" name="contactSelect" id="${contact.id}"></td>
+                    <td><input type="checkbox"></td>
                     <td>${contact.surname} ${contact.name} ${contact.familyName}</td>
                     <td>${contact.dateOfBirth}</td>
                     <td>${contact.jobAddress}</td>
@@ -50,15 +48,6 @@
             </c:forEach>
         </table>
     </form>
-    <div>
-        <br/>
-        <form role="form" id="showAddContact">
-        <button type="submit" class="btn btn-primary  btn-md"
-                onclick="<c:redirect url="/contactManager"></c:redirect>">
-            New contact
-        </button>
-        </form>
-    </div>
 </div>
 </body>
 </html>
