@@ -1,9 +1,6 @@
 package app.commands.client;
 
-import app.commands.ActionCommand;
-import app.commands.AddContactCommand;
-import app.commands.RedirectCommand;
-import app.commands.ShowAllContactsCommand;
+import app.commands.*;
 import app.commands.factory.DeleteContactsCommand;
 
 public enum CommandEnum {
@@ -25,6 +22,16 @@ public enum CommandEnum {
     ADDCONTACT {
         {
             this.command = new AddContactCommand();
+        }
+    },
+    EDITCONTACT {
+        {
+            this.command = new EditContactCommand();
+        }
+    },
+    UPDATECONTACT {
+        {
+            this.command = new UpdateContactCommand();
         }
     };
 

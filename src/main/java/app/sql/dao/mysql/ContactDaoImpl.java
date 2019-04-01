@@ -34,6 +34,12 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
             "`jobAddress`, `residenceCountry`, `residenceCity`, `residenceStreet`, " +
             "`residenceHouseNumber`, `residenceApartmentNumber`, `index`)" +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    private static final String SQL_UPDATE_CONTACT = "UPDATE " + CONTACTS + " SET `email` = ?, `name` = ?, `surname` = ?, " +
+            "`familyName` = ?, `dateOfBirth` = ?, `sex` = ?, `citizenship` = ?, `relationShip` = ?, `webSite` = ?, `currentJob` = ?, " +
+            "jobAddress = ?, residenceCountry = ?, residenceCity = ?, residenceStreet = ?, " +
+            "`residenceHouseNumber` = ?, `residenceApartmentNumber` = ?, `index` = ? WHERE `id` = ?";
+
     private static final String SQL_DELETE_CONTACT = "DELETE FROM " + CONTACTS + "WHERE `id` = ?";
     private static final String SQL_FIND_ALL = "SELECT *  FROM" + CONTACTS;
     private static final String SQL_FIND_BY_ID = "SELECT *  FROM" + CONTACTS + "WHERE `id` = ? ";
@@ -120,6 +126,16 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
             LOGGER.error(e);
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
+        }
+    }
+
+    @Override
+    public Contact updateContact(Contact entity) throws AppException {
+        try {
+            return super.update(entity, SQL_UPDATE_CONTACT, fields);
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            throw new AppException("An error occurred during contact update");
         }
     }
 

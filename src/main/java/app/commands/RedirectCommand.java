@@ -12,6 +12,7 @@ public class RedirectCommand implements ActionCommand {
         final String toPage = request.getParameter("page");
         switch (toPage) {
             case "addContact": {
+                request.setAttribute("command", "addContact");
                 return NEWCONTACT;
             }
             case "contactList": {

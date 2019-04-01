@@ -11,17 +11,13 @@
 <html>
 <head>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/contactList.css">
     <title>Contacts</title>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
 <div class="container">
     <form action="/contactManager?command=deleteContacts" method="post" id="contactForm" role="form">
-        <div>
-            <button type="submit" class="btn btn-primary  btn-md" onclick="
-                    document.getElementById('contactForm').submit();">Delete
-            </button>
-        </div>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -30,19 +26,26 @@
                 <td>Birth date</td>
                 <td>Address</td>
                 <td>Job</td>
-                <td></td>
             </tr>
             </thead>
             <c:forEach var="contact" items='${contacts}'>
                 <tr>
                     <td><input type="checkbox" name="id" value="${contact.id}"></td>
-                    <td>${contact.surname} ${contact.name} ${contact.familyName}</td>
+                    <td>
+                        <a href="/contactManager?command=editContact&contactId=${contact.id}"
+                        >${contact.surname} ${contact.name} ${contact.familyName}</a>
+                    </td>
                     <td>${contact.dateOfBirth}</td>
                     <td>${contact.jobAddress}</td>
                     <td>${contact.currentJob}</td>
                 </tr>
             </c:forEach>
         </table>
+        <div>
+            <button type="submit" class="btn btn-primary  btn-md" onclick="
+                    document.getElementById('contactForm').submit();">Delete
+            </button>
+        </div>
     </form>
 </div>
 </body>
