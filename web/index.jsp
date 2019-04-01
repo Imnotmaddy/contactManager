@@ -6,5 +6,6 @@
     <title>Contact Manager</title>
 </head>
 <body>
+<jsp:include page="/views/header.jsp"/>
 </body>
 </html>

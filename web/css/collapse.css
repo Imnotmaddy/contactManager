@@ -1,0 +1,32 @@
+
+
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+.collapse {
+    display: block;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .5s cubic-bezier(0, 1, 0, 1);
+}
+
+.collapse.show {
+    max-height: 500em;
+    transition: max-height .5s ease-in-out;
+}
+
+
+.block {
+    margin-top: 10px;
+    background: #ffffff;
+    padding: 0;
+    height: 950px;
+}
+
+.block.content {
+    border: 1px solid #ffffff;
+    padding: 1.5em;
+    height: 100%;
+}

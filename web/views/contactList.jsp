@@ -16,9 +16,12 @@
 <body>
 <jsp:include page="header.jsp"/>
 <div class="container">
-    <form action="/contactManager?command=delete" method="post" id="contactForm" role="form">
-        <input type="hidden" id="contactId" name="contactId">
-
+    <form action="/contactManager?command=deleteContacts" method="post" id="contactForm" role="form">
+        <div>
+            <button type="submit" class="btn btn-primary  btn-md" onclick="
+                    document.getElementById('contactForm').submit();">Delete
+            </button>
+        </div>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -32,18 +35,11 @@
             </thead>
             <c:forEach var="contact" items='${contacts}'>
                 <tr>
-                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox" name="id" value="${contact.id}"></td>
                     <td>${contact.surname} ${contact.name} ${contact.familyName}</td>
                     <td>${contact.dateOfBirth}</td>
                     <td>${contact.jobAddress}</td>
                     <td>${contact.currentJob}</td>
-                    <td><a href="#" id="remove"
-                           onclick="document.getElementById('action').value = 'delete';
-                                   document.getElementById('contactId').value = '${contact.id}';
-                                   document.getElementById('contactForm').submit();">
-                        <span class="glyphicon glyphicon-trash"></span>
-                    </a>
-                    </td>
                 </tr>
             </c:forEach>
         </table>

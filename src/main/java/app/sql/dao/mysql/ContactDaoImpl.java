@@ -140,9 +140,9 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         contact.setResidenceCountry(resultSet.getString("residenceCountry"));
         contact.setResidenceCity(resultSet.getString("residenceCity"));
         contact.setResidenceStreet(resultSet.getString("residenceStreet"));
-        contact.setResidenceHouseNumber(resultSet.getInt("residenceHouseNumber"));
-        contact.setResidenceApartmentNumber(resultSet.getInt("residenceApartmentNumber"));
-        contact.setIndex(resultSet.getInt("index"));
+        contact.setResidenceHouseNumber(resultSet.getString("residenceHouseNumber"));
+        contact.setResidenceApartmentNumber(resultSet.getString("residenceApartmentNumber"));
+        contact.setIndex(resultSet.getString("index"));
         return contact;
     }
 }

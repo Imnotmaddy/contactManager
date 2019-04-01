@@ -44,36 +44,4 @@ public class ControllerServlet extends HttpServlet {
         processRequest(req, resp);
     }
 
-
-   /* private void deleteContact(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-        Integer id = Integer.valueOf(req.getParameter("contactId"));
-        Contact contact = ContactDaoImpl.getInstance().findById(id);
-        ContactDaoImpl.getInstance().delete(contact);
-
-        List<Contact> result = ContactDaoImpl.getInstance().findAll();
-        forwardListContacts(req, resp, result);
-    }
-
-
-
-    try {
-            String name = request.getParameter("name");
-            String surname = request.getParameter("surname");
-            String familyName = request.getParameter("familyName");
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("date"));
-            java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-            String email = request.getParameter("email");
-            Contact contact = new Contact(null, email, name, surname,
-                    familyName, sqlStartDate, null, null,
-                    null, null, null,
-                    null, null, null, null, 0
-                    , 0, 0);
-            try {
-                ContactDaoImpl.getInstance().save(contact);
-            } catch (AppException e) {
-
-            }
-     */
-
 }

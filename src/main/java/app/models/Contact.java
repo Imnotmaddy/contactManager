@@ -3,7 +3,6 @@ package app.models;
 import lombok.*;
 
 import java.sql.Date;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 public class Contact extends Entity {
     private List<PhoneNumber> phoneNumbers = new ArrayList<>();
-    private String email;
+    @NonNull private String email;
     @NonNull private String name;
     @NonNull private String surname;
     private String familyName;
     private Date dateOfBirth;
-    //private ContactSex sex;
     private String sex;
     private String citizenship;
     private String relationship;
@@ -28,7 +26,7 @@ public class Contact extends Entity {
     private String residenceCountry;
     private String residenceCity;
     private String residenceStreet;
-    private int residenceHouseNumber;
-    private int residenceApartmentNumber;
-    private int index;
+    private String residenceHouseNumber;
+    private String residenceApartmentNumber;
+    private String index;
 }
