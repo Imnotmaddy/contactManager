@@ -11,6 +11,7 @@
 <head>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../css/collapse.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/myButton.css"/>
     <title>New Contact</title>
 </head>
 <body>
@@ -31,97 +32,76 @@
                    placeholder="smith@aol.com" required/>
 
             <br/>
-            <button type="button"
-                    class="btn btn-primary btn__first"
-                    data-toggle="collapse"
-                    data-target=".collapse.first"
-                    data-text="Collapse"
-            ><span class="glyphicon glyphicon-circle-arrow-down"></span>
-            </button>
+            <button class="collapsible" type="button">Expand Additional Information</button>
+            <div class="content">
+                <label for="familyName" class="control-label col-xs-8">Family name:</label>
+                <input type="text" name="familyName" id="familyName" class="form-control"
+                />
 
+                <label for="date" class="control-label col-xs-4">Birth date:</label>
+                <input type="date" name="date" id="date" class="form-control"
+                       min="1940-01-02"/>
 
-            <div class="block collapse first">
-                <div class="block content">
-                    <label for="familyName" class="control-label col-xs-8">Family name:</label>
-                    <input type="text" name="familyName" id="familyName" class="form-control"
-                    />
+                <label for="sex" class="control-label col-xs-4">Sex:</label>
+                <input type="text" name="sex" id="sex" class="form-control"
+                />
 
-                    <label for="date" class="control-label col-xs-4">Birth date:</label>
-                    <input type="date" name="date" id="date" class="form-control"
-                           min="1940-01-02"/>
+                <label for="citizenship" class="control-label col-xs-4">Citizenship:</label>
+                <input type="text" name="citizenship" id="citizenship" class="form-control"
+                />
 
-                    <label for="sex" class="control-label col-xs-4">Sex:</label>
-                    <input type="text" name="sex" id="sex" class="form-control"
-                    />
+                <label for="relationship" class="control-label col-xs-4">Relationship:</label>
+                <input type="text" name="relationship" id="relationship" class="form-control"
+                />
 
-                    <label for="citizenship" class="control-label col-xs-4">Citizenship:</label>
-                    <input type="text" name="citizenship" id="citizenship" class="form-control"
-                    />
+                <label for="webSite" class="control-label col-xs-8">Your webSite:</label>
+                <input type="text" name="webSite" id="webSite" class="form-control"
+                />
 
-                    <label for="relationship" class="control-label col-xs-4">Relationship:</label>
-                    <input type="text" name="relationship" id="relationship" class="form-control"
-                    />
+                <label for="currentJob" class="control-label col-xs-8">Your current job:</label>
+                <input type="text" name="currentJob" id="currentJob" class="form-control"
+                />
 
-                    <label for="webSite" class="control-label col-xs-8">Your webSite:</label>
-                    <input type="text" name="webSite" id="webSite" class="form-control"
-                    />
+                <label for="jobAddress" class="control-label col-xs-8">Your job's address:</label>
+                <input type="text" name="jobAddress" id="jobAddress" class="form-control"
+                />
 
-                    <label for="currentJob" class="control-label col-xs-8">Your current job:</label>
-                    <input type="text" name="currentJob" id="currentJob" class="form-control"
-                    />
+                <label for="residenceCountry" class="control-label col-xs-8">Your residence country:</label>
+                <input type="text" name="residenceCountry" id="residenceCountry" class="form-control"
+                />
 
-                    <label for="jobAddress" class="control-label col-xs-8">Your job's address:</label>
-                    <input type="text" name="jobAddress" id="jobAddress" class="form-control"
-                    />
+                <label for="residenceCity" class="control-label col-xs-8">Your residence city:</label>
+                <input type="text" name="residenceCity" id="residenceCity" class="form-control"
+                />
 
-                    <label for="residenceCountry" class="control-label col-xs-8">Your residence country:</label>
-                    <input type="text" name="residenceCountry" id="residenceCountry" class="form-control"
-                    />
+                <label for="residenceStreet" class="control-label col-xs-8">Your residence street:</label>
+                <input type="text" name="residenceStreet" id="residenceStreet" class="form-control"
+                />
 
-                    <label for="residenceCity" class="control-label col-xs-8">Your residence city:</label>
-                    <input type="text" name="residenceCity" id="residenceCity" class="form-control"
-                    />
+                <label for="residenceHouseNumber" class="control-label col-xs-8">Your residence house
+                    number:</label>
+                <input type="text" name="residenceHouseNumber" id="residenceHouseNumber" class="form-control"
+                />
 
-                    <label for="residenceStreet" class="control-label col-xs-8">Your residence street:</label>
-                    <input type="text" name="residenceStreet" id="residenceStreet" class="form-control"
-                    />
+                <label for="residenceApartmentNumber" class="control-label col-xs-8">Your apartment's
+                    number:</label>
+                <input type="text" name="residenceApartmentNumber" id="residenceApartmentNumber"
+                       class="form-control"
+                />
 
-                    <label for="residenceHouseNumber" class="control-label col-xs-8">Your residence house
-                        number:</label>
-                    <input type="text" name="residenceHouseNumber" id="residenceHouseNumber" class="form-control"
-                    />
-
-                    <label for="residenceApartmentNumber" class="control-label col-xs-8">Your apartment's
-                        number:</label>
-                    <input type="text" name="residenceApartmentNumber" id="residenceApartmentNumber"
-                           class="form-control"
-                    />
-
-                    <label for="index" class="control-label col-xs-8">Your post index:</label>
-                    <input type="text" minlength="7" name="index" id="index" class="form-control"
-                           placeholder="0000000"
-                    />
-                    <br/>
-                    <button type="button"
-                            class="btn btn-primary btn__first"
-                            data-toggle="collapse"
-                            data-target=".collapse.first"
-                            data-text="Collapse"
-                    ><span class="glyphicon glyphicon-circle-arrow-up"></span>
-                    </button>
-                </div>
-
-
+                <label for="index" class="control-label col-xs-8">Your post index:</label>
+                <input type="text" minlength="7" name="index" id="index" class="form-control"
+                       placeholder="0000000"
+                />
+                <br/>
             </div>
-
-            <button type="submit" class="btn btn-primary  btn-md" onclick="
-                    document.getElementById('contactForm').submit();">Accept
+            <button type="submit" class="myButton" onclick="
+                    document.getElementById('contactForm').submit();">Submit
             </button>
         </div>
     </form>
 </div>
 
-
-<script type="text/javascript" src="../js/collapse.js"></script>
+<script type="text/javascript" src="../js/collapse.js?version=01.04.19"></script>
 </body>
 </html>

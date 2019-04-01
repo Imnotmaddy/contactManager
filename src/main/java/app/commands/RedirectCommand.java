@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RedirectCommand implements ActionCommand {
     private final String NEWCONTACT = "/views/addContact.jsp";
+    private final String PHONENUMBERLIST = "/views/phoneNumberList.jsp";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
@@ -15,6 +16,9 @@ public class RedirectCommand implements ActionCommand {
             }
             case "contactList": {
                 return new ShowAllContactsCommand().execute(request, response);
+            }
+            case "phoneNumberList": {
+                return PHONENUMBERLIST;
             }
         }
         return NEWCONTACT;

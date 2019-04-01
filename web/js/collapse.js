@@ -1,21 +1,14 @@
-var triggers = Array.from(document.querySelectorAll('[data-toggle="collapse"]'));
-window.addEventListener('click', function (ev) {
-    var elm = ev.target;
+var coll = document.getElementsByClassName("collapsible");
+var i;
 
-    if (triggers.includes(elm)) {
-        var selector = elm.getAttribute('data-target');
-        collapse(selector, 'toggle');
-    }
-}, false);
-var fnmap = {
-    'toggle': 'toggle',
-    'show': 'add',
-    'hide': 'remove'
-};
-
-var collapse = function collapse(selector, cmd) {
-    var targets = Array.from(document.querySelectorAll(selector));
-    targets.forEach(function (target) {
-        target.classList[fnmap[cmd]]('show');
+for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight){
+            content.style.maxHeight = null;
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
     });
-};
+}

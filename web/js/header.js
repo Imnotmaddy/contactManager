@@ -3,9 +3,11 @@ var headerModule = (function () {
         toCreateContact: function () {
             window.location = "http://localhost:8080/contactManager?command=redirect&page=addContact";
         },
-            toContactList: function(){
-            window.location="http://localhost:8080/contactManager?command=redirect&page=contactList";
+        toContactList: function () {
+            window.location = "http://localhost:8080/contactManager?command=redirect&page=contactList";
+        },
+        toPhoneNumbersList:function () {
+            window.location="http://localhost:8080/contactManager?command=redirect&page=phoneNumberList"
         }
-
     }
 }());
