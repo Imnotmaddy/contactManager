@@ -12,18 +12,18 @@
     <title>Title</title>
 </head>
 <body>
-<nav class="navbar navbar-inverse">
+<nav class="navbar-fixed-top navbar-inverse ">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/">Contact Manager</a>
+            <a class="navbar-brand" href="/contactManager">Contact Manager</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#">Page 1</a></li>
-            <li><a href="#">Page 2</a></li>
-            <li><a href="#">Page 3</a></li>
+            <li style="cursor: pointer"><a onclick="headerModule.toContactList()">Home</a></li>
+            <li style="cursor: pointer"> <a onclick="headerModule.toCreateContact()"> Add Contact </a></li>
+            <li style="cursor: pointer"><a>Search</a></li>
         </ul>
     </div>
 </nav>
+<script type="text/javascript" src = "../js/header.js"></script>
 </body>
 </html>

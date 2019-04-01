@@ -6,6 +6,6 @@
     <title>Contact Manager</title>
 </head>
 <body>
-<c:redirect url="/contactManager"></c:redirect>
+<jsp:include page="/views/header.jsp"/>
 </body>
 </html>
