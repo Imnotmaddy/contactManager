@@ -32,7 +32,6 @@ public class UpdateContactCommand implements ActionCommand {
             String residenceApartmentNumber = request.getParameter("residenceApartmentNumber");
             String index = request.getParameter("index");
             java.sql.Date sqlStartDate;
-            //123
             try {
                 Date date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("date"));
                 sqlStartDate = new java.sql.Date(date.getTime());
