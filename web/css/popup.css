@@ -2,7 +2,7 @@
 
 /* Button used to open the contact form - fixed at the bottom of the page */
 .open-button {
-    background-color: #555;
+    background-color: #997106;
     color: white;
     padding: 16px 20px;
     border: none;
@@ -26,13 +26,17 @@
 
 /* Add styles to the form container */
 .form-container {
-    max-width: 300px;
+    max-width: 350px;
     padding: 10px;
     background-color: white;
 }
 
+.form-container label{
+    padding: 5px;
+}
+
 /* Full-width input fields */
-.form-container input[type=text], .form-container input[type=password] {
+.form-container input[type=text], select, textarea{
     width: 100%;
     padding: 15px;
     margin: 5px 0 22px 0;
@@ -41,12 +45,12 @@
 }
 
 /* When the inputs get focus, do something */
-.form-container input[type=text]:focus, .form-container input[type=password]:focus {
+.form-container input[type=text]:focus{
     background-color: #ddd;
     outline: none;
 }
 
-/* Set a style for the submit/login button */
+/* Set a style for the submit button */
 .form-container .btn {
     background-color: #4CAF50;
     color: white;
@@ -55,6 +59,7 @@
     cursor: pointer;
     width: 100%;
     margin-bottom:10px;
+    margin-top:10px;
     opacity: 0.8;
 }
 
