@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="../css/collapse.css?version=02.04.19"/>
     <link rel="stylesheet" type="text/css" href="../css/addContact.css?version=02.04.191"/>
     <link rel="stylesheet" type="text/css" href="../css/popup.css?version=02.04.19"/>
+    <link rel="stylesheet" type="text/css" href="../css/myTable.css?version=02.04.19"/>
     <title>New Contact</title>
 </head>
 <body>
@@ -20,7 +21,7 @@
 <div class="myRow">
     <div class="column">
         <form action="/contactManager?command=${command}" method="post" role="form" data-toggle="validator">
-            <input type="hidden" id="id" name="id" value="${contact.id}">
+
             <h2>New Contact</h2>
             <div class="form-group">
                 <label for="name" class="control-label col-xs-8">Name:</label>
@@ -99,9 +100,7 @@
                     <br/>
                 </div>
                 <br/>
-                <button type="submit" class="myButton" onclick="
-                    document.getElementById('contactForm').submit();
-                    ">Submit
+                <button type="submit" class="myButton">Submit
                 </button>
             </div>
         </form>
@@ -119,9 +118,9 @@
                 </thead>
                 <c:forEach var="phoneNumber" items='${phoneNumbers}'>
                     <tr>
-                        <td><input type="checkbox"></td>
+                        <td><input type="checkbox" name="phoneId" value="${phoneNumber.id}"></td>
                         <td>${phoneNumber.countryCode}${phoneNumber.operatorCode}${phoneNumber.phoneNumber}</td>
-                        <td></td>
+                        <td>${phoneNumber.phoneType}</td>
                         <td>${phoneNumber.commentary}</td>
                     </tr>
                 </c:forEach>
@@ -136,7 +135,9 @@
 </div>
 <button class="open-button" onclick="openForm()">Add Phone Number</button>
 <div class="form-popup" id="popupPhoneNumber">
-    <form action="/contactManager?command=addPhoneNumber" class="form-container">
+    <form action="/contactManager?command=addPhoneNumber" method="post" role="form" id="addNumberForm"
+          class="form-container">
+        <input type="hidden" id="id" name="id" value="${contact.id}">
         <label for="phoneNumber"><b>Phone Number</b></label>
         <input type="text" id="phoneNumber" name="phoneNumber" required>
 
@@ -156,6 +157,7 @@
         <textarea id="commentary" name="commentary" placeholder="Your commentary..."></textarea>
 
         <button type="submit" class="btn">Submit</button>
+
         <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
     </form>
 </div>

@@ -12,6 +12,7 @@
 <head>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/contactList.css">
+    <link rel="stylesheet" href="../css/myTable.css">
     <title>Contacts</title>
 </head>
 <body>

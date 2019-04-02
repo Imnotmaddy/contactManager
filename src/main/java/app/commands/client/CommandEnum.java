@@ -1,7 +1,7 @@
 package app.commands.client;
 
 import app.commands.*;
-import app.commands.factory.DeleteContactsCommand;
+import app.commands.DeleteContactsCommand;
 
 public enum CommandEnum {
     LISTOFCONTACTS {
@@ -32,6 +32,16 @@ public enum CommandEnum {
     UPDATECONTACT {
         {
             this.command = new UpdateContactCommand();
+        }
+    },
+    ADDPHONENUMBER {
+        {
+            this.command = new AddPhoneNumberCommand();
+        }
+    },
+    DELETEPHONENUMBERS {
+        {
+            this.command = new DeletePhoneNumbersCommand();
         }
     };
 

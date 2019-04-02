@@ -1,7 +1,5 @@
-package app.commands.factory;
+package app.commands;
 
-import app.commands.ActionCommand;
-import app.commands.ShowAllContactsCommand;
 import app.sql.dao.mysql.ContactDaoImpl;
 
 import javax.servlet.http.HttpServletRequest;

@@ -118,14 +118,10 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
 
     @Override
     public void delete(Contact entity) {
-        Connection connection = ConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_DELETE_CONTACT)) {
-            statement.setInt(1, entity.getId());
-            statement.executeUpdate();
+        try {
+            super.delete(entity, SQL_DELETE_CONTACT);
         } catch (SQLException e) {
             LOGGER.error(e);
-        } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 

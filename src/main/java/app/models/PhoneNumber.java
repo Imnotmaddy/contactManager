@@ -1,16 +1,17 @@
 package app.models;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
+import lombok.*;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
 public class PhoneNumber extends Entity {
     @NonNull
     private String phoneNumber;
 
-    private boolean isCellular; // if false -> the phone is stationary
+    @NonNull
+    private String phoneType;
 
     private String commentary;
 
