@@ -25,76 +25,76 @@
             <h2>New Contact</h2>
             <div class="form-group">
                 <label for="name" class="control-label col-xs-8">Name:</label>
-                <input type="text" id="name" class="form-control" value="${contact.name}" required/>
+                <input type="text" id="name" name="name" class="form-control" value="${contact.name}" required/>
 
                 <label for="surname" class="control-label col-xs-8">Last name:</label>
-                <input type="text" id="surname" class="form-control" value="${contact.surname}"
+                <input type="text" id="surname" name="surname" class="form-control" value="${contact.surname}"
                        required/>
 
                 <label for="email" class="control-label col-xs-8">E-mail:</label>
-                <input type="text" id="email" class="form-control"
+                <input type="text" id="email" name="email" class="form-control"
                        placeholder="smith@aol.com" value="${contact.email}" required/>
 
                 <br/>
                 <button class="collapsible" type="button">Expand Additional Information</button>
                 <div class="content">
                     <label for="familyName" class="control-label col-xs-8">Family name:</label>
-                    <input type="text" id="familyName" class="form-control"
+                    <input type="text" id="familyName" name="familyName" class="form-control"
                            value="${contact.familyName}"/>
 
                     <label for="date" class="control-label col-xs-4">Birth date:</label>
-                    <input type="date" id="date" class="form-control"
+                    <input type="date" id="date" name="date" class="form-control"
                            min="1940-01-02" value="${contact.dateOfBirth}"/>
 
                     <label for="sex" class="control-label col-xs-4">Sex:</label>
-                    <input type="text" id="sex" class="form-control"
+                    <input type="text" id="sex" name="sex" class="form-control"
                            value="${contact.sex}"/>
 
                     <label for="citizenship" class="control-label col-xs-4">Citizenship:</label>
-                    <input type="text" id="citizenship" class="form-control"
+                    <input type="text" id="citizenship" name="citizenship" class="form-control"
                            value="${contact.citizenship}"/>
 
                     <label for="relationship" class="control-label col-xs-4">Relationship:</label>
-                    <input type="text" id="relationship" class="form-control"
+                    <input type="text" id="relationship" name="relationship" class="form-control"
                            value="${contact.relationship}"/>
 
                     <label for="webSite" class="control-label col-xs-8">Your webSite:</label>
-                    <input type="text" id="webSite" class="form-control"
+                    <input type="text" id="webSite" name="webSite" class="form-control"
                            value="${contact.familyName}"/>
 
                     <label for="currentJob" class="control-label col-xs-8">Your current job:</label>
-                    <input type="text" id="currentJob" class="form-control"
+                    <input type="text" id="currentJob" name="currentJob" class="form-control"
                            value="${contact.currentJob}"/>
 
                     <label for="jobAddress" class="control-label col-xs-8">Your job's address:</label>
-                    <input type="text" id="jobAddress" class="form-control"
+                    <input type="text" id="jobAddress" name="jobAddress" class="form-control"
                            value="${contact.jobAddress}"/>
 
                     <label for="residenceCountry" class="control-label col-xs-8">Your residence country:</label>
-                    <input type="text" id="residenceCountry" class="form-control"
+                    <input type="text" id="residenceCountry" name="residenceCountry" class="form-control"
                            value="${contact.residenceCountry}"/>
 
                     <label for="residenceCity" class="control-label col-xs-8">Your residence city:</label>
-                    <input type="text" id="residenceCity" class="form-control"
+                    <input type="text" id="residenceCity" class="form-control" name="residenceCity"
                            value="${contact.residenceCity}"/>
 
                     <label for="residenceStreet" class="control-label col-xs-8">Your residence street:</label>
-                    <input type="text" id="residenceStreet" class="form-control"
+                    <input type="text" id="residenceStreet" class="form-control" name="residenceStreet"
                            value="${contact.residenceStreet}"/>
 
                     <label for="residenceHouseNumber" class="control-label col-xs-8">Your residence house
                         number:</label>
-                    <input type="text" id="residenceHouseNumber" class="form-control"
+                    <input type="text" id="residenceHouseNumber" class="form-control" name="residenceHouseNumber"
                            value="${contact.residenceHouseNumber}"/>
 
                     <label for="residenceApartmentNumber" class="control-label col-xs-8">Your apartment's
                         number:</label>
-                    <input type="text" id="residenceApartmentNumber"
+                    <input type="text" id="residenceApartmentNumber" name="residenceApartmentNumber"
                            class="form-control"
                            value="${contact.residenceApartmentNumber}"/>
 
                     <label for="index" class="control-label col-xs-8">Your post index:</label>
-                    <input type="text" minlength="7" id="index" class="form-control"
+                    <input type="text" minlength="7" id="index" class="form-control" name="index"
                            placeholder="0000000"
                            value="${contact.index}"/>
                     <br/>
