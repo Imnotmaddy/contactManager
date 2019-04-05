@@ -19,6 +19,7 @@ public class ContactService {
         String[] operatorCodes = request.getParameterMap().get("operatorCode");
         String[] commentaries = request.getParameterMap().get("commentary");
         String[] phoneTypes = request.getParameterMap().get("phoneType");
+        if (phones == null) return numbers;
         for (int i = 0; i < phones.length; i++) {
             numbers.add(buildNumber(phones[i], countryCodes[i], operatorCodes[i], commentaries[i], phoneTypes[i], contactId));
         }
@@ -28,6 +29,16 @@ public class ContactService {
             }
         }
         return numbers;
+    }
+
+    public static List<Integer> getNumbersForDelete(HttpServletRequest request) {
+        String numbers = request.getParameter("numbersForDelete");
+        if (numbers == "") return new ArrayList<>();
+        List<Integer> ids = new ArrayList<>();
+        for (String el : numbers.split(",")) {
+            ids.add(Integer.valueOf(el));
+        }
+        return ids;
     }
 
     static PhoneNumber buildNumber(String phoneNumber, String countryCode, String operatorCode, String commentary, String phoneType, Integer contactId) {

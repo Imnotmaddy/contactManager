@@ -29,7 +29,7 @@ function addNumber() {
 
             let ckBox = document.createElement("input");
             ckBox.type = "checkbox";
-            ckBox.name = "phoneId";
+            ckBox.name = "phoneIdForDelete";
             ckBox.value = "new";
 
             let countryCodeInput = document.createElement("input");
@@ -83,7 +83,7 @@ function checkPhoneForUnique(phone) {
 
 function deleteNumbers() {
     let amountOfDeleted = 0;
-    let checkBoxes = document.getElementsByName('phoneId');
+    let checkBoxes = document.getElementsByName('phoneIdForDelete');
     let length = checkBoxes.length;
     for (let i = 0; i < length; i++) {
         let box = checkBoxes[i - amountOfDeleted];
@@ -92,13 +92,72 @@ function deleteNumbers() {
                 document.getElementById('phoneTable').deleteRow(i + 1 - amountOfDeleted);
                 amountOfDeleted++;
             } else {
+                let table = document.getElementById('phoneTable');
+                let row = table.rows[i - amountOfDeleted + 1];
+                document.getElementById('undoButton').style.visibility = "visible";
+                for (let j = 1; j < row.cells.length; j++) {
+                    row.cells[j].style.setProperty("text-decoration", "line-through");
+                }
                 if (!phonesForDelete.includes(box.value))
                     phonesForDelete.push(box.value);
+                box.checked = false;
             }
         }
     }
 }
 
-function editPhoneNumber() {
+function undoDelete() {
+    let checkBoxes = document.getElementsByName('phoneIdForDelete');
 
+    for (let i = 0; i < checkBoxes.length; i++) {
+        let box = checkBoxes[i];
+        if (box.checked === true) {
+            let id = box.value;
+            const index = phonesForDelete.indexOf(id);
+            if (index !== -1) {
+                phonesForDelete.splice(index, 1);
+                unCrossTableRow(i + 1);
+            }
+        }
+        box.checked = false;
+    }
 }
+
+function unCrossTableRow(rowIndex) {
+    let table = document.getElementById('phoneTable');
+    let row = table.rows[rowIndex];
+    for (let j = 1; j < row.cells.length; j++) {
+        row.cells[j].style.setProperty("text-decoration", "none");
+    }
+}
+
+function submitAll() {
+    let form = document.getElementById('contactForm');
+    let phoneNumberInput = document.createElement("input");
+    phoneNumberInput.type = "hidden";
+    phoneNumberInput.name = "numbersForDelete";
+    phoneNumberInput.value = phonesForDelete;
+    form.append(phoneNumberInput);
+    form.submit();
+}
+
+/*
+function editPhoneNumber(phone) {
+    let countryCode = document.getElementById('countryCodeInput');
+    let operatorCode = document.getElementById('operatorCodeInput');
+    let phoneNumber = document.getElementById('phoneNumberInput');
+    let phoneType = document.getElementById('phoneTypeInput');
+    let commentary = document.getElementById('commentaryInput');
+
+    let table = document.getElementById('phoneTable');
+    for (let i = 1; i < table.rows.length; i++) {
+        if (table.rows[i].cells[1].innerText === phone){
+            countryCode.value = table.rows[i].cells[].value;
+            operatorCode.value = table.rows[i].cells[].value;
+            phoneNumber.value = table.rows[i].cells[1].value;
+            phoneType.value = table.rows[i].cells[2].value;
+            commentary.value = table.rows[i].cells[3].value;
+            break;
+        }
+    }
+}*/

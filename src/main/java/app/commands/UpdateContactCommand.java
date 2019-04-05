@@ -4,6 +4,7 @@ import app.exception.AppException;
 import app.models.Contact;
 import app.services.ContactService;
 import app.sql.dao.mysql.ContactDaoImpl;
+import app.sql.dao.mysql.PhoneDaoImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ public class UpdateContactCommand implements ActionCommand {
             contact.setId(Integer.valueOf(request.getParameter("id")));
             contact.setPhoneNumbers(ContactService.getNewNumbers(request, contact.getId()));
             ContactDaoImpl.getInstance().updateContact(contact);
+            PhoneDaoImpl.getInstance().deleteAllById(ContactService.getNumbersForDelete(request));
         } catch (AppException e) {
 
         }

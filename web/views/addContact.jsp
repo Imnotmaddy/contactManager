@@ -100,7 +100,7 @@
                     <br/>
                 </div>
                 <br/>
-                <button type="submit" class="myButton">Submit
+                <button type="button" class="myButton" onclick="submitAll();">Submit
                 </button>
             </div>
         </div>
@@ -115,12 +115,12 @@
                 </tr>
                 </thead>
                 <c:forEach var="phoneNumber" items='${phoneNumbers}'>
-                    <input type="hidden" name="countryCode" value="${phoneNumber.countryCode}">
+                    <input type="hidden" name="countryCode"  value="${phoneNumber.countryCode}">
                     <input type="hidden" name="operatorCode" value="${phoneNumber.operatorCode}">
-                    <input type="hidden" name="commentary" value="${phoneNumber.commentary}">
-                    <input type="hidden" name="phoneNumber" value="${phoneNumber.phoneNumber}">
-                    <input type="hidden" name="phoneType" value="${phoneNumber.phoneType}">
-                    <input type="hidden" name="phoneId" value="${phoneNumber.id}">
+                    <input type="hidden" name="commentary"   value="${phoneNumber.commentary}">
+                    <input type="hidden" name="phoneNumber"  value="${phoneNumber.phoneNumber}">
+                    <input type="hidden" name="phoneType"    value="${phoneNumber.phoneType}">
+                    <input type="hidden" name="phoneId"      value="${phoneNumber.id}">
                     <tr>
                         <td><input type="checkbox" name="phoneIdForDelete" id="phoneId" value="${phoneNumber.id}"></td>
                         <td>${phoneNumber.countryCode}${phoneNumber.countryCode}${phoneNumber.phoneNumber}</td>
@@ -132,6 +132,9 @@
             <div>
                 <button type="button" class="btn btn-primary  btn-md" onclick="
                      deleteNumbers();">Delete
+                </button>
+                <button type="button" id="undoButton" class="btn btn-primary  btn-md" onclick="
+                     undoDelete();" style="visibility: hidden">Undo
                 </button>
             </div>
         </div>
@@ -164,7 +167,7 @@
     </div>
 </div>
 <script type="text/javascript" src="../js/collapse.js?version=01.04.19"></script>
-<script type="text/javascript" src="../js/addContact.js?version=04.04.19"></script>
+<script type="text/javascript" src="../js/addContact.js?version=05.04.19"></script>
 <script type="text/javascript" src="../js/popup.js?version=02.04.19"></script>
 </body>
 </html>

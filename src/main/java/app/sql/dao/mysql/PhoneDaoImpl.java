@@ -183,8 +183,23 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
         }
     }
 
+    public void deleteAllById(List<Integer> ids) {
+        if (ids.isEmpty()) {
+            return;
+        }
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        try {
+            for (int i = 0; i < ids.size(); i++) {
+                super.delete(ids.get(i), SQL_DELETE_PHONE_NUMBER, connection);
+            }
+        } catch (SQLException ex) {
+            LOGGER.error(ex);
+        }
+    }
+
     List<PhoneNumber> updatePhoneNumbersByContactId(List<PhoneNumber> phoneNumbers, Connection connection) throws AppException {
         List<PhoneNumber> numbers = new ArrayList<>();
+        if (phoneNumbers.isEmpty()) return numbers;
         try {
             for (int i = 0; i < phoneNumbers.size(); i++) {
                 PhoneNumber number = phoneNumbers.get(i);
