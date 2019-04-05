@@ -12,5 +12,5 @@ public interface Dao<T extends Entity> {
 
     T findById(Integer id);
 
-    void delete(T entity);
+    void delete(T entity) throws AppException;
 }

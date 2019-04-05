@@ -36,6 +36,7 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
             "`operatorCode`, `contactId`)" +
             "VALUES (?, ?, ?, ?, ?, ?)";
     private static final String SQL_DELETE_PHONE_NUMBER = "DELETE FROM " + PHONENUMBERS + " WHERE `id` = ?";
+    private static final String SQL_DELETE_PHONE_NUMBER_BY_CONTACT_ID = "DELETE FROM " + PHONENUMBERS + " WHERE `contactId` = ?";
     private static final String SQL_FIND_ALL = "SELECT *  FROM" + PHONENUMBERS;
     private static final String SQL_FIND_BY_ID = "SELECT * FROM" + PHONENUMBERS + " WHERE  `id` = ?";
     private static final String SQL_FIND_ALL_BY_CONTACT_ID = "SELECT *  FROM" + PHONENUMBERS + "WHERE `contactId` = ? ";
@@ -66,6 +67,7 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
 
     @Override
     public List<PhoneNumber> saveAll(List<PhoneNumber> phoneNumbers) throws AppException {
+        if (phoneNumbers.isEmpty()) return phoneNumbers;
         Connection connection = ConnectionPool.getInstance().getConnection();
         try {
             connection.setAutoCommit(false);
@@ -85,7 +87,20 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
 
     @Override
     public List<PhoneNumber> findAll() {
-        return null;
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL)) {
+            ResultSet resultSet = statement.executeQuery();
+            List<PhoneNumber> phoneNumbers = new ArrayList<>();
+            while (resultSet.next()) {
+                phoneNumbers.add(buildPhoneNumber(resultSet));
+            }
+            return phoneNumbers;
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            return new ArrayList<>();
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
     }
 
     @Override
@@ -139,10 +154,25 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
 
     @Override
     public void delete(PhoneNumber entity) {
+        Connection connection = ConnectionPool.getInstance().getConnection();
         try {
-            super.delete(entity, SQL_DELETE_PHONE_NUMBER);
+            super.delete(entity.getId(), SQL_DELETE_PHONE_NUMBER, connection);
         } catch (SQLException e) {
             LOGGER.error(e);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
+    }
+
+    void deleteAllbyContactId(List<PhoneNumber> phoneNumbers, Connection connection, Integer contactId) throws AppException {
+        try {
+            for (int i = 0; i < phoneNumbers.size(); i++) {
+                super.delete(phoneNumbers.get(i).getContactId(), SQL_DELETE_PHONE_NUMBER_BY_CONTACT_ID, connection);
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            throw new AppException("Error during deleting phones");
+        }
+
     }
 }

@@ -7,10 +7,7 @@ import app.sql.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,23 +113,33 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         }
     }
 
-    @Override
-    public void delete(Contact entity) {
+    public void delete(Contact entity) throws AppException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
         try {
-            super.delete(entity, SQL_DELETE_CONTACT);
+            connection.setAutoCommit(false);
+            PhoneDaoImpl.getInstance().deleteAllbyContactId(entity.getPhoneNumbers(), connection, entity.getId());
+            super.delete(entity.getId(), SQL_DELETE_CONTACT, connection);
+            connection.commit();
         } catch (SQLException e) {
             LOGGER.error(e);
+            rollbackConnection(connection);
+            throw new AppException("Error during contact delete");
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
+
 
     @Override
     public Contact updateContact(Contact entity) throws AppException {
         try {
-            return super.update(entity, SQL_UPDATE_CONTACT, fields);
+            Contact contact = super.update(entity, SQL_UPDATE_CONTACT, fields);
+
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new AppException("An error occurred during contact update");
         }
+        return null;
     }
 
     private Contact buildContact(ResultSet resultSet) throws SQLException {
@@ -155,6 +162,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         contact.setResidenceHouseNumber(resultSet.getString("residenceHouseNumber"));
         contact.setResidenceApartmentNumber(resultSet.getString("residenceApartmentNumber"));
         contact.setIndex(resultSet.getString("index"));
+        contact.setPhoneNumbers(PhoneDaoImpl.getInstance().findAllByContactId(contact.getId()));
         return contact;
     }
 }

@@ -67,21 +67,17 @@ abstract class AbstractDaoImpl<T extends Entity> {
         }
     }
 
-    void delete(T entity, String sql) throws SQLException {
-        Connection connection = ConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, entity.getId());
-            statement.executeUpdate();
-        } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
-        }
+    void delete(Integer id, String sql, Connection connection) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1, id);
+        statement.executeUpdate();
     }
 
     void rollbackConnection(Connection connection) throws AppException {
         try {
             connection.rollback();
         } catch (SQLException e) {
-            throw new AppException("Error during phone number save");
+            throw new AppException("Error during rollback");
         }
     }
 
