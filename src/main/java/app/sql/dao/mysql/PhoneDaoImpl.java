@@ -40,6 +40,8 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
     private static final String SQL_FIND_ALL = "SELECT *  FROM" + PHONENUMBERS;
     private static final String SQL_FIND_BY_ID = "SELECT * FROM" + PHONENUMBERS + " WHERE  `id` = ?";
     private static final String SQL_FIND_ALL_BY_CONTACT_ID = "SELECT *  FROM" + PHONENUMBERS + "WHERE `contactId` = ? ";
+    private static final String SQL_UPDATE_PHONE_NUMBER = "UPDATE" + PHONENUMBERS + " SET `phoneNumber` = ?, `phoneType` = ?," +
+            "`commentary` = ?, `countryCode` =?,`operatorCode` = ?, `contactId` = ? WHERE `id` = ?";
 
     static {
         fields = new HashMap<>();
@@ -57,11 +59,17 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
 
     @Override
     public PhoneNumber save(PhoneNumber entity) throws AppException {
+        if (entity == null) {
+            throw new IllegalArgumentException("Can not save null entity!");
+        }
+        Connection connection = ConnectionPool.getInstance().getConnection();
         try {
-            return super.save(entity, SQL_INSERT_PHONE_NUMBER, fields);
+            return super.save(entity, SQL_INSERT_PHONE_NUMBER, connection, fields);
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new AppException("Error during phone number save");
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 
@@ -72,7 +80,7 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
         try {
             connection.setAutoCommit(false);
             for (PhoneNumber phoneNumber : phoneNumbers) {
-                save(phoneNumber, SQL_INSERT_PHONE_NUMBER, connection, fields);
+                super.save(phoneNumber, SQL_INSERT_PHONE_NUMBER, connection, fields);
             }
             connection.commit();
             return phoneNumbers;
@@ -173,6 +181,23 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
             LOGGER.error(e);
             throw new AppException("Error during deleting phones");
         }
+    }
 
+    List<PhoneNumber> updatePhoneNumbersByContactId(List<PhoneNumber> phoneNumbers, Connection connection) throws AppException {
+        List<PhoneNumber> numbers = new ArrayList<>();
+        try {
+            for (int i = 0; i < phoneNumbers.size(); i++) {
+                PhoneNumber number = phoneNumbers.get(i);
+                if (number.getId() != null) {
+                    numbers.add(super.update(phoneNumbers.get(i), SQL_UPDATE_PHONE_NUMBER, connection, fields));
+                } else {
+                    numbers.add(super.save(number, SQL_INSERT_PHONE_NUMBER, connection, fields));
+                }
+            }
+            return numbers;
+        } catch (SQLException ex) {
+            LOGGER.error(ex);
+            throw new AppException("Error during Update PhoneNUmbers");
+        }
     }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 public class ContactService {
     public static List<PhoneNumber> getNewNumbers(HttpServletRequest request, Integer contactId) {
         List<PhoneNumber> numbers = new ArrayList<>();
+        String[] existingPhonesId = request.getParameterMap().get("phoneId");
         String[] phones = request.getParameterMap().get("phoneNumber");
         String[] countryCodes = request.getParameterMap().get("countryCode");
         String[] operatorCodes = request.getParameterMap().get("operatorCode");
@@ -20,6 +21,11 @@ public class ContactService {
         String[] phoneTypes = request.getParameterMap().get("phoneType");
         for (int i = 0; i < phones.length; i++) {
             numbers.add(buildNumber(phones[i], countryCodes[i], operatorCodes[i], commentaries[i], phoneTypes[i], contactId));
+        }
+        if (existingPhonesId != null) {
+            for (int i = 0; i < existingPhonesId.length; i++) {
+                numbers.get(i).setId(Integer.valueOf(existingPhonesId[i]));
+            }
         }
         return numbers;
     }

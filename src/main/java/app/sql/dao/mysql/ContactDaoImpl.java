@@ -68,11 +68,17 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
 
     @Override
     public Contact save(Contact entity) throws AppException {
+        if (entity == null) {
+            throw new IllegalArgumentException("Can not save null entity!");
+        }
+        Connection connection = ConnectionPool.getInstance().getConnection();
         try {
-            return super.save(entity, SQL_INSERT_CONTACT, fields);
+            return super.save(entity, SQL_INSERT_CONTACT, connection, fields);
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new AppException("An error occurred during contact saving");
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 
@@ -132,14 +138,21 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
 
     @Override
     public Contact updateContact(Contact entity) throws AppException {
+        if (entity == null) {
+            throw new IllegalArgumentException("Can not update null entity!");
+        }
+        Connection connection = ConnectionPool.getInstance().getConnection();
         try {
-            Contact contact = super.update(entity, SQL_UPDATE_CONTACT, fields);
-
+            connection.setAutoCommit(false);
+            Contact contact = super.update(entity, SQL_UPDATE_CONTACT, connection, fields);
+            contact.setPhoneNumbers(PhoneDaoImpl.getInstance().updatePhoneNumbersByContactId(contact.getPhoneNumbers(), connection));
+            connection.commit();
+            return contact;
         } catch (SQLException e) {
             LOGGER.error(e);
+            rollbackConnection(connection);
             throw new AppException("An error occurred during contact update");
         }
-        return null;
     }
 
     private Contact buildContact(ResultSet resultSet) throws SQLException {

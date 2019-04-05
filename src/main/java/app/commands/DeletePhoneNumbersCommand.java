@@ -10,7 +10,7 @@ import java.util.Set;
 public class DeletePhoneNumbersCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
-        String[] numbers = request.getParameterMap().get("phoneId");
+        String[] numbers = request.getParameterMap().get("phoneIdForDelete");
         Set<Integer> ids = new HashSet<>();
         for (String parameter : numbers) {
             ids.add(Integer.valueOf(parameter));

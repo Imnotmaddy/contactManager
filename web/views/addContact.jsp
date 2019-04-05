@@ -115,13 +115,14 @@
                 </tr>
                 </thead>
                 <c:forEach var="phoneNumber" items='${phoneNumbers}'>
-                    <input type="hidden" name="countryCode" value="$${phoneNumber.countryCode}">
+                    <input type="hidden" name="countryCode" value="${phoneNumber.countryCode}">
                     <input type="hidden" name="operatorCode" value="${phoneNumber.operatorCode}">
                     <input type="hidden" name="commentary" value="${phoneNumber.commentary}">
                     <input type="hidden" name="phoneNumber" value="${phoneNumber.phoneNumber}">
                     <input type="hidden" name="phoneType" value="${phoneNumber.phoneType}">
+                    <input type="hidden" name="phoneId" value="${phoneNumber.id}">
                     <tr>
-                        <td><input type="checkbox" name="phoneId" id="phoneId" value="${phoneNumber.id}"></td>
+                        <td><input type="checkbox" name="phoneIdForDelete" id="phoneId" value="${phoneNumber.id}"></td>
                         <td>${phoneNumber.countryCode}${phoneNumber.countryCode}${phoneNumber.phoneNumber}</td>
                         <td>${phoneNumber.phoneType}</td>
                         <td>${phoneNumber.commentary}</td>
