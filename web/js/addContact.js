@@ -1,13 +1,32 @@
 let phonesForDelete = [];
 
 function isPhoneFormValid() {
-    if (!document.getElementById('countryCodeInput').value ||
-        !document.getElementById('operatorCodeInput').value ||
-        !document.getElementById('phoneNumberInput').value) {
-        alert("Enter full phone number");
+    let countryCode = document.getElementById('countryCodeInput').value;
+    let operatorCode = document.getElementById('operatorCodeInput').value;
+    let phoneNumber = document.getElementById('phoneNumberInput').value;
+    if (countryCode.length < 1 || countryCode.length > 3) {
+        alert("Country Code requires 1-3 digits");
         return false;
     }
+    if (phoneNumber.length < 6 || phoneNumber.length > 9) {
+        alert("Phone number requires 6-9 digits");
+        return false;
+    }
+    if (operatorCode.length < 1 || operatorCode.length > 3) {
+        alert("Operator code requires 1-3 digits");
+        return false;
+    }
+
     return true;
+}
+
+function isEmailValid(mail) {
+    let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return (mail.match(mailFormat));
+}
+
+function isFieldEmpty(text) {
+    return !(text === "");
 }
 
 function addNumber() {
@@ -132,6 +151,19 @@ function unCrossTableRow(rowIndex) {
 }
 
 function submitAll() {
+    if (!isFieldEmpty(document.getElementById('name').value)) {
+        alert("Input your name");
+        return false;
+    }
+    if (!isFieldEmpty(document.getElementById('surname').value)) {
+        alert("Input your surname");
+        return false;
+    }
+    if (!isEmailValid(document.getElementById('email').value)) {
+        alert("Email Is Invalid");
+        return false;
+    }
+
     let form = document.getElementById('contactForm');
     let phoneNumberInput = document.createElement("input");
     phoneNumberInput.type = "hidden";
@@ -139,6 +171,7 @@ function submitAll() {
     phoneNumberInput.value = phonesForDelete;
     form.append(phoneNumberInput);
     form.submit();
+
 }
 
 /*

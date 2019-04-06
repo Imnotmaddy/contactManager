@@ -25,7 +25,7 @@
             <h2>New Contact</h2>
             <div class="form-group">
                 <label for="name" class="control-label col-xs-8">Name:</label>
-                <input type="text" id="name" name="name" class="form-control" value="${contact.name}" required/>
+                <input type="text" id="name" name="name" class="form-control" value="${contact.name}" required />
 
                 <label for="surname" class="control-label col-xs-8">Last name:</label>
                 <input type="text" id="surname" name="surname" class="form-control" value="${contact.surname}"
@@ -33,7 +33,7 @@
 
                 <label for="email" class="control-label col-xs-8">E-mail:</label>
                 <input type="text" id="email" name="email" class="form-control"
-                       placeholder="smith@aol.com" value="${contact.email}" required/>
+                       placeholder="smith@aol.com" value="${contact.email}" required />
 
                 <br/>
                 <button class="collapsible" type="button">Expand Additional Information</button>
