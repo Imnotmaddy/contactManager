@@ -4,7 +4,6 @@ import app.exception.AppException;
 import app.models.Contact;
 import app.models.PhoneNumber;
 import app.sql.dao.mysql.ContactDaoImpl;
-import app.sql.dao.mysql.PhoneDaoImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,12 +17,14 @@ public class EditContactCommand implements ActionCommand {
         try {
             Integer id = Integer.valueOf(request.getParameter("contactId"));
             Contact contact = ContactDaoImpl.getInstance().findById(id);
-            List<PhoneNumber> numbers = PhoneDaoImpl.getInstance().findAllByContactId(contact.getId());
+            List<PhoneNumber> numbers = contact.getPhoneNumbers();
             request.setAttribute("contact", contact);
             request.setAttribute("phoneNumbers", numbers);
             request.setAttribute("command", "updateContact");
-        } catch (AppException ex) {
-            //todo
+        } catch (AppException | IllegalArgumentException ex) {
+            request.setAttribute("error", ex.getMessage());
+        } catch (Exception ex) {
+            request.setAttribute("error", "Unknown error occurred");
         }
         return EDITCONTACT;
     }

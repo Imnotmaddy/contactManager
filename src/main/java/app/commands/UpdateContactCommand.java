@@ -3,6 +3,7 @@ package app.commands;
 import app.exception.AppException;
 import app.models.Contact;
 import app.services.ContactService;
+import app.services.PhoneService;
 import app.sql.dao.mysql.ContactDaoImpl;
 import app.sql.dao.mysql.PhoneDaoImpl;
 
@@ -13,13 +14,15 @@ public class UpdateContactCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Contact contact = ContactService.getParameters(request);
+            Contact contact = ContactService.getContactParameters(request);
             contact.setId(Integer.valueOf(request.getParameter("id")));
-            contact.setPhoneNumbers(ContactService.getNewNumbers(request, contact.getId()));
+            PhoneDaoImpl.getInstance().deleteAllById(PhoneService.getPhoneNumbersForDelete(request));
+            contact.setPhoneNumbers(PhoneService.getAllPhoneNumbers(request, contact.getId()));
             ContactDaoImpl.getInstance().updateContact(contact);
-            PhoneDaoImpl.getInstance().deleteAllById(ContactService.getNumbersForDelete(request));
-        } catch (AppException e) {
-
+        } catch (AppException | IllegalArgumentException e) {
+            request.setAttribute("error", e.getMessage());
+        } catch (Exception ex) {
+            request.setAttribute("error", "Unknown error occurred");
         }
         return new ShowAllContactsCommand().execute(request, response);
     }

@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface ContactDao extends Dao<Contact> {
     Contact updateContact(Contact entity) throws AppException;
+
     List<Contact> findAll() throws AppException;
+
+    Contact save(Contact entity) throws AppException;
 }

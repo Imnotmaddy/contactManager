@@ -10,6 +10,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Contact extends Entity {
     private List<PhoneNumber> phoneNumbers = new ArrayList<>();
     @NonNull private String email;

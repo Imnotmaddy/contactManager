@@ -11,11 +11,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneDao {
 
@@ -36,12 +34,12 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
             "`operatorCode`, `contactId`)" +
             "VALUES (?, ?, ?, ?, ?, ?)";
     private static final String SQL_DELETE_PHONE_NUMBER = "DELETE FROM " + PHONENUMBERS + " WHERE `id` = ?";
-    private static final String SQL_DELETE_PHONE_NUMBER_BY_CONTACT_ID = "DELETE FROM " + PHONENUMBERS + " WHERE `contactId` = ?";
-    private static final String SQL_FIND_ALL = "SELECT *  FROM" + PHONENUMBERS;
     private static final String SQL_FIND_BY_ID = "SELECT * FROM" + PHONENUMBERS + " WHERE  `id` = ?";
     private static final String SQL_FIND_ALL_BY_CONTACT_ID = "SELECT *  FROM" + PHONENUMBERS + "WHERE `contactId` = ? ";
     private static final String SQL_UPDATE_PHONE_NUMBER = "UPDATE" + PHONENUMBERS + " SET `phoneNumber` = ?, `phoneType` = ?," +
             "`commentary` = ?, `countryCode` =?,`operatorCode` = ?, `contactId` = ? WHERE `id` = ?";
+    private static final String SQL_DELETE_PHONE_NUMBERS_BY_CONTACT_IDS = "DELETE FROM " + PHONENUMBERS + " WHERE `contactId` in (%s)";
+    private static final String SQL_DELETE_PHONE_NUMBERS_BY_IDS = "DELETE FROM " + PHONENUMBERS + " WHERE `id` in (%s)";
 
     static {
         fields = new HashMap<>();
@@ -58,24 +56,12 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
     }
 
     @Override
-    public PhoneNumber save(PhoneNumber entity) throws AppException {
-        if (entity == null) {
+    public List<PhoneNumber> saveAll(List<PhoneNumber> phoneNumbers) throws AppException {
+        if (phoneNumbers == null) {
             throw new IllegalArgumentException("Can not save null entity!");
         }
-        Connection connection = ConnectionPool.getInstance().getConnection();
-        try {
-            return super.persist(entity, SQL_INSERT_PHONE_NUMBER, connection, fields);
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new AppException("Error during phone number save");
-        } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
-        }
-    }
-
-    @Override
-    public List<PhoneNumber> saveAll(List<PhoneNumber> phoneNumbers) throws AppException {
         if (phoneNumbers.isEmpty()) return phoneNumbers;
+
         Connection connection = ConnectionPool.getInstance().getConnection();
         try {
             connection.setAutoCommit(false);
@@ -85,9 +71,13 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
             connection.commit();
             return phoneNumbers;
         } catch (SQLException ex) {
-            rollbackConnection(connection);
             LOGGER.error(ex);
-            throw new AppException("Error during phone number save");
+            try {
+                rollbackConnection(connection);
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
+            throw new AppException("Error occurred while saving your phone numbers. Please try again or call our administrator");
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -95,6 +85,7 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
 
     @Override
     public PhoneNumber findById(Integer id) {
+        //TODO: consider deleting this method
         Connection connection = ConnectionPool.getInstance().getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_ID)) {
             statement.setInt(1, id);
@@ -112,7 +103,7 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
         }
     }
 
-    public List<PhoneNumber> findAllByContactId(Integer contactId) {
+    List<PhoneNumber> findAllByContactId(Integer contactId) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL_BY_CONTACT_ID)) {
             statement.setInt(1, contactId);
@@ -122,74 +113,58 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
                 numbers.add(buildPhoneNumber(resultSet));
             }
             return numbers;
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            return new ArrayList<>();
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 
     private PhoneNumber buildPhoneNumber(ResultSet resultSet) throws SQLException {
-        PhoneNumber number = new PhoneNumber();
+        PhoneNumber number = PhoneNumber.builder()
+                .phoneNumber(resultSet.getString("phoneNumber"))
+                .countryCode(resultSet.getString("countryCode"))
+                .operatorCode(resultSet.getString("operatorCode"))
+                .commentary(resultSet.getString("commentary"))
+                .phoneType(resultSet.getString("phoneType"))
+                .contactId(Integer.valueOf(resultSet.getString("contactId")))
+                .build();
         number.setId(Integer.valueOf(resultSet.getString("id")));
-        number.setCommentary(resultSet.getString("commentary"));
-        number.setCountryCode(resultSet.getString("countryCode"));
-        number.setPhoneNumber(resultSet.getString("phoneNumber"));
-        number.setPhoneType(resultSet.getString("phoneType"));
-        number.setOperatorCode(resultSet.getString("operatorCode"));
-        number.setContactId(Integer.valueOf(resultSet.getString("contactId")));
         return number;
     }
 
-    @Override
-    public void delete(PhoneNumber entity) {
-        Connection connection = ConnectionPool.getInstance().getConnection();
-        try {
-            super.delete(entity.getId(), SQL_DELETE_PHONE_NUMBER, connection);
-        } catch (SQLException e) {
-            LOGGER.error(e);
-        } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
-        }
+    void deleteByContactIds(Connection connection, Set<Integer> contactIds) throws SQLException {
+        String str = contactIds.stream().map(Object::toString).collect(Collectors.joining(", "));
+        String query = String.format(SQL_DELETE_PHONE_NUMBERS_BY_CONTACT_IDS, str);
+        connection.prepareStatement(query).executeUpdate();
     }
 
-    void deleteAllByContactId(Connection connection, Integer contactId) throws AppException {
-        try {
-            super.delete(contactId, SQL_DELETE_PHONE_NUMBER_BY_CONTACT_ID, connection);
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new AppException("Error during deleting phones");
-        }
-    }
-
-    public void deleteAllById(List<Integer> ids) {
-        if (ids.isEmpty()) {
+    public void deleteAllById(List<Integer> ids) throws AppException {
+        if (ids == null || ids.isEmpty()) {
             return;
         }
         Connection connection = ConnectionPool.getInstance().getConnection();
-        try {
-            //todo: delete where id in (1, 2,3)
-            for (int i = 0; i < ids.size(); i++) {
-                super.delete(ids.get(i), SQL_DELETE_PHONE_NUMBER, connection);
-            }
+        String idArray = ids.stream().map(Object::toString).collect(Collectors.joining(", "));
+        String query = String.format(SQL_DELETE_PHONE_NUMBERS_BY_IDS, idArray);
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.executeUpdate();
         } catch (SQLException ex) {
             LOGGER.error(ex);
+            throw new AppException("An error occurred while deleting phone numbers. Please, try again in a moment or call our administrator");
         }
     }
 
-    // todo: rename or remove 'byContactId' part
-    List<PhoneNumber> updatePhoneNumbersByContactId(List<PhoneNumber> phoneNumbers, Connection connection) throws AppException {
+    List<PhoneNumber> updatePhoneNumbers(List<PhoneNumber> phoneNumbers, Connection connection) throws SQLException {
         List<PhoneNumber> numbers = new ArrayList<>();
-        if (phoneNumbers.isEmpty()) return numbers;
-        try {
-            for (PhoneNumber number : phoneNumbers) {
+        if (phoneNumbers == null || phoneNumbers.isEmpty()) {
+            throw new IllegalArgumentException("cannot update empty entities");
+        }
+
+        for (PhoneNumber number : phoneNumbers) {
+            if (number.getId() != null) {
+                numbers.add(super.persist(number, SQL_UPDATE_PHONE_NUMBER, connection, fields));
+            } else {
                 numbers.add(super.persist(number, SQL_INSERT_PHONE_NUMBER, connection, fields));
             }
-            return numbers;
-        } catch (SQLException ex) {
-            LOGGER.error(ex);
-            throw new AppException("Error during Update PhoneNUmbers");
         }
+        return numbers;
     }
 }

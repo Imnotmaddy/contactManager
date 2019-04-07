@@ -1,6 +1,5 @@
 package app.sql.dao.mysql;
 
-import app.exception.AppException;
 import app.models.Entity;
 
 import java.sql.*;
@@ -28,18 +27,14 @@ abstract class AbstractDaoImpl<T extends Entity> {
         }
     }
 
-    void delete(Integer id, String sql, Connection connection) throws SQLException {
+    void deleteById(Integer id, String sql, Connection connection) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setInt(1, id);
         statement.executeUpdate();
     }
 
-    void rollbackConnection(Connection connection) throws AppException {
-        try {
-            connection.rollback();
-        } catch (SQLException e) {
-            throw new AppException("Error during rollback");
-        }
+    void rollbackConnection(Connection connection) throws SQLException {
+        connection.rollback();
     }
 
 }

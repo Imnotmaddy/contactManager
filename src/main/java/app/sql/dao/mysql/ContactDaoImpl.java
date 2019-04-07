@@ -7,12 +7,13 @@ import app.sql.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactDao {
     private static final Logger LOGGER = LogManager.getLogger(ContactDaoImpl.class);
@@ -24,20 +25,21 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         private static final ContactDaoImpl INSTANCE = new ContactDaoImpl();
     }
 
-    private static final String CONTACTS = "`contacts`";
     private static final Map<Integer, Function<Contact, Object>> fields;
+    private static final String CONTACTS = "`contacts`";
     private static final String SQL_INSERT_CONTACT = "INSERT INTO " + CONTACTS + "  (`email`, `name`,`surname`, `familyName`, " +
             "`dateOfBirth`, `sex`, `citizenship`, `relationShip`, `webSite`, `currentJob`, " +
             "`jobAddress`, `residenceCountry`, `residenceCity`, `residenceStreet`, " +
             "`residenceHouseNumber`, `residenceApartmentNumber`, `index`)" +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+    private static final String SQL_DELETE_CONTACTS_BY_IDS = "DELETE FROM " + CONTACTS + " WHERE `id` in (%s)";
+
     private static final String SQL_UPDATE_CONTACT = "UPDATE " + CONTACTS + " SET `email` = ?, `name` = ?, `surname` = ?, " +
             "`familyName` = ?, `dateOfBirth` = ?, `sex` = ?, `citizenship` = ?, `relationShip` = ?, `webSite` = ?, `currentJob` = ?, " +
             "jobAddress = ?, residenceCountry = ?, residenceCity = ?, residenceStreet = ?, " +
             "`residenceHouseNumber` = ?, `residenceApartmentNumber` = ?, `index` = ? WHERE `id` = ?";
 
-    private static final String SQL_DELETE_CONTACT = "DELETE FROM " + CONTACTS + " WHERE `id` = ?";
     private static final String SQL_FIND_ALL = "SELECT * FROM " + CONTACTS;
     private static final String SQL_FIND_BY_ID = "SELECT * FROM " + CONTACTS + " WHERE `id` = ? ";
 
@@ -76,14 +78,14 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
             return super.persist(entity, SQL_INSERT_CONTACT, connection, fields);
         } catch (SQLException e) {
             LOGGER.error(e);
-            throw new AppException("An error occurred during contact saving");
+            throw new AppException("An error occurred during contact saving. Please, try submitting your data again.");
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 
     @Override
-    public List<Contact> findAll() {
+    public List<Contact> findAll() throws AppException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL)) {
             ResultSet resultSet = statement.executeQuery();
@@ -94,8 +96,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
             return contacts;
         } catch (SQLException e) {
             LOGGER.error(e);
-            // todo: throw app exception
-            return new ArrayList<>();
+            throw new AppException("Error occurred during while loading contacts. Please, try again in a minute or call our administrator");
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -103,6 +104,9 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
 
     @Override
     public Contact findById(Integer id) throws AppException {
+        if (id == null) {
+            throw new IllegalArgumentException("Cannot find null entity!");
+        }
         Connection connection = ConnectionPool.getInstance().getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_ID)) {
             statement.setInt(1, id);
@@ -110,27 +114,34 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
             if (resultSet.next()) {
                 return buildContact(resultSet);
             } else {
-                throw new AppException("Contact with id =" + id + " not found");
+                throw new AppException("Contact with id =" + id + " not found. Please, try again or call our administrator");
             }
         } catch (SQLException e) {
             LOGGER.error(e);
-            return null;
+            throw new AppException("An error occurred while getting the contact. Please, try again or call our administrator");
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 
-    public void delete(Contact entity) throws AppException {
+    public void deleteAllByIds(Set<Integer> ids) throws AppException {
+        if (ids == null || ids.isEmpty()) return;
         Connection connection = ConnectionPool.getInstance().getConnection();
-        try {
+        String str = ids.stream().map(Object::toString).collect(Collectors.joining(", "));
+        String query = String.format(SQL_DELETE_CONTACTS_BY_IDS, str);
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             connection.setAutoCommit(false);
-            PhoneDaoImpl.getInstance().deleteAllByContactId(connection, entity.getId());
-            super.delete(entity.getId(), SQL_DELETE_CONTACT, connection);
+            PhoneDaoImpl.getInstance().deleteByContactIds(connection, ids);
+            statement.executeUpdate();
             connection.commit();
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            rollbackConnection(connection);
-            throw new AppException("Error during contact delete");
+        } catch (SQLException ex) {
+            LOGGER.error(ex);
+            try {
+                rollbackConnection(connection);
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
+            throw new AppException("Error occurred during deleting contacts. Please try again in a moment");
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -146,36 +157,41 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         try {
             connection.setAutoCommit(false);
             Contact contact = super.persist(entity, SQL_UPDATE_CONTACT, connection, fields);
-            contact.setPhoneNumbers(PhoneDaoImpl.getInstance().updatePhoneNumbersByContactId(contact.getPhoneNumbers(), connection));
+            contact.setPhoneNumbers(PhoneDaoImpl.getInstance().updatePhoneNumbers(contact.getPhoneNumbers(), connection));
             connection.commit();
             return contact;
         } catch (SQLException e) {
             LOGGER.error(e);
-            rollbackConnection(connection);
-            throw new AppException("An error occurred during contact update");
+            try {
+                rollbackConnection(connection);
+            } catch (SQLException ex) {
+                LOGGER.error(ex);
+            }
+            throw new AppException("An error occurred during contact update. Please try again later or call our administrator");
         }
     }
 
     private Contact buildContact(ResultSet resultSet) throws SQLException {
-        Contact contact = new Contact();
+        Contact contact = Contact.builder()
+                .email(resultSet.getString("email"))
+                .name(resultSet.getString("name"))
+                .surname(resultSet.getString("surname"))
+                .familyName(resultSet.getString("familyName"))
+                .dateOfBirth(resultSet.getDate("dateOfBirth"))
+                .sex(resultSet.getString("sex"))
+                .citizenship(resultSet.getString("citizenship"))
+                .relationship(resultSet.getString("relationship"))
+                .webSite(resultSet.getString("webSite"))
+                .currentJob(resultSet.getString("currentJob"))
+                .jobAddress(resultSet.getString("jobAddress"))
+                .residenceCountry(resultSet.getString("residenceCountry"))
+                .residenceCity(resultSet.getString("residenceCity"))
+                .residenceStreet(resultSet.getString("residenceStreet"))
+                .residenceHouseNumber(resultSet.getString("residenceHouseNumber"))
+                .residenceApartmentNumber(resultSet.getString("residenceApartmentNumber"))
+                .index(resultSet.getString("index"))
+                .build();
         contact.setId(resultSet.getInt("id"));
-        contact.setEmail(resultSet.getString("email"));
-        contact.setName(resultSet.getString("name"));
-        contact.setSurname(resultSet.getString("surname"));
-        contact.setFamilyName(resultSet.getString("familyName"));
-        contact.setDateOfBirth(resultSet.getDate("dateOfBirth"));
-        contact.setSex(resultSet.getString("sex"));
-        contact.setCitizenship(resultSet.getString("citizenship"));
-        contact.setRelationship(resultSet.getString("relationship"));
-        contact.setWebSite(resultSet.getString("webSite"));
-        contact.setCurrentJob(resultSet.getString("currentJob"));
-        contact.setJobAddress(resultSet.getString("jobAddress"));
-        contact.setResidenceCountry(resultSet.getString("residenceCountry"));
-        contact.setResidenceCity(resultSet.getString("residenceCity"));
-        contact.setResidenceStreet(resultSet.getString("residenceStreet"));
-        contact.setResidenceHouseNumber(resultSet.getString("residenceHouseNumber"));
-        contact.setResidenceApartmentNumber(resultSet.getString("residenceApartmentNumber"));
-        contact.setIndex(resultSet.getString("index"));
         contact.setPhoneNumbers(PhoneDaoImpl.getInstance().findAllByContactId(contact.getId()));
         return contact;
     }

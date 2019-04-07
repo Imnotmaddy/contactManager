@@ -33,11 +33,6 @@ public enum CommandEnum {
         {
             this.command = new UpdateContactCommand();
         }
-    },
-    ADDPHONENUMBER {
-        {
-            this.command = new AddPhoneNumberCommand();
-        }
     };
 
 
