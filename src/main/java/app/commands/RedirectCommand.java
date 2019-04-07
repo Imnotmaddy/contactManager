@@ -4,8 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class RedirectCommand implements ActionCommand {
-    private final String NEWCONTACT = "/views/addContact.jsp";
-    private final String PHONENUMBERLIST = "/views/phoneNumberList.jsp";
+    private final static String NEW_CONTACT = "/views/addContact.jsp";
+    private final static String PHONE_NUMBER_LIST = "/views/phoneNumberList.jsp";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
@@ -13,15 +13,15 @@ public class RedirectCommand implements ActionCommand {
         switch (toPage) {
             case "addContact": {
                 request.setAttribute("command", "addContact");
-                return NEWCONTACT;
+                return NEW_CONTACT;
             }
             case "contactList": {
                 return new ShowAllContactsCommand().execute(request, response);
             }
             case "phoneNumberList": {
-                return PHONENUMBERLIST;
+                return PHONE_NUMBER_LIST;
             }
         }
-        return NEWCONTACT;
+        return NEW_CONTACT;
     }
 }

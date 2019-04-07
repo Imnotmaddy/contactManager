@@ -9,30 +9,16 @@ import java.util.function.Function;
 
 abstract class AbstractDaoImpl<T extends Entity> {
 
-    T save(T entity, String sql, Connection connection, Map<Integer, Function<T, Object>> fields) throws SQLException {
+    T persist(T entity, String sql, Connection connection, Map<Integer, Function<T, Object>> fields) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             for (Map.Entry<Integer, Function<T, Object>> entry : fields.entrySet()) {
                 Integer field = entry.getKey();
                 Function<T, Object> value = entry.getValue();
                 statement.setObject(field, value.apply(entity));
             }
-            statement.executeUpdate();
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                entity.setId(resultSet.getInt(1));
+            if (entity.getId() != null) {
+                statement.setObject(fields.size() + 1, entity.getId());
             }
-            return entity;
-        }
-    }
-
-    T update(T entity, String sql, Connection connection, Map<Integer, Function<T, Object>> fields) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            for (Map.Entry<Integer, Function<T, Object>> entry : fields.entrySet()) {
-                Integer field = entry.getKey();
-                Function<T, Object> value = entry.getValue();
-                statement.setObject(field, value.apply(entity));
-            }
-            statement.setObject(fields.size() + 1, entity.getId());
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {

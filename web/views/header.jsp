@@ -16,8 +16,8 @@
 <body>
 <div class="navbar">
     <a onclick="headerModule.toContactList()"><i class="fa fa-fw fa-bars"></i> Contact List</a>
-    <a onclick="headerModule.toPhoneNumbersList()"><i class="fa fa-fw fa-address-book"></i> Phone Numbers</a>
     <a onclick="headerModule.toCreateContact()"><i class="fa fa-fw fa-user"></i> Add Contact</a>
+    <a onclick=""><i class="fa fa-fw fa-envelope"></i> Send Email</a>
     <a href="#"><i class="fa fa-fw fa-search"></i> Search</a>
 </div>
 <script type="text/javascript" src="../js/header.js?date=01.04.2019"></script>

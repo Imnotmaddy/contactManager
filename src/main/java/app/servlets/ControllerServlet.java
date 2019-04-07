@@ -4,8 +4,6 @@ import app.commands.ActionCommand;
 import app.commands.factory.ActionFactory;
 import app.sql.pool.ConnectionPool;
 import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +14,6 @@ import java.io.IOException;
 
 @WebServlet("/contactManager")
 public class ControllerServlet extends HttpServlet {
-    private static final Logger LOGGER = LogManager.getLogger(ControllerServlet.class);
 
     @Override
     public void destroy() {
@@ -45,3 +42,4 @@ public class ControllerServlet extends HttpServlet {
     }
 
 }
+

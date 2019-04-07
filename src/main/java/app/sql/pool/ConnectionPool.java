@@ -30,12 +30,14 @@ final public class ConnectionPool {
     }
 
     private ConnectionPool() {
+        // todo: make it singleton
+        dbInitializer = new DbInitializer();
+        freeConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_INITIAL_CAPACITY());
+        usedConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_MAX_CAPACITY());
         try {
-            dbInitializer = new DbInitializer();
-            freeConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_INITIAL_CAPACITY());
-            usedConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_MAX_CAPACITY());
             Class.forName(dbInitializer.getDB_DRIVER());
         } catch (ClassNotFoundException e) {
+            //todo: change to logger
             e.printStackTrace();
         }
         init();
@@ -119,7 +121,7 @@ final public class ConnectionPool {
         }
     }
 
-    public void destroy(){
+    public void destroy() {
         for (Connection connection : freeConnections) {
             try {
                 connection.close();

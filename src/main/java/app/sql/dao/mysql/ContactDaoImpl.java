@@ -37,9 +37,9 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
             "jobAddress = ?, residenceCountry = ?, residenceCity = ?, residenceStreet = ?, " +
             "`residenceHouseNumber` = ?, `residenceApartmentNumber` = ?, `index` = ? WHERE `id` = ?";
 
-    private static final String SQL_DELETE_CONTACT = "DELETE FROM " + CONTACTS + "WHERE `id` = ?";
-    private static final String SQL_FIND_ALL = "SELECT *  FROM" + CONTACTS;
-    private static final String SQL_FIND_BY_ID = "SELECT *  FROM" + CONTACTS + "WHERE `id` = ? ";
+    private static final String SQL_DELETE_CONTACT = "DELETE FROM " + CONTACTS + " WHERE `id` = ?";
+    private static final String SQL_FIND_ALL = "SELECT * FROM " + CONTACTS;
+    private static final String SQL_FIND_BY_ID = "SELECT * FROM " + CONTACTS + " WHERE `id` = ? ";
 
     static {
         fields = new HashMap<>();
@@ -73,7 +73,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         }
         Connection connection = ConnectionPool.getInstance().getConnection();
         try {
-            return super.save(entity, SQL_INSERT_CONTACT, connection, fields);
+            return super.persist(entity, SQL_INSERT_CONTACT, connection, fields);
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new AppException("An error occurred during contact saving");
@@ -94,6 +94,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
             return contacts;
         } catch (SQLException e) {
             LOGGER.error(e);
+            // todo: throw app exception
             return new ArrayList<>();
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
@@ -101,16 +102,16 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
     }
 
     @Override
-    public Contact findById(Integer id) {
+    public Contact findById(Integer id) throws AppException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_ID)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
-            Contact contact = null;
             if (resultSet.next()) {
-                contact = buildContact(resultSet);
+                return buildContact(resultSet);
+            } else {
+                throw new AppException("Contact with id =" + id + " not found");
             }
-            return contact;
         } catch (SQLException e) {
             LOGGER.error(e);
             return null;
@@ -123,7 +124,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         Connection connection = ConnectionPool.getInstance().getConnection();
         try {
             connection.setAutoCommit(false);
-            PhoneDaoImpl.getInstance().deleteAllbyContactId(entity.getPhoneNumbers(), connection, entity.getId());
+            PhoneDaoImpl.getInstance().deleteAllByContactId(connection, entity.getId());
             super.delete(entity.getId(), SQL_DELETE_CONTACT, connection);
             connection.commit();
         } catch (SQLException e) {
@@ -144,7 +145,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         Connection connection = ConnectionPool.getInstance().getConnection();
         try {
             connection.setAutoCommit(false);
-            Contact contact = super.update(entity, SQL_UPDATE_CONTACT, connection, fields);
+            Contact contact = super.persist(entity, SQL_UPDATE_CONTACT, connection, fields);
             contact.setPhoneNumbers(PhoneDaoImpl.getInstance().updatePhoneNumbersByContactId(contact.getPhoneNumbers(), connection));
             connection.commit();
             return contact;

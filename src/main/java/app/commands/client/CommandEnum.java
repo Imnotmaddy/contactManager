@@ -38,11 +38,6 @@ public enum CommandEnum {
         {
             this.command = new AddPhoneNumberCommand();
         }
-    },
-    DELETEPHONENUMBERS {
-        {
-            this.command = new DeletePhoneNumbersCommand();
-        }
     };
 
 

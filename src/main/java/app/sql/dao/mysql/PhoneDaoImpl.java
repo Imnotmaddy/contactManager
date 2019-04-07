@@ -64,7 +64,7 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
         }
         Connection connection = ConnectionPool.getInstance().getConnection();
         try {
-            return super.save(entity, SQL_INSERT_PHONE_NUMBER, connection, fields);
+            return super.persist(entity, SQL_INSERT_PHONE_NUMBER, connection, fields);
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new AppException("Error during phone number save");
@@ -80,7 +80,7 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
         try {
             connection.setAutoCommit(false);
             for (PhoneNumber phoneNumber : phoneNumbers) {
-                super.save(phoneNumber, SQL_INSERT_PHONE_NUMBER, connection, fields);
+                super.persist(phoneNumber, SQL_INSERT_PHONE_NUMBER, connection, fields);
             }
             connection.commit();
             return phoneNumbers;
@@ -88,24 +88,6 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
             rollbackConnection(connection);
             LOGGER.error(ex);
             throw new AppException("Error during phone number save");
-        } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
-        }
-    }
-
-    @Override
-    public List<PhoneNumber> findAll() {
-        Connection connection = ConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL)) {
-            ResultSet resultSet = statement.executeQuery();
-            List<PhoneNumber> phoneNumbers = new ArrayList<>();
-            while (resultSet.next()) {
-                phoneNumbers.add(buildPhoneNumber(resultSet));
-            }
-            return phoneNumbers;
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            return new ArrayList<>();
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -172,11 +154,9 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
         }
     }
 
-    void deleteAllbyContactId(List<PhoneNumber> phoneNumbers, Connection connection, Integer contactId) throws AppException {
+    void deleteAllByContactId(Connection connection, Integer contactId) throws AppException {
         try {
-            for (int i = 0; i < phoneNumbers.size(); i++) {
-                super.delete(phoneNumbers.get(i).getContactId(), SQL_DELETE_PHONE_NUMBER_BY_CONTACT_ID, connection);
-            }
+            super.delete(contactId, SQL_DELETE_PHONE_NUMBER_BY_CONTACT_ID, connection);
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new AppException("Error during deleting phones");
@@ -189,6 +169,7 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
         }
         Connection connection = ConnectionPool.getInstance().getConnection();
         try {
+            //todo: delete where id in (1, 2,3)
             for (int i = 0; i < ids.size(); i++) {
                 super.delete(ids.get(i), SQL_DELETE_PHONE_NUMBER, connection);
             }
@@ -197,17 +178,13 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
         }
     }
 
+    // todo: rename or remove 'byContactId' part
     List<PhoneNumber> updatePhoneNumbersByContactId(List<PhoneNumber> phoneNumbers, Connection connection) throws AppException {
         List<PhoneNumber> numbers = new ArrayList<>();
         if (phoneNumbers.isEmpty()) return numbers;
         try {
-            for (int i = 0; i < phoneNumbers.size(); i++) {
-                PhoneNumber number = phoneNumbers.get(i);
-                if (number.getId() != null) {
-                    numbers.add(super.update(phoneNumbers.get(i), SQL_UPDATE_PHONE_NUMBER, connection, fields));
-                } else {
-                    numbers.add(super.save(number, SQL_INSERT_PHONE_NUMBER, connection, fields));
-                }
+            for (PhoneNumber number : phoneNumbers) {
+                numbers.add(super.persist(number, SQL_INSERT_PHONE_NUMBER, connection, fields));
             }
             return numbers;
         } catch (SQLException ex) {

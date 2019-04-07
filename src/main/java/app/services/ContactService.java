@@ -11,9 +11,10 @@ import java.util.Date;
 import java.util.List;
 
 public class ContactService {
+    //TODO: move to phone service
     public static List<PhoneNumber> getNewNumbers(HttpServletRequest request, Integer contactId) {
         List<PhoneNumber> numbers = new ArrayList<>();
-        String[] existingPhonesId = request.getParameterMap().get("phoneId");
+        String[] ids = request.getParameterMap().get("phoneId");
         String[] phones = request.getParameterMap().get("phoneNumber");
         String[] countryCodes = request.getParameterMap().get("countryCode");
         String[] operatorCodes = request.getParameterMap().get("operatorCode");
@@ -21,11 +22,20 @@ public class ContactService {
         String[] phoneTypes = request.getParameterMap().get("phoneType");
         if (phones == null) return numbers;
         for (int i = 0; i < phones.length; i++) {
-            numbers.add(buildNumber(phones[i], countryCodes[i], operatorCodes[i], commentaries[i], phoneTypes[i], contactId));
+            numbers.add(
+                    PhoneNumber.builder()
+                            .phoneNumber(phones[i])
+                            .phoneType(phoneTypes[i])
+                            .commentary(commentaries[i])
+                            .contactId(contactId)
+                            .countryCode(countryCodes[i])
+                            .operatorCode(operatorCodes[i])
+                            .build()
+            );
         }
-        if (existingPhonesId != null) {
-            for (int i = 0; i < existingPhonesId.length; i++) {
-                numbers.get(i).setId(Integer.valueOf(existingPhonesId[i]));
+        if (ids != null) {
+            for (int i = 0; i < ids.length; i++) {
+                numbers.get(i).setId(Integer.valueOf(ids[i]));
             }
         }
         return numbers;
@@ -33,16 +43,12 @@ public class ContactService {
 
     public static List<Integer> getNumbersForDelete(HttpServletRequest request) {
         String numbers = request.getParameter("numbersForDelete");
-        if (numbers == "") return new ArrayList<>();
+        if (numbers == null || numbers.isEmpty()) return new ArrayList<>();
         List<Integer> ids = new ArrayList<>();
         for (String el : numbers.split(",")) {
             ids.add(Integer.valueOf(el));
         }
         return ids;
-    }
-
-    static PhoneNumber buildNumber(String phoneNumber, String countryCode, String operatorCode, String commentary, String phoneType, Integer contactId) {
-        return new PhoneNumber(phoneNumber, phoneType, commentary, contactId, countryCode, operatorCode);
     }
 
     public static Contact getParameters(HttpServletRequest request) {
