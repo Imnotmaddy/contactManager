@@ -7,10 +7,7 @@ import app.sql.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -76,6 +73,9 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         Connection connection = ConnectionPool.getInstance().getConnection();
         try {
             return super.persist(entity, SQL_INSERT_CONTACT, connection, fields);
+        } catch (SQLIntegrityConstraintViolationException ex) {
+            LOGGER.error(ex);
+            throw new AppException("Email that you submitted is already in use. Try another one");
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new AppException("An error occurred during contact saving. Please, try submitting your data again.");
@@ -168,6 +168,8 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
                 LOGGER.error(ex);
             }
             throw new AppException("An error occurred during contact update. Please try again later or call our administrator");
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 

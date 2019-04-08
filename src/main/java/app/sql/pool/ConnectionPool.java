@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 final public class ConnectionPool {
     private static Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
 
-    private DbInitializer dbInitializer;
+    private DbInitializer dbInitializer = DbInitializer.getInstance();
 
     private ArrayBlockingQueue<Connection> freeConnections;
     private ArrayBlockingQueue<Connection> usedConnections;
@@ -31,7 +31,6 @@ final public class ConnectionPool {
 
     private ConnectionPool() {
         // todo: make it singleton
-        dbInitializer = new DbInitializer();
         freeConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_INITIAL_CAPACITY());
         usedConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_MAX_CAPACITY());
         try {

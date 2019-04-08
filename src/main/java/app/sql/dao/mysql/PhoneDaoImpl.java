@@ -7,10 +7,7 @@ import app.sql.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -70,6 +67,14 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
             }
             connection.commit();
             return phoneNumbers;
+        } catch (SQLIntegrityConstraintViolationException exception) {
+            LOGGER.error(exception);
+            try {
+                rollbackConnection(connection);
+            } catch (SQLException e) {
+                LOGGER.error(e);
+            }
+            throw new AppException("One of your phone numbers is already in use. Please try again or call our administrator");
         } catch (SQLException ex) {
             LOGGER.error(ex);
             try {
@@ -154,7 +159,7 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
 
     List<PhoneNumber> updatePhoneNumbers(List<PhoneNumber> phoneNumbers, Connection connection) throws SQLException {
         List<PhoneNumber> numbers = new ArrayList<>();
-        if (phoneNumbers == null || phoneNumbers.isEmpty()) {
+        if (phoneNumbers == null) {
             throw new IllegalArgumentException("cannot update empty entities");
         }
 
