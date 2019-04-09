@@ -34,9 +34,14 @@ public enum CommandEnum {
             this.command = new UpdateContactCommand();
         }
     },
+    SHOWSENDEMAILS {
+        {
+            this.command = new ShowEmailPageCommand();
+        }
+    },
     SENDEMAILS {
         {
-            this.command = new SendEmailsCommand();
+            this.command = new SendEmailCommand();
         }
     };
 

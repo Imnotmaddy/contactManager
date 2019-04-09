@@ -30,14 +30,12 @@ final public class ConnectionPool {
     }
 
     private ConnectionPool() {
-        // todo: make it singleton
         freeConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_INITIAL_CAPACITY());
         usedConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_MAX_CAPACITY());
         try {
             Class.forName(dbInitializer.getDB_DRIVER());
         } catch (ClassNotFoundException e) {
-            //todo: change to logger
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         init();
     }

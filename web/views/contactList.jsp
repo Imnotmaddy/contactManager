@@ -19,7 +19,7 @@
 <jsp:include page="header.jsp"/>
 <div class="container">
     <form action="/contactManager?command=deleteContacts" method="post" id="contactForm" role="form">
-        <table class="table table-striped">
+        <table class="table table-striped" id="allContactsTable">
             <thead>
             <tr>
                 <td></td>
@@ -49,5 +49,6 @@
         </div>
     </form>
 </div>
+<script type="text/javascript" src="../js/contactList.js"></script>
 </body>
 </html>

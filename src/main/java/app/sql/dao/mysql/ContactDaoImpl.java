@@ -31,6 +31,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SQL_DELETE_CONTACTS_BY_IDS = "DELETE FROM " + CONTACTS + " WHERE `id` in (%s)";
+    private static final String SQL_FIND_CONTACTS_BY_IDS = "SELECT * FROM " + CONTACTS + " WHERE `id` in (%s)";
 
     private static final String SQL_UPDATE_CONTACT = "UPDATE " + CONTACTS + " SET `email` = ?, `name` = ?, `surname` = ?, " +
             "`familyName` = ?, `dateOfBirth` = ?, `sex` = ?, `citizenship` = ?, `relationShip` = ?, `webSite` = ?, `currentJob` = ?, " +
@@ -79,6 +80,25 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new AppException("An error occurred during contact saving. Please, try submitting your data again.");
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
+    }
+
+    public List<Contact> findAllByIds(Set<Integer> ids) throws AppException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        String str = ids.stream().map(Object::toString).collect(Collectors.joining(", "));
+        String query = String.format(SQL_FIND_CONTACTS_BY_IDS, str);
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            ResultSet resultSet = statement.executeQuery();
+            List<Contact> contacts = new ArrayList<>();
+            while (resultSet.next()) {
+                contacts.add(buildContact(resultSet));
+            }
+            return contacts;
+        } catch (SQLException ex) {
+            LOGGER.error(ex);
+            throw new AppException("Could not get selected contacts info, try again later.");
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }

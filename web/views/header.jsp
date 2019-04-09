@@ -18,7 +18,7 @@
 <div class="navbar">
     <a onclick="headerModule.toContactList()"><i class="fa fa-fw fa-bars"></i> Contact List</a>
     <a onclick="headerModule.toCreateContact()"><i class="fa fa-fw fa-user"></i> Add Contact</a>
-    <a onclick="headerModule.toEmails()"><i class="fa fa-fw fa-envelope"></i> Send Email</a>
+    <a onclick="gatherEmails()" id="emailButton"><i class="fa fa-fw fa-envelope"></i> Send Email</a>
     <a href="#"><i class="fa fa-fw fa-search"></i> Search</a>
 </div>
 

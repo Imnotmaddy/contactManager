@@ -16,7 +16,7 @@ public class MailService {
     private final static String PASSWORD = "Goddamm1t";
     private final static String PORT = "465";
 
-    public static void sendEmail(Set<String> recipients, String message, String subject, String emailFrom) throws AppException {
+    public static void sendEmail(Set<String> recipients, String message, String subject) throws AppException {
         Properties props = new Properties();
         props.put("mail.smtp.host", HOST);
         props.put("mail.smtp.starttls.enable", "true");
@@ -27,6 +27,7 @@ public class MailService {
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.socketFactory.fallback", "false");
         session.setDebug(true);
+        msg.setFrom(new InternetAddress(emailFrom));
 */
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
@@ -38,7 +39,6 @@ public class MailService {
                 });
         MimeMessage msg = new MimeMessage(session);
         try {
-            msg.setFrom(new InternetAddress(emailFrom));
             for (String recipient : recipients) {
                 msg.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             }
