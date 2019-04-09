@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RedirectCommand implements ActionCommand {
     private final static String NEW_CONTACT = "/views/addContact.jsp";
-    private final static String PHONE_NUMBER_LIST = "/views/phoneNumberList.jsp";
+    private final static String EMAIL_PAGE = "/views/emails.jsp";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
@@ -18,8 +18,8 @@ public class RedirectCommand implements ActionCommand {
             case "contactList": {
                 return new ShowAllContactsCommand().execute(request, response);
             }
-            case "phoneNumberList": {
-                return PHONE_NUMBER_LIST;
+            case "sendEmail": {
+                return EMAIL_PAGE;
             }
         }
         return NEW_CONTACT;

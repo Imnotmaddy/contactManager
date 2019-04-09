@@ -33,6 +33,11 @@ public enum CommandEnum {
         {
             this.command = new UpdateContactCommand();
         }
+    },
+    SENDEMAILS {
+        {
+            this.command = new SendEmailsCommand();
+        }
     };
 
 

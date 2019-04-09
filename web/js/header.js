@@ -5,6 +5,9 @@ var headerModule = (function () {
         },
         toContactList: function () {
             window.location = "http://localhost:8080/contactManager?command=redirect&page=contactList";
+        },
+        toEmails: function () {
+            window.location = "http://localhost:8080/contactManager?command=redirect&page=sendEmail";
         }
     }
 }());
