@@ -88,6 +88,11 @@ function addNumber() {
         } else {
             alert("Phone exists");
         }
+        document.getElementById('countryCodeInput').value = "";
+        document.getElementById('operatorCodeInput').value = "";
+        document.getElementById('phoneNumberInput').value = "";
+        document.getElementById('phoneTypeInput').value = "";
+        document.getElementById('commentaryInput').value = "";
     }
 }
 
@@ -174,7 +179,7 @@ function submitAll() {
 
 }
 
-/*
+
 function editPhoneNumber(phone) {
     let countryCode = document.getElementById('countryCodeInput');
     let operatorCode = document.getElementById('operatorCodeInput');
@@ -184,13 +189,13 @@ function editPhoneNumber(phone) {
 
     let table = document.getElementById('phoneTable');
     for (let i = 1; i < table.rows.length; i++) {
-        if (table.rows[i].cells[1].innerText === phone){
-            countryCode.value = table.rows[i].cells[].value;
-            operatorCode.value = table.rows[i].cells[].value;
+        if (table.rows[i].cells[1].innerText === phone) {
+            countryCode.value = table.rows[i].cells[1].value;
+            operatorCode.value = table.rows[i].cells[1].value;
             phoneNumber.value = table.rows[i].cells[1].value;
             phoneType.value = table.rows[i].cells[2].value;
             commentary.value = table.rows[i].cells[3].value;
             break;
         }
     }
-}*/
+}

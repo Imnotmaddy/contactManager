@@ -27,8 +27,8 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
     private static final String SQL_INSERT_CONTACT = "INSERT INTO " + CONTACTS + "  (`email`, `name`,`surname`, `familyName`, " +
             "`dateOfBirth`, `sex`, `citizenship`, `relationShip`, `webSite`, `currentJob`, " +
             "`jobAddress`, `residenceCountry`, `residenceCity`, `residenceStreet`, " +
-            "`residenceHouseNumber`, `residenceApartmentNumber`, `index`)" +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "`residenceHouseNumber`, `residenceApartmentNumber`, `index`, `photo`)" +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SQL_DELETE_CONTACTS_BY_IDS = "DELETE FROM " + CONTACTS + " WHERE `id` in (%s)";
     private static final String SQL_FIND_CONTACTS_BY_IDS = "SELECT * FROM " + CONTACTS + " WHERE `id` in (%s)";
@@ -36,7 +36,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
     private static final String SQL_UPDATE_CONTACT = "UPDATE " + CONTACTS + " SET `email` = ?, `name` = ?, `surname` = ?, " +
             "`familyName` = ?, `dateOfBirth` = ?, `sex` = ?, `citizenship` = ?, `relationShip` = ?, `webSite` = ?, `currentJob` = ?, " +
             "jobAddress = ?, residenceCountry = ?, residenceCity = ?, residenceStreet = ?, " +
-            "`residenceHouseNumber` = ?, `residenceApartmentNumber` = ?, `index` = ? WHERE `id` = ?";
+            "`residenceHouseNumber` = ?, `residenceApartmentNumber` = ?, `index` = ?, `photo` = ? WHERE `id` = ?";
 
     private static final String SQL_FIND_ALL = "SELECT * FROM " + CONTACTS;
     private static final String SQL_FIND_BY_ID = "SELECT * FROM " + CONTACTS + " WHERE `id` = ? ";
@@ -60,6 +60,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         fields.put(15, Contact::getResidenceHouseNumber);
         fields.put(16, Contact::getResidenceApartmentNumber);
         fields.put(17, Contact::getIndex);
+        fields.put(18, Contact::getPhoto);
     }
 
     public static ContactDaoImpl getInstance() {
@@ -213,6 +214,8 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
                 .residenceApartmentNumber(resultSet.getString("residenceApartmentNumber"))
                 .index(resultSet.getString("index"))
                 .build();
+        Blob photoBlob = resultSet.getBlob("photo");
+        contact.setPhoto(photoBlob.getBytes(1, (int) photoBlob.length()));
         contact.setId(resultSet.getInt("id"));
         contact.setPhoneNumbers(PhoneDaoImpl.getInstance().findAllByContactId(contact.getId()));
         return contact;

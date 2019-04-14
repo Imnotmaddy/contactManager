@@ -13,9 +13,12 @@ import java.util.List;
 @Builder
 public class Contact extends Entity {
     private List<PhoneNumber> phoneNumbers = new ArrayList<>();
-    @NonNull private String email;
-    @NonNull private String name;
-    @NonNull private String surname;
+    @NonNull
+    private String email;
+    @NonNull
+    private String name;
+    @NonNull
+    private String surname;
     private String familyName;
     private Date dateOfBirth;
     private String sex;
@@ -30,4 +33,5 @@ public class Contact extends Entity {
     private String residenceHouseNumber;
     private String residenceApartmentNumber;
     private String index;
+    private byte[] photo;
 }

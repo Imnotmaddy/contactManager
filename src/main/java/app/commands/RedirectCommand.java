@@ -10,12 +10,16 @@ public class RedirectCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
         final String toPage = request.getParameter("page");
+        final String error = request.getParameter("error");
         switch (toPage) {
             case "addContact": {
                 request.setAttribute("command", "addContact");
                 return NEW_CONTACT;
             }
             case "contactList": {
+                if (error != null) {
+                    request.setAttribute("error", error);
+                }
                 return new ShowAllContactsCommand().execute(request, response);
             }
             case "sendEmail": {

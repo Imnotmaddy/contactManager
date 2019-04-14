@@ -11,19 +11,26 @@
 <head>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../css/collapse.css?version=02.04.19"/>
-    <link rel="stylesheet" type="text/css" href="../css/addContact.css?version=02.04.19"/>
+    <link rel="stylesheet" type="text/css" href="../css/addContact.css?version14.04.19"/>
     <link rel="stylesheet" type="text/css" href="../css/popup.css?version=03.04.19"/>
     <link rel="stylesheet" type="text/css" href="../css/myTable.css?version=02.04.19"/>
     <title>New Contact</title>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<form action="/contactManager?command=${command}&id=${contact.id}" method="post" role="form"
-      data-toggle="validator" id="contactForm">
+<form action="/contactManager?command=${command}&id=${contact.id}" method="post" id="contactForm" enctype="multipart/form-data">
     <div class="myRow">
         <div class="column">
             <h2>New Contact</h2>
             <div class="form-group">
+                <c:if test="${not empty photo}">
+                    <img src="data:image/jpeg;base64,${photo}"/>
+                </c:if>
+                <input type="hidden" value="${photo}" name="oldPhoto">
+                <label for="photo" class="control-label col-xs-2">Chosen photo:</label>
+                <input type="file" id="photo" name="photo" accept="image/*">
+                <br/>
+                <br/>
                 <label for="name" class="control-label col-xs-8">Name:</label>
                 <input type="text" id="name" name="name" class="form-control" value="${contact.name}" required />
 
@@ -126,6 +133,7 @@
                         <td>${phoneNumber.countryCode}${phoneNumber.countryCode}${phoneNumber.phoneNumber}</td>
                         <td>${phoneNumber.phoneType}</td>
                         <td>${phoneNumber.commentary}</td>
+
                     </tr>
                 </c:forEach>
             </table>
@@ -167,7 +175,7 @@
     </div>
 </div>
 <script type="text/javascript" src="../js/collapse.js?version=01.04.19"></script>
-<script type="text/javascript" src="../js/addContact.js?version=05.04.19"></script>
+<script type="text/javascript" src="../js/addContact.js?version=11.04.19"></script>
 <script type="text/javascript" src="../js/popup.js?version=02.04.19"></script>
 </body>
 </html>

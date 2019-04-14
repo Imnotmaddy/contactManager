@@ -16,19 +16,18 @@
 </head>
 <body>
 <div class="navbar">
-    <a onclick="headerModule.toContactList()"><i class="fa fa-fw fa-bars"></i> Contact List</a>
+    <a onclick="headerModule.toContactList(null)"><i class="fa fa-fw fa-bars"></i> Contact List</a>
     <a onclick="headerModule.toCreateContact()"><i class="fa fa-fw fa-user"></i> Add Contact</a>
-    <a onclick="gatherEmails()" id="emailButton"><i class="fa fa-fw fa-envelope"></i> Send Email</a>
+    <a onclick="headerModule.sendEmail();"><i class="fa fa-fw fa-envelope"></i> Send Email</a>
     <a href="#"><i class="fa fa-fw fa-search"></i> Search</a>
 </div>
 
 <c:if test="${not empty error}">
-<div class="alert">
-    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-    <strong>Error!</strong> ${error}
-</div>
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <strong>Error!</strong> ${error}
+    </div>
 </c:if>
-
 <script type="text/javascript" src="../js/header.js?date=09.04.2019"></script>
 </body>
 </html>

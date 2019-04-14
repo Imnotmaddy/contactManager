@@ -26,7 +26,7 @@ public enum CommandEnum {
     },
     EDITCONTACT {
         {
-            this.command = new EditContactCommand();
+            this.command = new ShowEditContactPageCommand();
         }
     },
     UPDATECONTACT {

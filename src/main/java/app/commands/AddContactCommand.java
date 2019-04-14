@@ -21,6 +21,7 @@ public class AddContactCommand implements ActionCommand {
             request.setAttribute("error", e.getMessage());
         } catch (Exception ex) {
             request.setAttribute("error", "Unknown error occurred");
+
         }
         return new ShowAllContactsCommand().execute(request, response);
     }

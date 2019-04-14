@@ -6,10 +6,12 @@ import app.services.ContactService;
 import app.services.PhoneService;
 import app.sql.dao.mysql.ContactDaoImpl;
 import app.sql.dao.mysql.PhoneDaoImpl;
+import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Log4j2
 public class UpdateContactCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
@@ -23,6 +25,7 @@ public class UpdateContactCommand implements ActionCommand {
             request.setAttribute("error", e.getMessage());
         } catch (Exception ex) {
             request.setAttribute("error", "Unknown error occurred");
+            log.error(ex);
         }
         return new ShowAllContactsCommand().execute(request, response);
     }

@@ -32,7 +32,7 @@
                 </select>
 
                 <label for="subjectInput" class="control-label col-xs-6"><b>Subject:</b></label>
-                <input id="subjectInput" placeholder="Subject is subjective!" class="form-control" name="msgSubject">
+                <input id="subjectInput" placeholder="Subject is subjective!" class="form-control" name="msgSubject" required>
 
                 <label for="msgInput" class="control-label col-xs-6"><b>Message:</b></label>
                 <textarea id="msgInput" placeholder="Hi, this is the message!" class="form-control"

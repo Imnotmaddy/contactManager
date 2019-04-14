@@ -20,3 +20,4 @@ function gatherEmails() {
         submitForm.submit();
     }
 }
+//TODO: add event listeners(onfocusout event) on every fields to validate them
