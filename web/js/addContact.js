@@ -39,12 +39,21 @@ function addNumber() {
             let column2 = row.insertCell();
             let column3 = row.insertCell();
             let column4 = row.insertCell();
+            let column5 = row.insertCell();
 
             let countryCode = document.getElementById('countryCodeInput').value;
             let operatorCode = document.getElementById('operatorCodeInput').value;
             let phoneNumber = document.getElementById('phoneNumberInput').value;
             let phoneType = document.getElementById('phoneTypeInput').value;
             let commentary = document.getElementById('commentaryInput').value;
+
+            let button = document.createElement("input");
+            button.type = "button";
+            button.className = "btn btn-primary  btn-md";
+            button.value="Edit";
+            button.onclick = function () {
+                f(this);
+            };
 
             let ckBox = document.createElement("input");
             ckBox.type = "checkbox";
@@ -85,6 +94,7 @@ function addNumber() {
             column2.innerHTML = countryCode.concat(operatorCode, phoneNumber);
             column3.innerHTML = phoneType;
             column4.innerHTML = commentary;
+            column5.append(button);
         } else {
             alert("Phone exists");
         }
@@ -181,44 +191,87 @@ function submitAll() {
 
 function showPhotoModal() {
 // Get the modal
-    var modal = document.getElementById('phoneModal');
+    let modal = document.getElementById('phoneModal');
 
 // Get the <span> element that closes the modal
-    var span = document.getElementById("closePhoneModal");
+    let span = document.getElementById("closePhoneModal");
 
 // When the user clicks on the button, open the modal
-        modal.style.display = "block";
+    modal.style.display = "block";
 
 // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
+    span.onclick = function () {
         modal.style.display = "none";
     }
 
 // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
+    window.onclick = function (event) {
+        if (event.target === modal) {
             modal.style.display = "none";
         }
     }
 }
 
+function f(button) {
+    let tr = button.parentNode.parentNode;
+    let index = tr.rowIndex;
+    editPhoneNumber(index - 1)
+}
 
-function editPhoneNumber(phone) {
-    let countryCode = document.getElementById('countryCodeInput');
-    let operatorCode = document.getElementById('operatorCodeInput');
-    let phoneNumber = document.getElementById('phoneNumberInput');
-    let phoneType = document.getElementById('phoneTypeInput');
-    let commentary = document.getElementById('commentaryInput');
 
+function editPhoneNumber(index) {
     let table = document.getElementById('phoneTable');
-    for (let i = 1; i < table.rows.length; i++) {
-        if (table.rows[i].cells[1].innerText === phone) {
-            countryCode.value = table.rows[i].cells[1].value;
-            operatorCode.value = table.rows[i].cells[1].value;
-            phoneNumber.value = table.rows[i].cells[1].value;
-            phoneType.value = table.rows[i].cells[2].value;
-            commentary.value = table.rows[i].cells[3].value;
-            break;
+    let row = table.rows[index + 1];
+    let button = document.getElementById('phoneSubmitButton');
+
+    let countryCode = document.getElementsByName('countryCode')[index];
+    let operatorCode = document.getElementsByName('operatorCode')[index];
+    let phoneNumber = document.getElementsByName('phoneNumber')[index];
+    let phoneType = document.getElementsByName('phoneType')[index];
+    let commentary = document.getElementsByName('commentary')[index];
+
+    let countryCodeInput = document.getElementById('countryCodeInput');
+    countryCodeInput.value = countryCode.value;
+
+    let operatorCodeInput = document.getElementById('operatorCodeInput');
+    operatorCodeInput.value = operatorCode.value;
+
+    let phoneNumberInput = document.getElementById('phoneNumberInput');
+    phoneNumberInput.value = phoneNumber.value;
+
+
+    let phoneTypeInput = document.getElementById('phoneTypeInput');
+    phoneTypeInput.value = phoneType.value;
+
+    let commentaryInput = document.getElementById('commentaryInput');
+    commentaryInput.value = commentary.value;
+    openForm();
+
+    button.onclick = function () {
+        if (isPhoneFormValid()) {
+            phoneNumber.value = "";
+            if (checkPhoneForUnique(phoneNumberInput.value)) {
+                countryCode.value = countryCodeInput.value;
+                operatorCode.value = operatorCodeInput.value;
+                phoneNumber.value = phoneNumberInput.value;
+                phoneType.value = phoneTypeInput.value;
+                commentary.value = commentaryInput.value;
+                row.cells[1].innerText = countryCode.value.concat(operatorCode.value, phoneNumber.value);
+                row.cells[2].innerText = phoneType.value;
+                row.cells[3].innerText = commentary.value;
+
+                countryCodeInput.value = "";
+                operatorCodeInput.value = "";
+                phoneNumberInput.value = "";
+                phoneTypeInput.value = "";
+                commentaryInput.value = "";
+
+                button.onclick = function () {
+                    addNumber();
+                }
+            } else {
+                alert("Phone number exists");
+            }
         }
-    }
+    };
 }

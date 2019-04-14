@@ -121,6 +121,7 @@
                     <td>Phone Number</td>
                     <td>Phone Type</td>
                     <td>Commentary</td>
+                    <td>Edit</td>
                 </tr>
                 </thead>
                 <c:forEach var="phoneNumber" items='${phoneNumbers}'>
@@ -132,10 +133,14 @@
                     <input type="hidden" name="phoneId" value="${phoneNumber.id}">
                     <tr>
                         <td><input type="checkbox" name="phoneIdForDelete" id="phoneId" value="${phoneNumber.id}"></td>
-                        <td>${phoneNumber.countryCode}${phoneNumber.countryCode}${phoneNumber.phoneNumber}</td>
+                        <td>${phoneNumber.countryCode}${phoneNumber.operatorCode}${phoneNumber.phoneNumber}</td>
                         <td>${phoneNumber.phoneType}</td>
                         <td>${phoneNumber.commentary}</td>
-
+                        <td>
+                            <button type="button" class="btn btn-primary  btn-md" onclick="
+                     f(this);">Edit
+                            </button>
+                        </td>
                     </tr>
                 </c:forEach>
             </table>
@@ -191,15 +196,15 @@
         <label for="commentaryInput"><b>Commentary</b></label>
         <textarea id="commentaryInput" placeholder="Your commentary..."></textarea>
 
-        <button type="button" class="btn" onclick="addNumber();">Submit</button>
+        <button type="button" class="btn" onclick="addNumber();" id="phoneSubmitButton">Submit</button>
 
         <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
     </div>
 </div>
 
 
-<script type="text/javascript" src="../js/collapse.js?version=14.04.19"></script>
-<script type="text/javascript" src="../js/addContact.js?version=14.04.19"></script>
-<script type="text/javascript" src="../js/popup.js?version=14.04.19"></script>
+<script type="text/javascript" src="../js/collapse.js?version=15.04.19"></script>
+<script type="text/javascript" src="../js/addContact.js?version=16.04.19"></script>
+<script type="text/javascript" src="../js/popup.js?version=15.04.19"></script>
 </body>
 </html>
