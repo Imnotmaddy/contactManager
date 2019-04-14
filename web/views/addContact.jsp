@@ -14,25 +14,27 @@
     <link rel="stylesheet" type="text/css" href="../css/addContact.css?version14.04.19"/>
     <link rel="stylesheet" type="text/css" href="../css/popup.css?version=03.04.19"/>
     <link rel="stylesheet" type="text/css" href="../css/myTable.css?version=02.04.19"/>
+    <link rel="stylesheet" type="text/css" href="../css/modalWindow.css?version=12.04.19"/>
     <title>New Contact</title>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<form action="/contactManager?command=${command}&id=${contact.id}" method="post" id="contactForm" enctype="multipart/form-data">
+<form action="/contactManager?command=${command}&id=${contact.id}" method="post" id="contactForm"
+      enctype="multipart/form-data">
     <div class="myRow">
         <div class="column">
             <h2>New Contact</h2>
             <div class="form-group">
-                <c:if test="${not empty photo}">
-                    <img src="data:image/jpeg;base64,${photo}"/>
-                </c:if>
-                <input type="hidden" value="${photo}" name="oldPhoto">
-                <label for="photo" class="control-label col-xs-2">Chosen photo:</label>
-                <input type="file" id="photo" name="photo" accept="image/*">
-                <br/>
-                <br/>
+                <div id="photoBlock">
+                    <input type="hidden" value="${photo}" name="oldPhoto">
+                    <c:if test="${not empty photo}">
+                        <img src="data:image/jpeg;base64,${photo}" style="cursor: pointer" onclick="showPhotoModal()"/>
+                    </c:if>
+                    <br/>
+                    <br/>
+                </div>
                 <label for="name" class="control-label col-xs-8">Name:</label>
-                <input type="text" id="name" name="name" class="form-control" value="${contact.name}" required />
+                <input type="text" id="name" name="name" class="form-control" value="${contact.name}" required/>
 
                 <label for="surname" class="control-label col-xs-8">Last name:</label>
                 <input type="text" id="surname" name="surname" class="form-control" value="${contact.surname}"
@@ -40,7 +42,7 @@
 
                 <label for="email" class="control-label col-xs-8">E-mail:</label>
                 <input type="text" id="email" name="email" class="form-control"
-                       placeholder="smith@aol.com" value="${contact.email}" required />
+                       placeholder="smith@aol.com" value="${contact.email}" required/>
 
                 <br/>
                 <button class="collapsible" type="button">Expand Additional Information</button>
@@ -122,12 +124,12 @@
                 </tr>
                 </thead>
                 <c:forEach var="phoneNumber" items='${phoneNumbers}'>
-                    <input type="hidden" name="countryCode"  value="${phoneNumber.countryCode}">
+                    <input type="hidden" name="countryCode" value="${phoneNumber.countryCode}">
                     <input type="hidden" name="operatorCode" value="${phoneNumber.operatorCode}">
-                    <input type="hidden" name="commentary"   value="${phoneNumber.commentary}">
-                    <input type="hidden" name="phoneNumber"  value="${phoneNumber.phoneNumber}">
-                    <input type="hidden" name="phoneType"    value="${phoneNumber.phoneType}">
-                    <input type="hidden" name="phoneId"      value="${phoneNumber.id}">
+                    <input type="hidden" name="commentary" value="${phoneNumber.commentary}">
+                    <input type="hidden" name="phoneNumber" value="${phoneNumber.phoneNumber}">
+                    <input type="hidden" name="phoneType" value="${phoneNumber.phoneType}">
+                    <input type="hidden" name="phoneId" value="${phoneNumber.id}">
                     <tr>
                         <td><input type="checkbox" name="phoneIdForDelete" id="phoneId" value="${phoneNumber.id}"></td>
                         <td>${phoneNumber.countryCode}${phoneNumber.countryCode}${phoneNumber.phoneNumber}</td>
@@ -147,7 +149,27 @@
             </div>
         </div>
     </div>
+
+    <div id="phoneModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" id="closePhoneModal">&times;</span>
+                <h2>Photo</h2>
+            </div>
+            <div class="modal-body">
+                <input type="file" id="photo" name="photo" accept="image/*">
+                <button type="button" class="btn" onclick="document.getElementById('phoneModal').style.display='none'">
+                    Submit
+                </button>
+                <button type="button" class="btn cancel"
+                        onclick="document.getElementById('photo').value=''; document.getElementById('phoneModal').style.display='none'">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
 </form>
+
 <button class="open-button" onclick="openForm()">Add Phone Number</button>
 <div class="form-popup" id="popupPhoneNumber">
     <div class="form-container">
@@ -174,8 +196,10 @@
         <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
     </div>
 </div>
-<script type="text/javascript" src="../js/collapse.js?version=01.04.19"></script>
-<script type="text/javascript" src="../js/addContact.js?version=11.04.19"></script>
-<script type="text/javascript" src="../js/popup.js?version=02.04.19"></script>
+
+
+<script type="text/javascript" src="../js/collapse.js?version=14.04.19"></script>
+<script type="text/javascript" src="../js/addContact.js?version=14.04.19"></script>
+<script type="text/javascript" src="../js/popup.js?version=14.04.19"></script>
 </body>
 </html>

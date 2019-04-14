@@ -5,12 +5,15 @@ import app.models.Contact;
 import app.models.PhoneNumber;
 import app.sql.dao.mysql.ContactDaoImpl;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -63,7 +66,6 @@ public class ContactService {
                 relationship, webSite, currentJob,
                 jobAddress, residenceCountry, residenceCity, residenceStreet, residenceHouseNumber,
                 residenceApartmentNumber, index, photo);
-        //TODO: add photo
     }
 
     public static Contact getContactInfoById(Integer id) throws AppException {
@@ -72,4 +74,19 @@ public class ContactService {
         contact.setPhoneNumbers(numbers);
         return contact;
     }
+
+    public static void addDefaultPhoto(HttpServletRequest request) {
+        try {
+            byte[] defaultPhoto;
+            URL filePath = ContactService.class.getClassLoader().getResource("images/faceless.png");
+            if (filePath != null) {
+                File file = new File(filePath.getFile());
+                defaultPhoto = FileUtils.readFileToByteArray(file);
+                request.setAttribute("photo", Base64.getEncoder().encodeToString(defaultPhoto));
+            }
+        } catch (IOException ex) {
+            log.error(ex);
+        }
+    }
+
 }

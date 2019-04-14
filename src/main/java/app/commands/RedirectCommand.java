@@ -1,5 +1,7 @@
 package app.commands;
 
+import app.services.ContactService;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,6 +16,7 @@ public class RedirectCommand implements ActionCommand {
         switch (toPage) {
             case "addContact": {
                 request.setAttribute("command", "addContact");
+                ContactService.addDefaultPhoto(request);
                 return NEW_CONTACT;
             }
             case "contactList": {
