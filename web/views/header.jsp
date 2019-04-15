@@ -19,7 +19,7 @@
     <a onclick="headerModule.toContactList(null)"><i class="fa fa-fw fa-bars"></i> Contact List</a>
     <a onclick="headerModule.toCreateContact()"><i class="fa fa-fw fa-user"></i> Add Contact</a>
     <a onclick="headerModule.sendEmail();"><i class="fa fa-fw fa-envelope"></i> Send Email</a>
-    <a href="#"><i class="fa fa-fw fa-search"></i> Search</a>
+    <a onclick="headerModule.toSearchPage();"><i class="fa fa-fw fa-search"></i> Search</a>
 </div>
 
 <c:if test="${not empty error}">
@@ -28,6 +28,6 @@
         <strong>Error!</strong> ${error}
     </div>
 </c:if>
-<script type="text/javascript" src="../js/header.js?date=09.04.2019"></script>
+<script type="text/javascript" src="../js/header.js?date=15.04.2019"></script>
 </body>
 </html>

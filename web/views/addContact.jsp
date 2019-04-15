@@ -17,7 +17,7 @@
     <link rel="stylesheet" type="text/css" href="../css/modalWindow.css?version=12.04.19"/>
     <title>New Contact</title>
 </head>
-<body>
+<body onload="document.getElementById('sex').value = '${contact.sex}'">
 <jsp:include page="header.jsp"/>
 <form action="/contactManager?command=${command}&id=${contact.id}" method="post" id="contactForm"
       enctype="multipart/form-data">
@@ -56,8 +56,10 @@
                            min="1940-01-02" value="${contact.dateOfBirth}"/>
 
                     <label for="sex" class="control-label col-xs-4">Sex:</label>
-                    <input type="text" id="sex" name="sex" class="form-control"
-                           value="${contact.sex}"/>
+                    <select id="sex" name="sex" class="form-control">
+                        <option selected="selected" value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
 
                     <label for="citizenship" class="control-label col-xs-4">Citizenship:</label>
                     <input type="text" id="citizenship" name="citizenship" class="form-control"
@@ -189,7 +191,7 @@
 
         <label for="phoneTypeInput"><b>Phone Type</b></label>
         <select id="phoneTypeInput" required>
-            <option value="cellular">Cellular</option>
+            <option value="cellular" selected="selected">Cellular</option>
             <option value="stationary">Stationary</option>
         </select>
 
@@ -203,8 +205,8 @@
 </div>
 
 
-<script type="text/javascript" src="../js/collapse.js?version=15.04.19"></script>
-<script type="text/javascript" src="../js/addContact.js?version=16.04.19"></script>
-<script type="text/javascript" src="../js/popup.js?version=15.04.19"></script>
+<script type="text/javascript" src="../js/collapse.js?v=1"></script>
+<script type="text/javascript" src="../js/addContact.js?v=1"></script>
+<script type="text/javascript" src="../js/popup.js?v=1"></script>
 </body>
 </html>

@@ -2,6 +2,7 @@ package app.commands.client;
 
 import app.commands.*;
 import app.commands.DeleteContactsCommand;
+import app.commands.SearchCommand;
 
 public enum CommandEnum {
     LISTOFCONTACTS {
@@ -42,6 +43,11 @@ public enum CommandEnum {
     SENDEMAILS {
         {
             this.command = new SendEmailCommand();
+        }
+    },
+    SEARCHCONTACTS {
+        {
+            this.command = new SearchCommand();
         }
     };
 

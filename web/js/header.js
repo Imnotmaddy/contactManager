@@ -17,6 +17,9 @@ let headerModule = (function () {
             } else {
                 headerModule.toContactList("Select recipients for email");
             }
+        },
+        toSearchPage: function () {
+            window.location = "http://localhost:8080/contactManager?command=redirect&page=searchPage"
         }
     }
 }());

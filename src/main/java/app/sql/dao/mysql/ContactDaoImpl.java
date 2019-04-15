@@ -220,4 +220,18 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         contact.setPhoneNumbers(PhoneDaoImpl.getInstance().findAllByContactId(contact.getId()));
         return contact;
     }
+
+    public List<Contact> executeSqlSelect(String sql) throws SQLException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = statement.executeQuery();
+            List<Contact> contacts = new ArrayList<>();
+            while (resultSet.next()) {
+                contacts.add(buildContact(resultSet));
+            }
+            return contacts;
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
+    }
 }

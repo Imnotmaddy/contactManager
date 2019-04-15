@@ -43,8 +43,7 @@ public class ContactService {
         java.sql.Date sqlStartDate;
         byte[] photo = {};
         try {
-            String date1 = request.getParameter("date");
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(date1);
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("date"));
             sqlStartDate = new java.sql.Date(date.getTime());
         } catch (ParseException e) {
             sqlStartDate = null;

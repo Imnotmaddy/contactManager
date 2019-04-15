@@ -50,7 +50,7 @@ function addNumber() {
             let button = document.createElement("input");
             button.type = "button";
             button.className = "btn btn-primary  btn-md";
-            button.value="Edit";
+            button.value = "Edit";
             button.onclick = function () {
                 f(this);
             };

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 public class RedirectCommand implements ActionCommand {
     private final static String NEW_CONTACT = "/views/addContact.jsp";
     private final static String EMAIL_PAGE = "/views/emails.jsp";
+    private final static String SEARCH_PAGE = "/views/searchPage.jsp";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
@@ -27,6 +28,9 @@ public class RedirectCommand implements ActionCommand {
             }
             case "sendEmail": {
                 return EMAIL_PAGE;
+            }
+            case "searchPage": {
+                return SEARCH_PAGE;
             }
         }
         return NEW_CONTACT;
