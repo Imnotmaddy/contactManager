@@ -148,7 +148,7 @@
                         <td>${phoneNumber.phoneType}</td>
                         <td>${phoneNumber.commentary}</td>
                         <td>
-                            <button type="button" class="btn btn-primary  btn-md" onclick="
+                            <button type="button" class="btn btn-primary  btn-md" name="phoneEditButton" onclick="
                      editNumber(this);">Edit
                             </button>
                         </td>

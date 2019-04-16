@@ -51,6 +51,7 @@ function addNumber() {
             button.type = "button";
             button.className = "btn btn-primary  btn-md";
             button.value = "Edit";
+            button.name = "phoneEditButton";
             button.onclick = function () {
                 editNumber(this);
             };
@@ -135,6 +136,11 @@ function deleteNumbers() {
                 if (!phonesForDelete.includes(box.value))
                     phonesForDelete.push(box.value);
                 box.checked = false;
+
+                let tr = box.parentNode.parentNode;
+                let index = tr.rowIndex - 1;
+                let button = document.getElementsByName("phoneEditButton")[index];
+                button.disabled = true;
             }
         }
     }
@@ -146,12 +152,17 @@ function undoDelete() {
     for (let i = 0; i < checkBoxes.length; i++) {
         let box = checkBoxes[i];
         if (box.checked === true) {
-            let id = box.value;
+            const id = box.value;
             const index = phonesForDelete.indexOf(id);
             if (index !== -1) {
                 phonesForDelete.splice(index, 1);
                 unCrossTableRow(i + 1);
             }
+
+            let tr = box.parentNode.parentNode;
+            let butIndex = tr.rowIndex - 1;
+            let button = document.getElementsByName("phoneEditButton")[butIndex];
+            button.disabled = false;
         }
         box.checked = false;
     }
