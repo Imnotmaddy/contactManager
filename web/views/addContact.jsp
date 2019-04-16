@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="../css/popup.css?version=03.04.19"/>
     <link rel="stylesheet" type="text/css" href="../css/myTable.css?version=02.04.19"/>
     <link rel="stylesheet" type="text/css" href="../css/modalWindow.css?version=12.04.19"/>
+    <link rel="stylesheet" type="text/css" href="../css/centralModal.css?v=1"/>
     <title>New Contact</title>
 </head>
 <body onload="document.getElementById('sex').value = '${contact.sex}'">
@@ -33,6 +34,13 @@
                     <br/>
                     <br/>
                 </div>
+
+                <button type="button" class="myButton" style="background-color: #91a6c1"
+                        onclick="showAttachmentModal();">
+                    Attachments
+                </button>
+                <br/>
+
                 <label for="name" class="control-label col-xs-8">Name:</label>
                 <input type="text" id="name" name="name" class="form-control" value="${contact.name}" required/>
 
@@ -140,7 +148,7 @@
                         <td>${phoneNumber.commentary}</td>
                         <td>
                             <button type="button" class="btn btn-primary  btn-md" onclick="
-                     f(this);">Edit
+                     editNumber(this);">Edit
                             </button>
                         </td>
                     </tr>
@@ -175,6 +183,64 @@
             </div>
         </div>
     </div>
+
+    <!-- The Modal -->
+    <div id="attachmentModal" class="modalCenter">
+
+        <!-- Modal content -->
+        <div class="modalCenter-content">
+            <div class="modalCenter-header">
+                <span class="close" id="closeAttachmentModal">&times;</span>
+                <h2>Attachments</h2>
+            </div>
+            <div class="modalCenter-body myRow">
+                <br/>
+                <div class="column">
+                    <div id="attachments">
+                        <input type="file" name="attachment">
+                        <input type="file" name="attachment">
+                        <input type="file" name="attachment">
+                    </div>
+                </div>
+
+                <div class="column">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <td></td>
+                            <td>File Name</td>
+                            <td>Date of Creation</td>
+                            <td>Commentary</td>
+                            <td>Edit</td>
+                        </tr>
+                        </thead>
+                        <c:forEach var="attachment" items='${attachments}'>
+                            <tr>
+                                <td><input type="checkbox" name="attachmentIdForDelete" value="${attachment.id}"></td>
+                                <td>${attachment.fileName}</td>
+                                <td>${attachment.dateOfCreation}</td>
+                                <td>${attachment.commentary}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary  btn-md" onclick="">Edit
+                                    </button>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <button type="button" class="btn"
+                    onclick="document.getElementById('attachmentModal').style.display='none'">
+                Submit
+            </button>
+            <button type="button" class="btn cancel"
+                    onclick="document.getElementById('attachmentModal').style.display='none'">
+                Cancel
+            </button>
+        </div>
+    </div>
 </form>
 
 <button class="open-button" onclick="openForm()">Add Phone Number</button>
@@ -205,8 +271,8 @@
 </div>
 
 
-<script type="text/javascript" src="../js/collapse.js?v=1"></script>
-<script type="text/javascript" src="../js/addContact.js?v=1"></script>
-<script type="text/javascript" src="../js/popup.js?v=1"></script>
+<script type="text/javascript" src="../js/collapse.js?v=2"></script>
+<script type="text/javascript" src="../js/addContact.js?v=2"></script>
+<script type="text/javascript" src="../js/popup.js?v=2"></script>
 </body>
 </html>

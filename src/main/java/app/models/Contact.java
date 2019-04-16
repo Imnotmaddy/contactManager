@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 public class Contact extends Entity {
     private List<PhoneNumber> phoneNumbers = new ArrayList<>();
+    private List<Attachment> attachments = new ArrayList<>();
     @NonNull
     private String email;
     @NonNull

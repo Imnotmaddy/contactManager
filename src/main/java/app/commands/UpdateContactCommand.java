@@ -19,6 +19,7 @@ public class UpdateContactCommand implements ActionCommand {
             Contact contact = ContactService.getContactParameters(request);
             contact.setId(Integer.valueOf(request.getParameter("id")));
             PhoneDaoImpl.getInstance().deleteAllById(PhoneService.getPhoneNumbersForDelete(request));
+            //AttachmentDaoImpl.getInstance().deleteAllById(); TODO: add delete attachments
             contact.setPhoneNumbers(PhoneService.getAllPhoneNumbers(request, contact.getId()));
             ContactDaoImpl.getInstance().updateContact(contact);
         } catch (AppException | IllegalArgumentException e) {

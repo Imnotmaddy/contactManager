@@ -52,7 +52,7 @@ function addNumber() {
             button.className = "btn btn-primary  btn-md";
             button.value = "Edit";
             button.onclick = function () {
-                f(this);
+                editNumber(this);
             };
 
             let ckBox = document.createElement("input");
@@ -202,7 +202,7 @@ function showPhotoModal() {
 // When the user clicks on <span> (x), close the modal
     span.onclick = function () {
         modal.style.display = "none";
-    }
+    };
 
 // When the user clicks anywhere outside of the modal, close it
     window.onclick = function (event) {
@@ -212,7 +212,7 @@ function showPhotoModal() {
     }
 }
 
-function f(button) {
+function editNumber(button) {
     let tr = button.parentNode.parentNode;
     let index = tr.rowIndex;
     editPhoneNumber(index - 1)
@@ -275,3 +275,14 @@ function editPhoneNumber(index) {
         }
     };
 }
+
+function showAttachmentModal() {
+    let modal = document.getElementById('attachmentModal');
+    let span = document.getElementById("closeAttachmentModal");
+
+    modal.style.display = "block";
+    span.onclick = function () {
+        modal.style.display = "none";
+    };
+}
+

@@ -154,6 +154,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             connection.setAutoCommit(false);
             PhoneDaoImpl.getInstance().deleteByContactIds(connection, ids);
+            AttachmentDaoImpl.getInstance().deleteByContactIds(connection, ids);
             statement.executeUpdate();
             connection.commit();
         } catch (SQLException ex) {
@@ -219,6 +220,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         contact.setPhoto(photoBlob.getBytes(1, (int) photoBlob.length()));
         contact.setId(resultSet.getInt("id"));
         contact.setPhoneNumbers(PhoneDaoImpl.getInstance().findAllByContactId(contact.getId()));
+        contact.setAttachments(AttachmentDaoImpl.getInstance().findAllByContactId(contact.getId()));
         return contact;
     }
 

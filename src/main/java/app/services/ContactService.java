@@ -60,7 +60,7 @@ public class ContactService {
             log.error(ex);
         }
 
-        return new Contact(null, email, name, surname,
+        return new Contact(null, null, email, name, surname,
                 familyName, sqlStartDate, sex, citizenship,
                 relationship, webSite, currentJob,
                 jobAddress, residenceCountry, residenceCity, residenceStreet, residenceHouseNumber,

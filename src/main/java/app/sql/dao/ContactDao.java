@@ -11,4 +11,6 @@ public interface ContactDao extends Dao<Contact> {
     List<Contact> findAll() throws AppException;
 
     Contact save(Contact entity) throws AppException;
+
+    Contact findById(Integer id) throws AppException;
 }

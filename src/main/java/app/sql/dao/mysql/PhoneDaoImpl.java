@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneDao {
 
@@ -54,18 +53,9 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
 
     @Override
     public List<PhoneNumber> saveAll(List<PhoneNumber> phoneNumbers) throws AppException {
-        if (phoneNumbers == null) {
-            throw new IllegalArgumentException("Can not save null entity!");
-        }
-        if (phoneNumbers.isEmpty()) return phoneNumbers;
-
         Connection connection = ConnectionPool.getInstance().getConnection();
         try {
-            connection.setAutoCommit(false);
-            for (PhoneNumber phoneNumber : phoneNumbers) {
-                super.persist(phoneNumber, SQL_INSERT_PHONE_NUMBER, connection, fields);
-            }
-            connection.commit();
+            super.saveAll(phoneNumbers, SQL_INSERT_PHONE_NUMBER, fields, connection);
             return phoneNumbers;
         } catch (SQLIntegrityConstraintViolationException exception) {
             LOGGER.error(exception);
@@ -83,26 +73,6 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
                 LOGGER.error(e);
             }
             throw new AppException("Error occurred while saving your phone numbers. Please try again or call our administrator");
-        } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
-        }
-    }
-
-    @Override
-    public PhoneNumber findById(Integer id) {
-        //TODO: consider deleting this method
-        Connection connection = ConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_ID)) {
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            PhoneNumber number = null;
-            if (resultSet.next()) {
-                number = buildPhoneNumber(resultSet);
-            }
-            return number;
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            return null;
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }
@@ -137,20 +107,13 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
     }
 
     void deleteByContactIds(Connection connection, Set<Integer> contactIds) throws SQLException {
-        String str = contactIds.stream().map(Object::toString).collect(Collectors.joining(", "));
-        String query = String.format(SQL_DELETE_PHONE_NUMBERS_BY_CONTACT_IDS, str);
-        connection.prepareStatement(query).executeUpdate();
+        super.deleteByGivenIds(connection, contactIds, SQL_DELETE_PHONE_NUMBERS_BY_CONTACT_IDS);
     }
 
-    public void deleteAllById(List<Integer> ids) throws AppException {
-        if (ids == null || ids.isEmpty()) {
-            return;
-        }
+    public void deleteAllById(Set<Integer> ids) throws AppException {
         Connection connection = ConnectionPool.getInstance().getConnection();
-        String idArray = ids.stream().map(Object::toString).collect(Collectors.joining(", "));
-        String query = String.format(SQL_DELETE_PHONE_NUMBERS_BY_IDS, idArray);
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.executeUpdate();
+        try {
+            super.deleteByGivenIds(connection, ids, SQL_DELETE_PHONE_NUMBERS_BY_IDS);
         } catch (SQLException ex) {
             LOGGER.error(ex);
             throw new AppException("An error occurred while deleting phone numbers. Please, try again in a moment or call our administrator");
@@ -158,18 +121,16 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
     }
 
     List<PhoneNumber> updatePhoneNumbers(List<PhoneNumber> phoneNumbers, Connection connection) throws SQLException {
-        List<PhoneNumber> numbers = new ArrayList<>();
         if (phoneNumbers == null) {
-            throw new IllegalArgumentException("cannot update empty entities");
+            throw new IllegalArgumentException("cannot update empty entities in phoneDAo");
         }
-
         for (PhoneNumber number : phoneNumbers) {
             if (number.getId() != null) {
-                numbers.add(super.persist(number, SQL_UPDATE_PHONE_NUMBER, connection, fields));
+                phoneNumbers.add(super.persist(number, SQL_UPDATE_PHONE_NUMBER, connection, fields));
             } else {
-                numbers.add(super.persist(number, SQL_INSERT_PHONE_NUMBER, connection, fields));
+                phoneNumbers.add(super.persist(number, SQL_INSERT_PHONE_NUMBER, connection, fields));
             }
         }
-        return numbers;
+        return phoneNumbers;
     }
 }

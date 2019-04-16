@@ -4,7 +4,9 @@ import app.models.PhoneNumber;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PhoneService {
     public static List<PhoneNumber> getAllPhoneNumbers(HttpServletRequest request, Integer contactId) {
@@ -36,10 +38,10 @@ public class PhoneService {
         return numbers;
     }
 
-    public static List<Integer> getPhoneNumbersForDelete(HttpServletRequest request) {
+    public static Set<Integer> getPhoneNumbersForDelete(HttpServletRequest request) {
         String numbers = request.getParameter("numbersForDelete");
-        if (numbers == null || numbers.isEmpty()) return new ArrayList<>();
-        List<Integer> ids = new ArrayList<>();
+        if (numbers == null || numbers.isEmpty()) return new HashSet<>();
+        Set<Integer> ids = new HashSet<>();
         for (String el : numbers.split(",")) {
             ids.add(Integer.valueOf(el));
         }
