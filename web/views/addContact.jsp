@@ -40,6 +40,7 @@
                     Attachments
                 </button>
                 <br/>
+                <br/>
 
                 <label for="name" class="control-label col-xs-8">Name:</label>
                 <input type="text" id="name" name="name" class="form-control" value="${contact.name}" required/>
@@ -198,8 +199,6 @@
                 <div class="column">
                     <div id="attachments">
                         <input type="file" name="attachment">
-                        <input type="file" name="attachment">
-                        <input type="file" name="attachment">
                     </div>
                 </div>
 
@@ -233,11 +232,11 @@
             <br/>
             <button type="button" class="btn"
                     onclick="document.getElementById('attachmentModal').style.display='none'">
-                Submit
+                Submit Attachment
             </button>
             <button type="button" class="btn cancel"
                     onclick="document.getElementById('attachmentModal').style.display='none'">
-                Cancel
+                Close
             </button>
         </div>
     </div>

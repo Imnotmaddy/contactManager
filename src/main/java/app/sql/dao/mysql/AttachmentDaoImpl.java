@@ -112,14 +112,15 @@ public class AttachmentDaoImpl extends AbstractDaoImpl<Attachment> implements At
         if (attachments == null) {
             throw new IllegalArgumentException("cannot update Null entities in attachments");
         }
+        List<Attachment> newAttachments = new ArrayList<>();
         for (Attachment attachment : attachments) {
             if (attachment.getId() != null) {
-                super.persist(attachment, SQL_UPDATE_ATTACHMENT, connection, fields);
+                newAttachments.add(super.persist(attachment, SQL_UPDATE_ATTACHMENT, connection, fields));
             } else {
-                super.persist(attachment, SQL_INSERT_ATTACHMENT, connection, fields);
+                newAttachments.add(super.persist(attachment, SQL_INSERT_ATTACHMENT, connection, fields));
             }
         }
-        return attachments;
+        return newAttachments;
     }
 
 

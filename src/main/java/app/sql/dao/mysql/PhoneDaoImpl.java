@@ -124,13 +124,14 @@ public class PhoneDaoImpl extends AbstractDaoImpl<PhoneNumber> implements PhoneD
         if (phoneNumbers == null) {
             throw new IllegalArgumentException("cannot update empty entities in phoneDAo");
         }
+        List<PhoneNumber> numbers = new ArrayList<>();
         for (PhoneNumber number : phoneNumbers) {
             if (number.getId() != null) {
-                phoneNumbers.add(super.persist(number, SQL_UPDATE_PHONE_NUMBER, connection, fields));
+                numbers.add(super.persist(number, SQL_UPDATE_PHONE_NUMBER, connection, fields));
             } else {
-                phoneNumbers.add(super.persist(number, SQL_INSERT_PHONE_NUMBER, connection, fields));
+                numbers.add(super.persist(number, SQL_INSERT_PHONE_NUMBER, connection, fields));
             }
         }
-        return phoneNumbers;
+        return numbers;
     }
 }
