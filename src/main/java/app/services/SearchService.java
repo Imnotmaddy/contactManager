@@ -15,6 +15,7 @@ import java.util.List;
 @Log4j2
 public class SearchService {
     public static List<Contact> getSearchedUsers(HttpServletRequest request) throws AppException {
+        boolean isQueryEmpty = true;
         String name = request.getParameter("name");
         String surname = request.getParameter("surname");
         String familyName = request.getParameter("familyName");
@@ -45,53 +46,73 @@ public class SearchService {
         StringBuilder sql = new StringBuilder("SELECT * FROM `contacts` WHERE ");
 
         if (!name.isEmpty()) {
-            sql.append("`name` = '").append(name).append("' AND ");
+            sql.append("`name` LIKE ? AND ");
+            isQueryEmpty = false;
         }
 
         if (!surname.isEmpty()) {
-            sql.append("`surname` = '").append(surname).append("' AND ");
+            sql.append("`surname` LIKE ? AND ");
+            isQueryEmpty = false;
         }
         if (!familyName.isEmpty()) {
-            sql.append("`familyName` = '").append(familyName).append("' AND ");
+            sql.append("`familyName` LIKE ? AND ");
+            isQueryEmpty = false;
         }
         if (sex != null) {
-            sql.append("`sex` = '").append(sex).append("' AND ");
+            sql.append("`sex` LIKE ? AND ");
+            isQueryEmpty = false;
         }
         if (!citizenship.isEmpty()) {
-            sql.append("`citizenship` = '").append(citizenship).append("' AND ");
+            sql.append("`citizenship` LIKE ? AND ");
+            isQueryEmpty = false;
         }
 
         if (!relationship.isEmpty()) {
-            sql.append("`relationship` = '").append(relationship).append("' AND ");
+            sql.append("`relationship` LIKE ? AND ");
+            isQueryEmpty = false;
         }
         if (!residenceCountry.isEmpty()) {
-            sql.append("`residenceCountry` = '").append(residenceCountry).append("' AND ");
+            sql.append("`residenceCountry` LIKE ? AND ");
+            isQueryEmpty = false;
         }
 
         if (!residenceCity.isEmpty()) {
-            sql.append("`residenceCity` = '").append(residenceCity).append("' AND ");
+            sql.append("`residenceCity` LIKE ? AND ");
+            isQueryEmpty = false;
         }
         if (!residenceStreet.isEmpty()) {
-            sql.append("`residenceStreet` = '").append(residenceStreet).append("' AND ");
+            sql.append("`residenceStreet` LIKE ? AND ");
+            isQueryEmpty = false;
         }
         if (!residenceHouseNumber.isEmpty()) {
-            sql.append("`residenceHouseNumber` = '").append(residenceHouseNumber).append("' AND ");
+            sql.append("`residenceHouseNumber` LIKE ? AND ");
+            isQueryEmpty = false;
         }
 
         if (!residenceApartmentNumber.isEmpty()) {
-            sql.append("`residenceApartmentNumber` = '").append(residenceApartmentNumber).append("' AND ");
+            sql.append("`residenceApartmentNumber` LIKE ? AND ");
+            isQueryEmpty = false;
         }
 
         if (bornAfterDate != null) {
-            sql.append("`dateOfBirth` >= ").append(bornAfterDate).append(" AND ");
+            sql.append("`dateOfBirth` > '").append(bornAfterDate).append("' AND ");
+            isQueryEmpty = false;
         }
 
         if (bornBeforeDate != null) {
-            sql.append("`dateOfBirth` <= ").append(bornBeforeDate).append(" AND ");
+            sql.append("`dateOfBirth` < '").append(bornBeforeDate).append("' AND ");
+            isQueryEmpty = false;
         }
-        sql.delete(sql.length() - 5, sql.length());
+
+        if (isQueryEmpty) {
+            return ContactDaoImpl.getInstance().findAll();
+        }
+
+        sql.delete(sql.length() - " AND ".length(), sql.length()); // deleting " AND "
+
         try {
-            return ContactDaoImpl.getInstance().executeSqlSelect(sql.toString());
+            return ContactDaoImpl.getInstance().executeSqlSelect(sql.toString(), name, surname, familyName, sex, citizenship, relationship,
+                    residenceCountry, residenceCity, residenceStreet, residenceHouseNumber, residenceApartmentNumber, bornAfterDate, bornBeforeDate);
         } catch (SQLException ex) {
             log.error(ex);
             throw new AppException("Something happened while searching for users. Try again");
