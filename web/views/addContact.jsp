@@ -201,13 +201,15 @@
                 <br/>
                 <div class="column">
                     <div id="attachmentField">
-                        <input type="file" id="submittedFile">
+                        <input type="file" id="submittedFile"
+                               onchange="document.getElementById('fileNameInput').value = this.files[0].name;">
                     </div>
                     <label for="fileNameInput"><b>File Name:</b></label>
                     <input type="text" name="fileNameInput" id="fileNameInput">
 
                     <label for="fileCommentaryInput"><b>Commentary</b></label>
-                    <textarea id="fileCommentaryInput" name="fileCommentaryInput" placeholder="Your commentary..."></textarea>
+                    <textarea id="fileCommentaryInput" name="fileCommentaryInput"
+                              placeholder="Your commentary..."></textarea>
                 </div>
 
                 <div class="column">
@@ -223,12 +225,23 @@
                         </thead>
                         <c:forEach var="attachment" items='${attachments}'>
                             <tr>
-                                <td><input type="checkbox" name="attachmentIdForDelete" value="${attachment.id}"></td>
+                                <td>
+                                    <div>
+                                        <input type="hidden" name="fileName" value="${attachment.fileName}">
+                                        <input type="hidden" name="fileCommentary" value="${attachment.commentary}">
+                                        <input type="hidden" name="dateOfCreation" value="${attachment.dateOfCreation}">
+                                        <input type="file" name="oldFile" style="display: none">
+                                        <input type="hidden" name="attachmentId" value="${attachment.id}">
+                                        <input type="hidden" name="fileExtension">
+                                        <input type="checkbox" name="attachmentIdForDelete" value="${attachment.id}">
+                                    </div>
+                                </td>
                                 <td>${attachment.fileName}</td>
                                 <td>${attachment.dateOfCreation}</td>
                                 <td>${attachment.commentary}</td>
                                 <td>
-                                    <button type="button" class="btn btn-primary  btn-md" onclick="editAttachment(this)">Edit
+                                    <button type="button" class="btn btn-primary  btn-md"
+                                            onclick="editExistingAttachment(this)">Edit
                                     </button>
                                 </td>
                             </tr>
@@ -279,7 +292,7 @@
 
 
 <script type="text/javascript" src="../js/collapse.js?v=3"></script>
-<script type="text/javascript" src="../js/addContact.js?v=7"></script>
+<script type="text/javascript" src="../js/addContact.js?v=ultimate"></script>
 <script type="text/javascript" src="../js/popup.js?v=3"></script>
 </body>
 </html>

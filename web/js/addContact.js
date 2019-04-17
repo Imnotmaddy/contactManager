@@ -1,5 +1,6 @@
 let phonesForDelete = [];
 let attachmentsForDelete = [];
+let attachmentsForEdit = [];
 
 function isPhoneFormValid() {
     let countryCode = document.getElementById('countryCodeInput').value;
@@ -196,7 +197,14 @@ function submitAll() {
     phoneNumberInput.type = "hidden";
     phoneNumberInput.name = "numbersForDelete";
     phoneNumberInput.value = phonesForDelete;
+
+    let attachmentInput = document.createElement("input");
+    attachmentInput.type = "hidden";
+    attachmentInput.name = "attachmentsForEdit";
+    attachmentInput.value = attachmentsForEdit;
+
     form.append(phoneNumberInput);
+    form.append(attachmentInput);
     form.submit();
 
 }
@@ -309,14 +317,15 @@ function replaceSubmittedAttachment(submittedFile) {
 function addAttachment() {
     let submittedFile = document.getElementById('submittedFile');
 
-    addAttachmentToTable(submittedFile);
+    if (submittedFile.value) {
+        addAttachmentToTable(submittedFile);
 
+        let newFileInput = document.createElement('input');
+        newFileInput.type = 'file';
+        newFileInput.id = "submittedFile";
 
-    let newFileInput = document.createElement('input');
-    newFileInput.type = 'file';
-    newFileInput.id = "submittedFile";
-
-    document.getElementById('attachmentField').append(newFileInput);
+        document.getElementById('attachmentField').append(newFileInput);
+    }
 
     document.getElementById('fileNameInput').value = "";
     document.getElementById('fileCommentaryInput').value = "";
@@ -349,7 +358,7 @@ function addAttachmentToTable(submittedFile) {
     button.value = "Edit";
     button.name = "attachmentEditButton";
     button.onclick = function () {
-        editAttachment(this)
+        editNewAttachment(this)
     };
 
     let ckBox = document.createElement("input");
@@ -406,7 +415,7 @@ function getCurrentDate() {
     return yyyy + '-' + mm + '-' + dd;
 }
 
-function editAttachment(button) {
+function editNewAttachment(button) {
     let tr = button.parentNode.parentNode;
     let index = tr.rowIndex;
     changeAttachment(index - 1)
@@ -428,6 +437,9 @@ function changeAttachment(index) {
     oldFileInputPlacement.removeChild(oldFileInput);
     file.style.display = 'block';
     oldFileInputPlacement.append(file);
+    file.onchange = function () {
+        fileNameInput.value = file.files[0].name;
+    };
 
     let commentaryInput = document.getElementById('fileCommentaryInput');
     commentaryInput.value = commentary.value;
@@ -435,6 +447,7 @@ function changeAttachment(index) {
     let fileNameInput = document.getElementById('fileNameInput');
     fileNameInput.value = fileName.value;
 
+    button.innerText = "Confirm Edit";
     button.onclick = function () {
         if (!isFieldEmpty(fileNameInput.value)) {
             fileName.value = fileNameInput.value;
@@ -448,14 +461,87 @@ function changeAttachment(index) {
 
         let newFileInput = document.createElement('input');
         newFileInput.type = 'file';
-        newFileInput.name = 'submittedFile';
+        newFileInput.id = 'submittedFile';
+        newFileInput.onchange = function () {
+            fileNameInput.value = newFileInput.files[0].name;
+        };
         oldFileInputPlacement.append(newFileInput);
 
         commentaryInput.value = "";
         fileNameInput.value = "";
 
+        button.innerText = "Submit Attachment";
         button.onclick = function () {
             addAttachment();
         }
     }
+}
+
+function editExistingAttachment(caller) {
+    let tr = caller.parentNode.parentNode;
+    let index = tr.rowIndex - 1; // input index
+    let attachmentId = document.getElementsByName('attachmentId')[index].value;
+
+    let table = document.getElementById('attachmentTable');
+    let row = table.rows[index + 1];
+    let button = document.getElementById('attachmentSubmitButton');
+
+    let commentary = document.getElementsByName('fileCommentary')[index];
+    let fileExtension = document.getElementsByName('fileExtension')[index];
+    let fileName = document.getElementsByName('fileName')[index];
+    let dateOfCreation = document.getElementsByName('dateOfCreation')[index];
+    let file = document.getElementsByName('oldFile')[index];
+    let filePlacement = file.parentNode;
+
+    dateOfCreation.value = getCurrentDate();
+
+    let fileInput = document.getElementById('submittedFile');
+    fileInput.value = "";
+    let oldFileInputPlacement = fileInput.parentNode;
+
+    let commentaryInput = document.getElementById('fileCommentaryInput');
+    commentaryInput.value = commentary.value;
+
+    let fileNameInput = document.getElementById('fileNameInput');
+    fileNameInput.value = fileName.value;
+
+    button.innerText = "Confirm Edit";
+    file.onchange = function () {
+        fileNameInput.value = file.files[0].name;
+    };
+    button.onclick = function () {
+        if (!isFieldEmpty(fileNameInput.value)) {
+            fileName.value = fileNameInput.value;
+        }
+        commentary.value = commentaryInput.value;
+        if (fileInput.value !== "") {
+            fileExtension.value = fileInput.files[0].name.split('.').pop();
+            filePlacement.append(replaceSubmittedAttachment(fileInput));
+            if (!phonesForDelete.includes(attachmentId)) {
+                attachmentsForEdit.push(attachmentId);
+            }
+        } else {
+            filePlacement.append(replaceSubmittedAttachment(fileInput));
+        }
+        row.cells[1].innerText = fileName.value;
+        row.cells[2].innerText = getCurrentDate();
+        row.cells[3].innerText = commentary.value;
+
+        let newFileInput = document.createElement('input');
+        newFileInput.type = 'file';
+        newFileInput.id = 'submittedFile';
+        newFileInput.onchange = function () {
+            fileNameInput.value = newFileInput.files[0].name;
+        };
+        oldFileInputPlacement.append(newFileInput);
+
+        commentaryInput.value = "";
+        fileNameInput.value = "";
+
+        button.innerText = "Submit Attachment";
+        button.onclick = function () {
+            addAttachment();
+        }
+    }
+
 }

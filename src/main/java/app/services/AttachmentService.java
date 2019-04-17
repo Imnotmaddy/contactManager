@@ -29,7 +29,7 @@ public class AttachmentService {
             return attachments;
         }
         if (!fileParts.isEmpty()) {
-            String[] ids = request.getParameterMap().get("attachmentId");
+            List<Integer> idsForEdit = getAttachmentsIdsForEdit(request);
             String[] fileExtensions = request.getParameterMap().get("fileExtension");
             String[] fileNames = request.getParameterMap().get("fileName");
             String[] fileCommentaries = request.getParameterMap().get("fileCommentary");
@@ -58,12 +58,29 @@ public class AttachmentService {
                 for (int i = 0; i < fileParts.size(); i++) {
                     Part filePart = fileParts.get(i);
                     byte[] attachmentBytes = IOUtils.toByteArray(filePart.getInputStream());
-                    attachments.add(new Attachment(fullFileNames.get(i), fileCommentaries[i], attachmentBytes, dates.get(i), contactId));
+                    if (attachmentBytes.length != 0) {
+                        attachments.add(new Attachment(fullFileNames.get(i), fileCommentaries[i], attachmentBytes, dates.get(i), contactId));
+                    }
                 }
             } catch (IOException ex) {
                 log.error(ex);
             }
+            if (!idsForEdit.isEmpty()) {
+                for (int i = 0; i < idsForEdit.size(); i++) {
+                    attachments.get(i).setId(idsForEdit.get(i));
+                }
+            }
         }
         return attachments;
+    }
+
+    private static List<Integer> getAttachmentsIdsForEdit(HttpServletRequest request) {
+        String attachments = request.getParameter("attachmentsForEdit");
+        if (attachments == null || attachments.isEmpty()) return new ArrayList<>();
+        List<Integer> ids = new ArrayList<>();
+        for (String el : attachments.split(",")) {
+            ids.add(Integer.valueOf(el));
+        }
+        return ids;
     }
 }

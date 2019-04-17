@@ -31,7 +31,7 @@ public class AttachmentDaoImpl extends AbstractDaoImpl<Attachment> implements At
             "VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_DELETE_ATTACHMENT = "DELETE FROM " + ATTACHMENTS + " WHERE `id` = ?";
     private static final String SQL_FIND_ALL_BY_CONTACT_ID = "SELECT *  FROM" + ATTACHMENTS + "WHERE `contactId` = ? ";
-    private static final String SQL_UPDATE_ATTACHMENT = "UPDATE" + ATTACHMENTS + " SET `commentary` = ? WHERE `id` = ?";
+    private static final String SQL_UPDATE_ATTACHMENT = "UPDATE " + ATTACHMENTS + " SET `fileName` = ?, `commentary` = ?, `file` = ?, `dateOfCreation` = ?, `contactId` = ? WHERE `id` = ?";
     private static final String SQL_DELETE_ATTACHMENTS_BY_CONTACT_IDS = "DELETE FROM " + ATTACHMENTS + " WHERE `contactId` in (%s)";
     private static final String SQL_DELETE_ATTACHMENTS_BY_IDS = "DELETE FROM " + ATTACHMENTS + " WHERE `id` in (%s)";
 

@@ -13,6 +13,7 @@ public class DeleteContactsCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
         try {
+            //TODO: no contact for delete selected!!
         Set<Integer> contactIds = Arrays.stream(request.getParameterMap().get("id"))
                 .map(Integer::valueOf).collect(Collectors.toSet());
             ContactDaoImpl.getInstance().deleteAllByIds(contactIds);
