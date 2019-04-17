@@ -10,12 +10,12 @@
 <html>
 <head>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="../css/collapse.css?version=02.04.19"/>
-    <link rel="stylesheet" type="text/css" href="../css/addContact.css?version14.04.19"/>
-    <link rel="stylesheet" type="text/css" href="../css/popup.css?version=03.04.19"/>
-    <link rel="stylesheet" type="text/css" href="../css/myTable.css?version=02.04.19"/>
-    <link rel="stylesheet" type="text/css" href="../css/modalWindow.css?version=12.04.19"/>
-    <link rel="stylesheet" type="text/css" href="../css/centralModal.css?v=1"/>
+    <link rel="stylesheet" type="text/css" href="../css/collapse.css?version=12.04.19"/>
+    <link rel="stylesheet" type="text/css" href="../css/addContact.css?version16.04.19"/>
+    <link rel="stylesheet" type="text/css" href="../css/popup.css?version=12.04.19"/>
+    <link rel="stylesheet" type="text/css" href="../css/myTable.css?version=12.04.19"/>
+    <link rel="stylesheet" type="text/css" href="../css/modalWindow.css?version=16.04.19"/>
+    <link rel="stylesheet" type="text/css" href="../css/centralModal.css?version=20"/>
     <title>New Contact</title>
 </head>
 <body onload="document.getElementById('sex').value = '${contact.sex}'">
@@ -194,16 +194,24 @@
                 <span class="close" id="closeAttachmentModal">&times;</span>
                 <h2>Attachments</h2>
             </div>
+            <div id="hiddenAttachments" hidden>
+
+            </div>
             <div class="modalCenter-body myRow">
                 <br/>
                 <div class="column">
-                    <div id="attachments">
-                        <input type="file" name="attachment">
+                    <div id="attachmentField">
+                        <input type="file" id="submittedFile">
                     </div>
+                    <label for="fileNameInput"><b>File Name:</b></label>
+                    <input type="text" name="fileNameInput" id="fileNameInput">
+
+                    <label for="fileCommentaryInput"><b>Commentary</b></label>
+                    <textarea id="fileCommentaryInput" name="fileCommentaryInput" placeholder="Your commentary..."></textarea>
                 </div>
 
                 <div class="column">
-                    <table class="table table-striped">
+                    <table class="table table-striped" id="attachmentTable">
                         <thead>
                         <tr>
                             <td></td>
@@ -220,7 +228,7 @@
                                 <td>${attachment.dateOfCreation}</td>
                                 <td>${attachment.commentary}</td>
                                 <td>
-                                    <button type="button" class="btn btn-primary  btn-md" onclick="">Edit
+                                    <button type="button" class="btn btn-primary  btn-md" onclick="editAttachment(this)">Edit
                                     </button>
                                 </td>
                             </tr>
@@ -230,11 +238,11 @@
             </div>
             <br/>
             <br/>
-            <button type="button" class="btn"
-                    onclick="document.getElementById('attachmentModal').style.display='none'">
+            <button type="button" class="btnModal" id="attachmentSubmitButton"
+                    onclick="addAttachment();">
                 Submit Attachment
             </button>
-            <button type="button" class="btn cancel"
+            <button type="button" id="attachmentCancelButton" class="btnModal cancel"
                     onclick="document.getElementById('attachmentModal').style.display='none'">
                 Close
             </button>
@@ -265,13 +273,13 @@
 
         <button type="button" class="btn" onclick="addNumber();" id="phoneSubmitButton">Submit</button>
 
-        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+        <button type="button" class="btn cancel" onclick="closeForm()" id="phoneCancelButton">Close</button>
     </div>
 </div>
 
 
-<script type="text/javascript" src="../js/collapse.js?v=2"></script>
-<script type="text/javascript" src="../js/addContact.js?v=2"></script>
-<script type="text/javascript" src="../js/popup.js?v=2"></script>
+<script type="text/javascript" src="../js/collapse.js?v=3"></script>
+<script type="text/javascript" src="../js/addContact.js?v=7"></script>
+<script type="text/javascript" src="../js/popup.js?v=3"></script>
 </body>
 </html>

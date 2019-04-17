@@ -80,11 +80,11 @@ final public class ConnectionPool {
                     throw new SQLException();
                 }
                 usedConnections.add(connection);
-                LOGGER.debug(
+                /*LOGGER.debug(
                         String.format("Connection was received from pool. " +
                                         "Current pool size: %d used connections;" +
                                         " %d free connection", usedConnections.size(),
-                                freeConnections.size()));
+                                freeConnections.size()));*/
             }
 
 
@@ -103,13 +103,13 @@ final public class ConnectionPool {
                 connection.setAutoCommit(true);
                 usedConnections.remove(connection);
                 freeConnections.offer(connection);
-                LOGGER.debug(
+                /*LOGGER.debug(
                         String.format("Connection was returned into pool. " +
                                         "Current pool size: %d used " +
                                         "connections;" +
                                         " %d free connection",
                                 usedConnections.size(),
-                                freeConnections.size()));
+                                freeConnections.size()));*/
             }
         } catch (SQLException e) {
             LOGGER.error("Failed to return a Connection to freeConnections");

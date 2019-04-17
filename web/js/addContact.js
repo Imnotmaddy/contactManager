@@ -1,4 +1,5 @@
 let phonesForDelete = [];
+let attachmentsForDelete = [];
 
 function isPhoneFormValid() {
     let countryCode = document.getElementById('countryCodeInput').value;
@@ -26,7 +27,7 @@ function isEmailValid(mail) {
 }
 
 function isFieldEmpty(text) {
-    return !(text === "");
+    return (text === "");
 }
 
 function addNumber() {
@@ -177,11 +178,11 @@ function unCrossTableRow(rowIndex) {
 }
 
 function submitAll() {
-    if (!isFieldEmpty(document.getElementById('name').value)) {
+    if (isFieldEmpty(document.getElementById('name').value)) {
         alert("Input your name");
         return false;
     }
-    if (!isFieldEmpty(document.getElementById('surname').value)) {
+    if (isFieldEmpty(document.getElementById('surname').value)) {
         alert("Input your surname");
         return false;
     }
@@ -226,14 +227,14 @@ function showPhotoModal() {
 function editNumber(button) {
     let tr = button.parentNode.parentNode;
     let index = tr.rowIndex;
-    editPhoneNumber(index - 1)
+    editPhoneNumber(index - 1);
 }
 
 
 function editPhoneNumber(index) {
     let table = document.getElementById('phoneTable');
     let row = table.rows[index + 1];
-    let button = document.getElementById('phoneSubmitButton');
+    let submitButton = document.getElementById('phoneSubmitButton');
 
     let countryCode = document.getElementsByName('countryCode')[index];
     let operatorCode = document.getElementsByName('operatorCode')[index];
@@ -250,7 +251,6 @@ function editPhoneNumber(index) {
     let phoneNumberInput = document.getElementById('phoneNumberInput');
     phoneNumberInput.value = phoneNumber.value;
 
-
     let phoneTypeInput = document.getElementById('phoneTypeInput');
     phoneTypeInput.value = phoneType.value;
 
@@ -258,7 +258,7 @@ function editPhoneNumber(index) {
     commentaryInput.value = commentary.value;
     openForm();
 
-    button.onclick = function () {
+    submitButton.onclick = function () {
         if (isPhoneFormValid()) {
             phoneNumber.value = "";
             if (checkPhoneForUnique(phoneNumberInput.value)) {
@@ -277,9 +277,9 @@ function editPhoneNumber(index) {
                 phoneTypeInput.value = "";
                 commentaryInput.value = "";
 
-                button.onclick = function () {
+                submitButton.onclick = function () {
                     addNumber();
-                }
+                };
             } else {
                 alert("Phone number exists");
             }
@@ -297,3 +297,159 @@ function showAttachmentModal() {
     };
 }
 
+function replaceSubmittedAttachment(submittedFile) {
+    let cln = submittedFile.cloneNode(false);
+    cln.name = "attachment";
+    cln.id = "";
+    cln.style.display = "none";
+    submittedFile.parentNode.removeChild(submittedFile);
+    return cln;
+}
+
+function addAttachment() {
+    let submittedFile = document.getElementById('submittedFile');
+
+    addAttachmentToTable(submittedFile);
+
+
+    let newFileInput = document.createElement('input');
+    newFileInput.type = 'file';
+    newFileInput.id = "submittedFile";
+
+    document.getElementById('attachmentField').append(newFileInput);
+
+    document.getElementById('fileNameInput').value = "";
+    document.getElementById('fileCommentaryInput').value = "";
+}
+
+function addAttachmentToTable(submittedFile) {
+    let fileName;
+    let submittedFileName = submittedFile.files[0].name;
+    let fileNameInput = document.getElementById('fileNameInput');
+    let fileCommentaryInput = document.getElementById('fileCommentaryInput');
+
+    if (isFieldEmpty(fileNameInput.value)) {
+        fileName = submittedFileName;
+    } else {
+        fileName = fileNameInput.value;
+    }
+
+    let table = document.getElementById('attachmentTable');
+    let row = table.insertRow();
+    row.style.backgroundColor = "#98aa92";
+    let column1 = row.insertCell();
+    let column2 = row.insertCell();
+    let column3 = row.insertCell();
+    let column4 = row.insertCell();
+    let column5 = row.insertCell();
+
+    let button = document.createElement("input");
+    button.type = "button";
+    button.className = "btn btn-primary  btn-md";
+    button.value = "Edit";
+    button.name = "attachmentEditButton";
+    button.onclick = function () {
+        editAttachment(this)
+    };
+
+    let ckBox = document.createElement("input");
+    ckBox.type = "checkbox";
+    ckBox.name = "attachmentIdForDelete";
+    ckBox.value = "new";
+
+    let fileNameForSubmit = document.createElement('input');
+    fileNameForSubmit.type = 'hidden';
+    fileNameForSubmit.name = 'fileName';
+    fileNameForSubmit.value = fileName;
+
+    let fileCommentaryForSubmit = document.createElement('input');
+    fileCommentaryForSubmit.type = 'hidden';
+    fileCommentaryForSubmit.name = 'fileCommentary';
+    fileCommentaryForSubmit.value = fileCommentaryInput.value;
+
+    let fileExtension = document.createElement('input');
+    fileExtension.type = 'hidden';
+    fileExtension.name = 'fileExtension';
+    fileExtension.value = submittedFileName.split('.').pop();
+
+    let dateOfCreation = document.createElement('input');
+    dateOfCreation.type = 'hidden';
+    dateOfCreation.name = 'dateOfCreation';
+    let date = getCurrentDate();
+
+    dateOfCreation.value = date;
+
+    column1.append(ckBox);
+    column1.append(fileCommentaryForSubmit);
+    column1.append(fileNameForSubmit);
+    column1.append(fileExtension);
+    column1.append(dateOfCreation);
+    column1.append(replaceSubmittedAttachment(submittedFile));
+    column2.innerHTML = fileName;
+    column3.innerHTML = date;
+    column4.innerHTML = fileCommentaryInput.value;
+    column5.append(button);
+}
+
+function getCurrentDate() {
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth() + 1; //January is 0!
+    let yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+    return yyyy + '-' + mm + '-' + dd;
+}
+
+function editAttachment(button) {
+    let tr = button.parentNode.parentNode;
+    let index = tr.rowIndex;
+    changeAttachment(index - 1)
+}
+
+function changeAttachment(index) {
+    let table = document.getElementById('attachmentTable');
+    let row = table.rows[index + 1];
+    let button = document.getElementById('attachmentSubmitButton');
+
+    let commentary = document.getElementsByName('fileCommentary')[index];
+    let fileName = document.getElementsByName('fileName')[index];
+    let file = document.getElementsByName('attachment')[index];
+    let filePlacement = file.parentNode;
+    let fileExtension = document.getElementsByName('fileExtension')[index];
+
+    let oldFileInput = document.getElementById('submittedFile');
+    let oldFileInputPlacement = oldFileInput.parentNode;
+    oldFileInputPlacement.removeChild(oldFileInput);
+    file.style.display = 'block';
+    oldFileInputPlacement.append(file);
+
+    let commentaryInput = document.getElementById('fileCommentaryInput');
+    commentaryInput.value = commentary.value;
+
+    let fileNameInput = document.getElementById('fileNameInput');
+    fileNameInput.value = fileName.value;
+
+    button.onclick = function () {
+        if (!isFieldEmpty(fileNameInput.value)) {
+            fileName.value = fileNameInput.value;
+        }
+        commentary.value = commentaryInput.value;
+        fileExtension.value = file.files[0].name.split('.').pop();
+        row.cells[1].innerText = fileName.value;
+        row.cells[2].innerText = getCurrentDate();
+        row.cells[3].innerText = commentary.value;
+        filePlacement.append(replaceSubmittedAttachment(file));
+        commentaryInput.value = "";
+        fileNameInput.value = "";
+
+        button.onclick = function () {
+            addAttachment();
+        }
+    }
+}
