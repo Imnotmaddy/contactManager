@@ -19,6 +19,7 @@ public class ShowEditContactPageCommand implements ActionCommand {
             Contact contact = ContactService.getContactInfoById(Integer.valueOf(request.getParameter("contactId")));
             request.setAttribute("contact", contact);
             request.setAttribute("phoneNumbers", contact.getPhoneNumbers());
+            request.setAttribute("attachments", contact.getAttachments());
             request.setAttribute("command", "updateContact");
             addPhotoToRequest(contact, request);
         } catch (AppException | IllegalArgumentException ex) {

@@ -14,10 +14,10 @@ import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Base64;
-import java.util.Date;
 import java.util.List;
 
 @Log4j2
@@ -40,14 +40,14 @@ public class ContactService {
         String residenceHouseNumber = request.getParameter("residenceHouseNumber");
         String residenceApartmentNumber = request.getParameter("residenceApartmentNumber");
         String index = request.getParameter("index");
-        java.sql.Date sqlStartDate;
-        byte[] photo = {};
+        Date sqlStartDate;
         try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("date"));
-            sqlStartDate = new java.sql.Date(date.getTime());
-        } catch (ParseException e) {
+            LocalDate date = LocalDate.parse(request.getParameter("date"));
+            sqlStartDate = Date.valueOf(date);
+        } catch (DateTimeParseException ex) {
             sqlStartDate = null;
         }
+        byte[] photo = {};
         try {
             Part photoPart = request.getPart("photo");
             photo = IOUtils.toByteArray(photoPart.getInputStream());
@@ -55,7 +55,6 @@ public class ContactService {
                 String oldPhoto = request.getParameter("oldPhoto");
                 photo = Base64.getDecoder().decode(oldPhoto.getBytes());
             }
-
         } catch (IOException | ServletException ex) {
             log.error(ex);
         }

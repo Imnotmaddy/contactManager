@@ -181,6 +181,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
             connection.setAutoCommit(false);
             Contact contact = super.persist(entity, SQL_UPDATE_CONTACT, connection, fields);
             contact.setPhoneNumbers(PhoneDaoImpl.getInstance().updatePhoneNumbers(contact.getPhoneNumbers(), connection));
+            contact.setAttachments(AttachmentDaoImpl.getInstance().updateAttachments(contact.getAttachments(), connection));
             connection.commit();
             return contact;
         } catch (SQLException e) {

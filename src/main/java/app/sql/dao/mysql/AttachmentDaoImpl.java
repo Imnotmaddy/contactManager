@@ -27,10 +27,9 @@ public class AttachmentDaoImpl extends AbstractDaoImpl<Attachment> implements At
 
     private static final Map<Integer, Function<Attachment, Object>> fields;
 
-    private static final String SQL_INSERT_ATTACHMENT = "INSERT INTO " + ATTACHMENTS + "  (`fileName`, `commentary`,`file`, `dateOfCreation`, `contactId`)" +
+    private static final String SQL_INSERT_ATTACHMENT = "INSERT INTO " + ATTACHMENTS + "  (`fileName`, `commentary`, `file`, `dateOfCreation`, `contactId`)" +
             "VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_DELETE_ATTACHMENT = "DELETE FROM " + ATTACHMENTS + " WHERE `id` = ?";
-    private static final String SQL_FIND_BY_ID = "SELECT * FROM" + ATTACHMENTS + " WHERE  `id` = ?";
     private static final String SQL_FIND_ALL_BY_CONTACT_ID = "SELECT *  FROM" + ATTACHMENTS + "WHERE `contactId` = ? ";
     private static final String SQL_UPDATE_ATTACHMENT = "UPDATE" + ATTACHMENTS + " SET `commentary` = ? WHERE `id` = ?";
     private static final String SQL_DELETE_ATTACHMENTS_BY_CONTACT_IDS = "DELETE FROM " + ATTACHMENTS + " WHERE `contactId` in (%s)";
@@ -42,7 +41,7 @@ public class AttachmentDaoImpl extends AbstractDaoImpl<Attachment> implements At
         fields.put(2, Attachment::getCommentary);
         fields.put(3, Attachment::getFile);
         fields.put(4, Attachment::getDateOfCreation);
-        fields.put(6, Attachment::getContactId);
+        fields.put(5, Attachment::getContactId);
     }
 
     public static AttachmentDaoImpl getInstance() {
