@@ -445,6 +445,12 @@ function changeAttachment(index) {
         row.cells[2].innerText = getCurrentDate();
         row.cells[3].innerText = commentary.value;
         filePlacement.append(replaceSubmittedAttachment(file));
+
+        let newFileInput = document.createElement('input');
+        newFileInput.type = 'file';
+        newFileInput.name = 'submittedFile';
+        oldFileInputPlacement.append(newFileInput);
+
         commentaryInput.value = "";
         fileNameInput.value = "";
 
