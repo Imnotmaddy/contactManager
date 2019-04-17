@@ -29,7 +29,7 @@ public class AttachmentService {
             return attachments;
         }
         if (!fileParts.isEmpty()) {
-            List<Integer> idsForEdit = getAttachmentsIdsForEdit(request);
+            List<Integer> idsForEdit = getAttachmentsIdsForChanging(request.getParameter("attachmentsForEdit"));
             String[] fileExtensions = request.getParameterMap().get("fileExtension");
             String[] fileNames = request.getParameterMap().get("fileName");
             String[] fileCommentaries = request.getParameterMap().get("fileCommentary");
@@ -74,8 +74,7 @@ public class AttachmentService {
         return attachments;
     }
 
-    private static List<Integer> getAttachmentsIdsForEdit(HttpServletRequest request) {
-        String attachments = request.getParameter("attachmentsForEdit");
+    public static List<Integer> getAttachmentsIdsForChanging(String attachments) {
         if (attachments == null || attachments.isEmpty()) return new ArrayList<>();
         List<Integer> ids = new ArrayList<>();
         for (String el : attachments.split(",")) {

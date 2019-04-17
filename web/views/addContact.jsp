@@ -241,12 +241,18 @@
                                 <td>${attachment.commentary}</td>
                                 <td>
                                     <button type="button" class="btn btn-primary  btn-md"
-                                            onclick="editExistingAttachment(this)">Edit
+                                            name="attachmentEditButton" onclick="editExistingAttachment(this)">Edit
                                     </button>
                                 </td>
                             </tr>
                         </c:forEach>
                     </table>
+                    <button type="button" class="btn btn-primary  btn-md" onclick="
+                     deleteAttachments();">Delete
+                    </button>
+                    <button type="button" id="attachmentUndo" class="btn btn-primary  btn-md" onclick="
+                     undoAttachmentDelete();" style="visibility: hidden">Undo
+                    </button>
                 </div>
             </div>
             <br/>

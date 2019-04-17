@@ -158,7 +158,7 @@ function undoDelete() {
             const index = phonesForDelete.indexOf(id);
             if (index !== -1) {
                 phonesForDelete.splice(index, 1);
-                unCrossTableRow(i + 1);
+                uncrossTableRow(i + 1, document.getElementById('phoneTable'));
             }
 
             let tr = box.parentNode.parentNode;
@@ -170,8 +170,7 @@ function undoDelete() {
     }
 }
 
-function unCrossTableRow(rowIndex) {
-    let table = document.getElementById('phoneTable');
+function uncrossTableRow(rowIndex, table) {
     let row = table.rows[rowIndex];
     for (let j = 1; j < row.cells.length; j++) {
         row.cells[j].style.setProperty("text-decoration", "none");
@@ -198,13 +197,19 @@ function submitAll() {
     phoneNumberInput.name = "numbersForDelete";
     phoneNumberInput.value = phonesForDelete;
 
-    let attachmentInput = document.createElement("input");
-    attachmentInput.type = "hidden";
-    attachmentInput.name = "attachmentsForEdit";
-    attachmentInput.value = attachmentsForEdit;
+    let attachmentEditInput = document.createElement("input");
+    attachmentEditInput.type = "hidden";
+    attachmentEditInput.name = "attachmentsForEdit";
+    attachmentEditInput.value = attachmentsForEdit;
+
+    let attachmentDeleteInput = document.createElement("input");
+    attachmentDeleteInput.type = "hidden";
+    attachmentDeleteInput.name = "attachmentsForDelete";
+    attachmentDeleteInput.value = attachmentsForDelete;
 
     form.append(phoneNumberInput);
-    form.append(attachmentInput);
+    form.append(attachmentDeleteInput);
+    form.append(attachmentEditInput);
     form.submit();
 
 }
@@ -543,5 +548,55 @@ function editExistingAttachment(caller) {
             addAttachment();
         }
     }
+}
 
+function deleteAttachments() {
+    let amountOfDeleted = 0;
+    let checkBoxes = document.getElementsByName('attachmentIdForDelete');
+    let length = checkBoxes.length;
+    let table = document.getElementById('attachmentTable');
+    for (let i = 0; i < length; i++) {
+        let box = checkBoxes[i - amountOfDeleted];
+        if (box.checked) {
+            if (box.value === "new") {
+                table.deleteRow(i + 1 - amountOfDeleted);
+                amountOfDeleted++;
+            } else {
+                let row = table.rows[i - amountOfDeleted + 1];
+                document.getElementById('attachmentUndo').style.visibility = "visible";
+                for (let j = 0; j < row.cells.length; j++) {
+                    row.cells[j].style.setProperty("text-decoration", "line-through");
+                }
+                if (!attachmentsForDelete.includes(box.value))
+                    attachmentsForDelete.push(box.value);
+                box.checked = false;
+
+                let tr = box.parentNode.parentNode.parentNode;
+                let index = tr.rowIndex - 1;
+                let button = document.getElementsByName("attachmentEditButton")[index];
+                button.disabled = true;
+            }
+        }
+    }
+}
+
+function undoAttachmentDelete() {
+    let checkBoxes = document.getElementsByName('attachmentIdForDelete');
+    for (let i = 0; i < checkBoxes.length; i++) {
+        let box = checkBoxes[i];
+        if (box.checked === true) {
+            const id = box.value;
+            const index = attachmentsForDelete.indexOf(id);
+            if (index !== -1) {
+                attachmentsForDelete.splice(index, 1);
+                uncrossTableRow(i + 1, document.getElementById('attachmentTable'));
+            }
+
+            let tr = box.parentNode.parentNode.parentNode;
+            let butIndex = tr.rowIndex - 1;
+            let button = document.getElementsByName("attachmentEditButton")[butIndex];
+            button.disabled = false;
+        }
+        box.checked = false;
+    }
 }

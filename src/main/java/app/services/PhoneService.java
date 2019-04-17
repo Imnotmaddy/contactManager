@@ -38,7 +38,7 @@ public class PhoneService {
         return numbers;
     }
 
-    public static Set<Integer> getPhoneNumbersForDelete(HttpServletRequest request) {
+    public static Set<Integer> getPhoneNumberIdsForDelete(HttpServletRequest request) {
         String numbers = request.getParameter("numbersForDelete");
         if (numbers == null || numbers.isEmpty()) return new HashSet<>();
         Set<Integer> ids = new HashSet<>();

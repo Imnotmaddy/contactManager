@@ -13,7 +13,6 @@ import java.util.Set;
 public class ShowEmailPageCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
-        //TODO: check for valueOf excception?
         String idsForEmail = request.getParameter("idsForEmail");
         try {
             if (idsForEmail == null || idsForEmail.isEmpty()) {
