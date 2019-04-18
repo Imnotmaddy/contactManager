@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public class ShowAllContactsCommand implements ActionCommand {
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -17,6 +18,6 @@ public class ShowAllContactsCommand implements ActionCommand {
         } catch (AppException ex) {
             request.setAttribute("error", ex.getMessage());
         }
-        return "/views/contactList.jsp";
+        return PagePaths.CONTACT_LIST.getJspPath();
     }
 }

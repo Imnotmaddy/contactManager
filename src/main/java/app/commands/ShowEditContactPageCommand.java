@@ -11,7 +11,6 @@ import java.util.Base64;
 
 @Log4j2
 public class ShowEditContactPageCommand implements ActionCommand {
-    private final String EDITCONTACT = "/views/addContact.jsp";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
@@ -28,7 +27,7 @@ public class ShowEditContactPageCommand implements ActionCommand {
             log.error(ex.getMessage());
             request.setAttribute("error", "Unknown error occurred");
         }
-        return EDITCONTACT;
+        return PagePaths.ADD_CONTACT.getJspPath();
     }
 
     private void addPhotoToRequest(Contact contact, HttpServletRequest request) throws AppException {

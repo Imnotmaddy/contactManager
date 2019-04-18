@@ -6,9 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class RedirectCommand implements ActionCommand {
-    private final static String NEW_CONTACT = "/views/addContact.jsp";
-    private final static String EMAIL_PAGE = "/views/emails.jsp";
-    private final static String SEARCH_PAGE = "/views/searchPage.jsp";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
@@ -18,7 +15,7 @@ public class RedirectCommand implements ActionCommand {
             case "addContact": {
                 request.setAttribute("command", "addContact");
                 ContactService.addDefaultPhoto(request);
-                return NEW_CONTACT;
+                return PagePaths.ADD_CONTACT.getJspPath();
             }
             case "contactList": {
                 if (error != null) {
@@ -27,12 +24,12 @@ public class RedirectCommand implements ActionCommand {
                 return new ShowAllContactsCommand().execute(request, response);
             }
             case "sendEmail": {
-                return EMAIL_PAGE;
+                return PagePaths.EMAILS.getJspPath();
             }
             case "searchPage": {
-                return SEARCH_PAGE;
+                return PagePaths.SEARCH_PAGE.getJspPath();
             }
         }
-        return NEW_CONTACT;
+        return PagePaths.ADD_CONTACT.getJspPath();
     }
 }

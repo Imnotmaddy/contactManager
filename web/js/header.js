@@ -11,12 +11,8 @@ let headerModule = (function () {
             }
         },
         sendEmail: function () {
-            let contactTable = document.getElementById('allContactsTable');
-            if (contactTable !== null) {
-                gatherEmails();
-            } else {
-                headerModule.toContactList("Select recipients for email");
-            }
+            document.getElementById('allContactsTable') ? gatherEmails()
+                : headerModule.toContactList("Select recipients for email");
         },
         toSearchPage: function () {
             window.location = "http://localhost:8080/contactManager?command=redirect&page=searchPage"

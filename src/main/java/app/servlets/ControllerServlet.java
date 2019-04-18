@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/contactManager")
-@MultipartConfig(maxFileSize = 1024*1024*5)
+@MultipartConfig
 public class ControllerServlet extends HttpServlet {
 
     @Override

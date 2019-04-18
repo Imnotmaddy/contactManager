@@ -24,7 +24,12 @@
       enctype="multipart/form-data">
     <div class="myRow">
         <div class="column">
-            <h2>New Contact</h2>
+            <c:if test="${command == 'addContact'}">
+                <h2>New Contact</h2>
+            </c:if>
+            <c:if test="${command == 'updateContact'}">
+                <h2>Edit Contact</h2>
+            </c:if>
             <div class="form-group">
                 <div id="photoBlock">
                     <input type="hidden" value="${photo}" name="oldPhoto">

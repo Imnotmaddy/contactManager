@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ShowEmailPageCommand implements ActionCommand {
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
         String idsForEmail = request.getParameter("idsForEmail");
@@ -25,7 +26,7 @@ public class ShowEmailPageCommand implements ActionCommand {
             List<String> recipients = new ArrayList<>();
             ContactDaoImpl.getInstance().findAllByIds(contactIds).forEach(contact -> recipients.add(contact.getEmail()));
             request.setAttribute("recipients", recipients);
-            return "/views/emails.jsp";
+            return PagePaths.EMAILS.getJspPath();
         } catch (AppException ex) {
             request.setAttribute("error", ex.getMessage());
             return new ShowAllContactsCommand().execute(request, response);
