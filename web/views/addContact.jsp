@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="../css/centralModal.css?version=20"/>
     <title>New Contact</title>
 </head>
-<body onload="document.getElementById('sex').value = '${contact.sex}'">
+<body onload="initializeFieldsInBody(${contact.sex})">
 <jsp:include page="header.jsp"/>
 <form action="/contactManager?command=${command}&id=${contact.id}" method="post" id="contactForm"
       enctype="multipart/form-data">
@@ -232,16 +232,20 @@
                             <tr>
                                 <td>
                                     <div>
+                                            <%--FileName must be firstChild of Div--%>
                                         <input type="hidden" name="fileName" value="${attachment.fileName}">
                                         <input type="hidden" name="fileCommentary" value="${attachment.commentary}">
                                         <input type="hidden" name="dateOfCreation" value="${attachment.dateOfCreation}">
-                                        <input type="file" name="oldFile" style="display: none">
+                                        <input type="file" name="attachment" style="display: none">
                                         <input type="hidden" name="attachmentId" value="${attachment.id}">
                                         <input type="hidden" name="fileExtension">
                                         <input type="checkbox" name="attachmentIdForDelete" value="${attachment.id}">
                                     </div>
                                 </td>
-                                <td>${attachment.fileName}</td>
+                                <td>
+                                    <a href="/contactManager?command=download&downloadAttachmentId=${attachment.id}"
+                                    >${attachment.fileName}</a>
+                                </td>
                                 <td>${attachment.dateOfCreation}</td>
                                 <td>${attachment.commentary}</td>
                                 <td>
@@ -303,7 +307,7 @@
 
 
 <script type="text/javascript" src="../js/collapse.js?v=3"></script>
-<script type="text/javascript" src="../js/addContact.js?v=ultimate"></script>
+<script type="text/javascript" src="../js/addContact.js?v6"></script>
 <script type="text/javascript" src="../js/popup.js?v=3"></script>
 </body>
 </html>

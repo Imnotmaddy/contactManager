@@ -49,6 +49,10 @@ public enum CommandEnum {
         {
             this.command = new SearchCommand();
         }
+    },
+    DOWNLOAD {{
+        this.command = new DownloadCommand();
+    }
     };
 
 

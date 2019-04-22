@@ -23,7 +23,7 @@ public class UpdateContactCommand implements ActionCommand {
             contact.setId(Integer.valueOf(request.getParameter("id")));
             PhoneDaoImpl.getInstance().deleteAllById(PhoneService.getPhoneNumberIdsForDelete(request));
             AttachmentDaoImpl.getInstance().deleteAllById(
-                    new HashSet<>(AttachmentService.getAttachmentsIdsForChanging(request.getParameter("attachmentsForDelete"))));
+                    new HashSet<>(AttachmentService.parseStringForIds(request.getParameter("attachmentsForDelete"))));
             contact.setAttachments(AttachmentService.getAllAttachments(request, contact.getId()));
             contact.setPhoneNumbers(PhoneService.getAllPhoneNumbers(request, contact.getId()));
             ContactDaoImpl.getInstance().updateContact(contact);

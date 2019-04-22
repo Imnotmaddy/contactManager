@@ -310,15 +310,6 @@ function showAttachmentModal() {
     };
 }
 
-function replaceSubmittedAttachment(submittedFile) {
-    let cln = submittedFile.cloneNode(false);
-    cln.name = "attachment";
-    cln.id = "";
-    cln.style.display = "none";
-    submittedFile.parentNode.removeChild(submittedFile);
-    return cln;
-}
-
 function addAttachment() {
     let submittedFile = document.getElementById('submittedFile');
 
@@ -393,12 +384,18 @@ function addAttachmentToTable(submittedFile) {
 
     dateOfCreation.value = date;
 
+    let file = submittedFile.cloneNode(false);
+    submittedFile.parentNode.removeChild(submittedFile);
+    file.name = 'attachment';
+    file.id = '';
+    file.style.display = "none";
+
     column1.append(ckBox);
     column1.append(fileCommentaryForSubmit);
     column1.append(fileNameForSubmit);
     column1.append(fileExtension);
     column1.append(dateOfCreation);
-    column1.append(replaceSubmittedAttachment(submittedFile));
+    column1.append(file);
     column2.innerHTML = fileName;
     column3.innerHTML = date;
     column4.innerHTML = fileCommentaryInput.value;
@@ -423,13 +420,18 @@ function getCurrentDate() {
 function editNewAttachment(button) {
     let tr = button.parentNode.parentNode;
     let index = tr.rowIndex;
-    changeAttachment(index - 1)
+
+    document.getElementsByName('attachmentEditButton').forEach(button => {
+        button.disabled = true;
+    });
+    changeAttachment(index - 1);
 }
 
 function changeAttachment(index) {
     let table = document.getElementById('attachmentTable');
     let row = table.rows[index + 1];
-    let button = document.getElementById('attachmentSubmitButton');
+    let attachmentSubmitButton = document.getElementById('attachmentSubmitButton');
+    let attachmentCancelButton = document.getElementById('attachmentCancelButton');
 
     let commentary = document.getElementsByName('fileCommentary')[index];
     let fileName = document.getElementsByName('fileName')[index];
@@ -438,10 +440,11 @@ function changeAttachment(index) {
     let fileExtension = document.getElementsByName('fileExtension')[index];
 
     let oldFileInput = document.getElementById('submittedFile');
-    let oldFileInputPlacement = oldFileInput.parentNode;
-    oldFileInputPlacement.removeChild(oldFileInput);
+    oldFileInput.parentNode.removeChild(oldFileInput);
+
     file.style.display = 'block';
-    oldFileInputPlacement.append(file);
+    document.getElementById('attachmentField').append(file);
+
     file.onchange = function () {
         fileNameInput.value = file.files[0].name;
     };
@@ -452,8 +455,8 @@ function changeAttachment(index) {
     let fileNameInput = document.getElementById('fileNameInput');
     fileNameInput.value = fileName.value;
 
-    button.innerText = "Confirm Edit";
-    button.onclick = function () {
+    attachmentSubmitButton.innerText = "Confirm Edit";
+    attachmentSubmitButton.onclick = function () {
         if (!isFieldEmpty(fileNameInput.value)) {
             fileName.value = fileNameInput.value;
         }
@@ -462,7 +465,13 @@ function changeAttachment(index) {
         row.cells[1].innerText = fileName.value;
         row.cells[2].innerText = getCurrentDate();
         row.cells[3].innerText = commentary.value;
-        filePlacement.append(replaceSubmittedAttachment(file));
+
+        let newFile = file.cloneNode(false);
+        file.parentNode.removeChild(file);
+        newFile.name = 'attachment';
+        newFile.id = '';
+        newFile.style.display = "none";
+        filePlacement.append(newFile);
 
         let newFileInput = document.createElement('input');
         newFileInput.type = 'file';
@@ -470,39 +479,87 @@ function changeAttachment(index) {
         newFileInput.onchange = function () {
             fileNameInput.value = newFileInput.files[0].name;
         };
-        oldFileInputPlacement.append(newFileInput);
+        document.getElementById('attachmentField').append(newFileInput);
 
         commentaryInput.value = "";
         fileNameInput.value = "";
 
-        button.innerText = "Submit Attachment";
-        button.onclick = function () {
+        attachmentSubmitButton.innerText = "Submit Attachment";
+        document.getElementsByName('attachmentEditButton').forEach(button => {
+            button.disabled = false;
+        });
+        attachmentCancelButton.onclick = function () {
+            document.getElementById('attachmentModal').style.display = 'none'
+        };
+        attachmentSubmitButton.onclick = function () {
             addAttachment();
         }
+    };
+
+    attachmentCancelButton.innerText = "Cancel Edit";
+    attachmentCancelButton.onclick = function () {
+        attachmentSubmitButton.innerText = "Submit Attachment";
+        attachmentCancelButton.innerText = "Close";
+        attachmentSubmitButton.onclick = function () {
+            addAttachment();
+        }
+        attachmentCancelButton.onclick = function () {
+            document.getElementById('attachmentModal').style.display = 'none'
+        };
+
+        let newFile = file.cloneNode(false);
+        file.parentNode.removeChild(file);
+        newFile.name = 'attachment';
+        newFile.id = '';
+        newFile.style.display = "none";
+        filePlacement.append(newFile);
+
+        let newFileInput = document.createElement('input');
+        newFileInput.type = 'file';
+        newFileInput.id = 'submittedFile';
+        newFileInput.onchange = function () {
+            fileNameInput.value = newFileInput.files[0].name;
+        };
+        document.getElementById('attachmentField').append(newFileInput);
+
+        document.getElementsByName('attachmentEditButton').forEach(button => {
+            button.disabled = false;
+        });
+        commentaryInput.value = "";
+        fileNameInput.value = "";
+
     }
 }
 
+function getExtension(fileName) {
+    return fileName.split('.').pop();
+}
+
 function editExistingAttachment(caller) {
+    document.getElementsByName('attachmentEditButton').forEach(button => {
+        button.disabled = true;
+    });
+
     let tr = caller.parentNode.parentNode;
     let index = tr.rowIndex - 1; // input index
     let attachmentId = document.getElementsByName('attachmentId')[index].value;
 
     let table = document.getElementById('attachmentTable');
     let row = table.rows[index + 1];
-    let button = document.getElementById('attachmentSubmitButton');
+    let oldFile = document.getElementsByName('attachment')[index];
+
+    let attachmentSubmitButton = document.getElementById('attachmentSubmitButton');
 
     let commentary = document.getElementsByName('fileCommentary')[index];
     let fileExtension = document.getElementsByName('fileExtension')[index];
     let fileName = document.getElementsByName('fileName')[index];
     let dateOfCreation = document.getElementsByName('dateOfCreation')[index];
-    let file = document.getElementsByName('oldFile')[index];
-    let filePlacement = file.parentNode;
+    let filePlacement = fileName.parentNode;
 
     dateOfCreation.value = getCurrentDate();
 
     let fileInput = document.getElementById('submittedFile');
     fileInput.value = "";
-    let oldFileInputPlacement = fileInput.parentNode;
 
     let commentaryInput = document.getElementById('fileCommentaryInput');
     commentaryInput.value = commentary.value;
@@ -510,23 +567,39 @@ function editExistingAttachment(caller) {
     let fileNameInput = document.getElementById('fileNameInput');
     fileNameInput.value = fileName.value;
 
-    button.innerText = "Confirm Edit";
-    file.onchange = function () {
-        fileNameInput.value = file.files[0].name;
+    attachmentSubmitButton.innerText = "Confirm Edit";
+    fileInput.onchange = function () {
+        fileNameInput.value = fileInput.files[0].name;
     };
-    button.onclick = function () {
+    attachmentSubmitButton.onclick = function () {
+        document.getElementsByName('attachmentEditButton').forEach(button => {
+            button.disabled = false;
+        });
+
+
         if (!isFieldEmpty(fileNameInput.value)) {
             fileName.value = fileNameInput.value;
         }
         commentary.value = commentaryInput.value;
         if (fileInput.value !== "") {
+            oldFile.parentNode.removeChild(oldFile);
             fileExtension.value = fileInput.files[0].name.split('.').pop();
-            filePlacement.append(replaceSubmittedAttachment(fileInput));
-            if (!phonesForDelete.includes(attachmentId)) {
-                attachmentsForEdit.push(attachmentId);
-            }
+
+            let file = fileInput.cloneNode(false);
+            fileInput.parentNode.removeChild(fileInput);
+            file.name = 'attachment';
+            file.id = '';
+            file.style.display = "none";
+            document.getElementsByName('attachmentEditButton')[index].onclick = function () {
+                editNewAttachment(this);
+            };
+
+            filePlacement.append(file);
         } else {
-            filePlacement.append(replaceSubmittedAttachment(fileInput));
+            fileInput.parentNode.removeChild(fileInput);
+        }
+        if (!attachmentsForEdit.includes(attachmentId)) {
+            attachmentsForEdit.push(attachmentId);
         }
         row.cells[1].innerText = fileName.value;
         row.cells[2].innerText = getCurrentDate();
@@ -538,13 +611,13 @@ function editExistingAttachment(caller) {
         newFileInput.onchange = function () {
             fileNameInput.value = newFileInput.files[0].name;
         };
-        oldFileInputPlacement.append(newFileInput);
+        document.getElementById('attachmentField').append(newFileInput);
 
         commentaryInput.value = "";
         fileNameInput.value = "";
 
-        button.innerText = "Submit Attachment";
-        button.onclick = function () {
+        attachmentSubmitButton.innerText = "Submit Attachment";
+        attachmentSubmitButton.onclick = function () {
             addAttachment();
         }
     }
@@ -599,4 +672,10 @@ function undoAttachmentDelete() {
         }
         box.checked = false;
     }
+}
+
+function initializeFieldsInBody() {
+    document.getElementsByName('fileExtension').forEach(element => {
+        element.value = getExtension(element.parentNode.firstElementChild.value);
+    });
 }

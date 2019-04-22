@@ -30,6 +30,7 @@ public class AttachmentDaoImpl extends AbstractDaoImpl<Attachment> implements At
     private static final String SQL_INSERT_ATTACHMENT = "INSERT INTO " + ATTACHMENTS + "  (`fileName`, `commentary`, `file`, `dateOfCreation`, `contactId`)" +
             "VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_DELETE_ATTACHMENT = "DELETE FROM " + ATTACHMENTS + " WHERE `id` = ?";
+    private static final String SQL_FIND_BY_ID = "SELECT * FROM " + ATTACHMENTS + " WHERE `id` = ? ";
     private static final String SQL_FIND_ALL_BY_CONTACT_ID = "SELECT *  FROM" + ATTACHMENTS + "WHERE `contactId` = ? ";
     private static final String SQL_UPDATE_ATTACHMENT = "UPDATE " + ATTACHMENTS + " SET `fileName` = ?, `commentary` = ?, `file` = ?, `dateOfCreation` = ?, `contactId` = ? WHERE `id` = ?";
     private static final String SQL_DELETE_ATTACHMENTS_BY_CONTACT_IDS = "DELETE FROM " + ATTACHMENTS + " WHERE `contactId` in (%s)";
@@ -122,5 +123,26 @@ public class AttachmentDaoImpl extends AbstractDaoImpl<Attachment> implements At
         return newAttachments;
     }
 
-
+    public Attachment findById(Integer id) throws AppException {
+        if (id == null) {
+            throw new IllegalArgumentException("Cannot find null entity!");
+        }
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_ID)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return buildAttachment(resultSet);
+            } else {
+                throw new AppException("Attachment with id =" + id + " not found. Please, try again or call our administrator");
+            }
+        } catch (SQLException e) {
+            log.error(e);
+            throw new AppException("An error occurred while getting the attachment. Please, try again or call our administrator");
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
+    }
 }
+
+
