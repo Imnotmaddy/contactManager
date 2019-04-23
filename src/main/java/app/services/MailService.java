@@ -49,7 +49,7 @@ public class MailService {
         } catch (MessagingException e) {
             log.error(e);
             log.error(session.getDebug());
-            throw new AppException("Error during sending your email");
+            throw new AppException("Error during sending your emails");
         }
     }
 }

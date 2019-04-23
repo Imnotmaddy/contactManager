@@ -196,7 +196,6 @@
         <!-- Modal content -->
         <div class="modalCenter-content">
             <div class="modalCenter-header">
-                <span class="close" id="closeAttachmentModal">&times;</span>
                 <h2>Attachments</h2>
             </div>
             <div id="hiddenAttachments" hidden>
@@ -256,7 +255,7 @@
                             </tr>
                         </c:forEach>
                     </table>
-                    <button type="button" class="btn btn-primary  btn-md" onclick="
+                    <button type="button" class="btn btn-primary  btn-md" id="attachmentDelete" onclick="
                      deleteAttachments();">Delete
                     </button>
                     <button type="button" id="attachmentUndo" class="btn btn-primary  btn-md" onclick="
@@ -307,7 +306,7 @@
 
 
 <script type="text/javascript" src="../js/collapse.js?v=3"></script>
-<script type="text/javascript" src="../js/addContact.js?versy"></script>
+<script type="text/javascript" src="../js/addContact.js?versionNow"></script>
 <script type="text/javascript" src="../js/popup.js?v=3"></script>
 </body>
 </html>

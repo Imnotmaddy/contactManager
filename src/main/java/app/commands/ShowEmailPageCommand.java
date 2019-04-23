@@ -17,7 +17,7 @@ public class ShowEmailPageCommand implements ActionCommand {
         String idsForEmail = request.getParameter("idsForEmail");
         try {
             if (idsForEmail == null || idsForEmail.isEmpty()) {
-                throw new AppException("You didn't set any emails. Please select users via checkboxes and then press button SendEmail");
+                throw new AppException("You didn't set any recipients. Please select contacts via checkboxes and then press button SendEmail");
             }
             Set<Integer> contactIds = new HashSet<>();
             for (String id : idsForEmail.split(",")) {

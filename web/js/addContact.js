@@ -308,12 +308,7 @@ function editPhoneNumber(index) {
 
 function showAttachmentModal() {
     let modal = document.getElementById('attachmentModal');
-    let span = document.getElementById("closeAttachmentModal");
-
     modal.style.display = "block";
-    span.onclick = function () {
-        modal.style.display = "none";
-    };
 }
 
 function addAttachment() {
@@ -441,6 +436,8 @@ function changeAttachment(index) {
     let row = table.rows[index + 1];
     let attachmentSubmitButton = document.getElementById('attachmentSubmitButton');
     let attachmentCancelButton = document.getElementById('attachmentCancelButton');
+    document.getElementById('attachmentDelete').disabled = true;
+    document.getElementById('attachmentUndo').disabled = true;
 
     let commentary = document.getElementsByName('fileCommentary')[index];
     let fileName = document.getElementsByName('fileName')[index];
@@ -504,6 +501,8 @@ function changeAttachment(index) {
         attachmentSubmitButton.onclick = function () {
             addAttachment();
         }
+        document.getElementById('attachmentDelete').disabled = false;
+        document.getElementById('attachmentUndo').disabled = false;
     };
 
     attachmentCancelButton.innerText = "Cancel Edit";
@@ -537,7 +536,8 @@ function changeAttachment(index) {
         });
         commentaryInput.value = "";
         fileNameInput.value = "";
-
+        document.getElementById('attachmentDelete').disabled = false;
+        document.getElementById('attachmentUndo').disabled = false;
     }
 }
 
@@ -549,6 +549,8 @@ function editExistingAttachment(caller) {
     document.getElementsByName('attachmentEditButton').forEach(button => {
         button.disabled = true;
     });
+    document.getElementById('attachmentDelete').disabled = true;
+    document.getElementById('attachmentUndo').disabled = true;
 
     let tr = caller.parentNode.parentNode;
     let index = tr.rowIndex - 1; // input index
@@ -637,7 +639,10 @@ function editExistingAttachment(caller) {
         };
         attachmentCancelButton.onclick = function () {
             document.getElementById('attachmentModal').style.display = 'none';
-        }
+        };
+
+        document.getElementById('attachmentDelete').disabled = false;
+        document.getElementById('attachmentUndo').disabled = false;
     };
 
     attachmentCancelButton.onclick = function () {
@@ -655,6 +660,8 @@ function editExistingAttachment(caller) {
         attachmentCancelButton.onclick = function () {
             document.getElementById('attachmentModal').style.display = 'none'
         };
+        document.getElementById('attachmentDelete').disabled = false;
+        document.getElementById('attachmentUndo').disabled = false;
     };
 }
 

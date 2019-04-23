@@ -75,16 +75,20 @@ public class AttachmentService {
             }
 
             if (!idsForDelete.isEmpty()) {
-                List<Attachment> removedAttachments = attachments.stream().filter(el -> idsForDelete.contains(el.getId())).collect(Collectors.toList());
-                attachments.removeAll(removedAttachments);
+                attachments = attachments.stream().filter(el -> !idsForDelete.contains(el.getId())).collect(Collectors.toList());
             }
 
             if (!idsForEdit.isEmpty()) {
+                attachments = attachments.stream().filter(el ->
+                        (el.getId() == null) || (idsForEdit.contains(el.getId()))
+                ).collect(Collectors.toList());
                 for (Attachment attachment : attachments) {
                     if (attachment.getFile().length == 0) {
                         attachment.setFile(AttachmentDaoImpl.getInstance().findById(attachment.getId()).getFile());
                     }
                 }
+            } else {
+                attachments = attachments.stream().filter(el -> el.getId() == null).collect(Collectors.toList());
             }
 
 

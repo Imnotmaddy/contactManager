@@ -13,17 +13,15 @@ public class SendEmailCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
         try {
-            //TODO: check current recipients for null=> sendback originRecipients
             //TODO: validate all the fields
             String msgText = request.getParameter("msgText");
             String msgSubject = request.getParameter("msgSubject");
-            String[] originSetOfRecipients = request.getParameterMap().get("originSetOfRecipients");
             String currentRecipients = request.getParameter("currentRecipients");
 
             Set<String> recipients = new HashSet<>(Arrays.asList(currentRecipients.split(",")));
             MailService.sendEmail(recipients, msgText, msgSubject);
         } catch (AppException ex) {
-            request.setAttribute("error", "Couldnt send emails");
+            request.setAttribute("error", ex.getMessage());
         }
 
         return new ShowAllContactsCommand().execute(request, response);

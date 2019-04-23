@@ -5,6 +5,7 @@ public enum PagePaths {
     ADD_CONTACT("/views/addContact.jsp"),
     CONTACT_LIST("/views/contactList.jsp"),
     EMAILS("/views/emails.jsp"),
+    INDEX_PAGE("index.jsp"),
     SEARCH_PAGE("/views/searchPage.jsp");
     String jspPath;
 

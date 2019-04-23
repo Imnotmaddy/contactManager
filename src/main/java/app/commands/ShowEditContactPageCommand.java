@@ -30,7 +30,7 @@ public class ShowEditContactPageCommand implements ActionCommand {
         return PagePaths.ADD_CONTACT.getJspPath();
     }
 
-    private void addPhotoToRequest(Contact contact, HttpServletRequest request) throws AppException {
+    private void addPhotoToRequest(Contact contact, HttpServletRequest request) {
         String photo = Base64.getEncoder().encodeToString(contact.getPhoto());
         if (photo.equals("")) {
             ContactService.addDefaultPhoto(request);

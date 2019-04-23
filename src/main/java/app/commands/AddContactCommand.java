@@ -16,7 +16,6 @@ public class AddContactCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
         try {
-            // TODO: check if user tries to submit phoneNumber that already exists. Save the other ones?
             Contact contact = ContactDaoImpl.getInstance().save(ContactService.getContactParameters(request));
             PhoneDaoImpl.getInstance().saveAll(PhoneService.getAllPhoneNumbers(request, contact.getId()));
             AttachmentDaoImpl.getInstance().saveAll(AttachmentService.getAllAttachments(request, contact.getId()));
