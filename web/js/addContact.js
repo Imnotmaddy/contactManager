@@ -191,6 +191,13 @@ function submitAll() {
         return false;
     }
 
+    for (let i = 0; i < attachmentsForEdit.length; i++) {
+        if (attachmentsForDelete.includes(attachmentsForEdit[i])) {
+            attachmentsForEdit.splice(i, 1);
+            i--;
+        }
+    }
+
     let form = document.getElementById('contactForm');
     let phoneNumberInput = document.createElement("input");
     phoneNumberInput.type = "hidden";
@@ -389,6 +396,9 @@ function addAttachmentToTable(submittedFile) {
     file.name = 'attachment';
     file.id = '';
     file.style.display = "none";
+    file.onchange = function (){
+        fileNameInput.value = file.files[0].name;
+    };
 
     column1.append(ckBox);
     column1.append(fileCommentaryForSubmit);
@@ -575,10 +585,12 @@ function editExistingAttachment(caller) {
         document.getElementsByName('attachmentEditButton').forEach(button => {
             button.disabled = false;
         });
-
-
+        fileExtension.value = getExtension(fileName.value);
         if (!isFieldEmpty(fileNameInput.value)) {
             fileName.value = fileNameInput.value;
+            if (fileName.value.includes('.')) {
+                fileExtension.value = getExtension(fileName.value);
+            }
         }
         commentary.value = commentaryInput.value;
         if (fileInput.value !== "") {

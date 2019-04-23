@@ -45,6 +45,7 @@ public class DownloadCommand implements ActionCommand {
         } catch (AppException | IOException ex) {
             request.setAttribute("error", ex.getMessage());
         }
+        //this return does nothing anyway. there is no redirect after download
         return new ShowAllContactsCommand().execute(request, response);
     }
 }

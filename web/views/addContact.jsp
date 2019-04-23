@@ -307,7 +307,7 @@
 
 
 <script type="text/javascript" src="../js/collapse.js?v=3"></script>
-<script type="text/javascript" src="../js/addContact.js?v6"></script>
+<script type="text/javascript" src="../js/addContact.js?version"></script>
 <script type="text/javascript" src="../js/popup.js?v=3"></script>
 </body>
 </html>

@@ -1,6 +1,8 @@
 package app.services;
 
+import app.exception.AppException;
 import app.models.Attachment;
+import app.sql.dao.mysql.AttachmentDaoImpl;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 
@@ -18,7 +20,7 @@ import java.util.stream.Collectors;
 @Log4j2
 public class AttachmentService {
 
-    public static List<Attachment> getAllAttachments(HttpServletRequest request, Integer contactId) {
+    public static List<Attachment> getAllAttachments(HttpServletRequest request, Integer contactId) throws AppException {
         List<Attachment> attachments = new ArrayList<>();
         List<Part> fileParts;
         try {
@@ -29,8 +31,9 @@ public class AttachmentService {
             return attachments;
         }
         List<Integer> idsForEdit = parseStringForIds(request.getParameter("attachmentsForEdit"));
-
+        List<Integer> idsForDelete = parseStringForIds(request.getParameter("attachmentsForDelete"));
         if (!fileParts.isEmpty() || !idsForEdit.isEmpty()) {
+            String[] attachmentIds = request.getParameterMap().get("attachmentId");
             String[] fileExtensions = request.getParameterMap().get("fileExtension");
             String[] fileNames = request.getParameterMap().get("fileName");
             String[] fileCommentaries = request.getParameterMap().get("fileCommentary");
@@ -59,18 +62,32 @@ public class AttachmentService {
                 for (int i = 0; i < fileParts.size(); i++) {
                     Part filePart = fileParts.get(i);
                     byte[] attachmentBytes = IOUtils.toByteArray(filePart.getInputStream());
-                    if (attachmentBytes.length != 0) {
-                        attachments.add(new Attachment(fullFileNames.get(i), fileCommentaries[i], attachmentBytes, dates.get(i), contactId));
-                    }
+                    attachments.add(new Attachment(fullFileNames.get(i), fileCommentaries[i], attachmentBytes, dates.get(i), contactId));
                 }
             } catch (IOException ex) {
                 log.error(ex);
             }
-            if (!idsForEdit.isEmpty()) {
-                for (int i = 0; i < idsForEdit.size(); i++) {
-                    attachments.get(i).setId(idsForEdit.get(i));
+
+            if (attachmentIds != null) {
+                for (int i = 0; i < attachmentIds.length; i++) {
+                    attachments.get(i).setId(Integer.valueOf(attachmentIds[i]));
                 }
             }
+
+            if (!idsForDelete.isEmpty()) {
+                List<Attachment> removedAttachments = attachments.stream().filter(el -> idsForDelete.contains(el.getId())).collect(Collectors.toList());
+                attachments.removeAll(removedAttachments);
+            }
+
+            if (!idsForEdit.isEmpty()) {
+                for (Attachment attachment : attachments) {
+                    if (attachment.getFile().length == 0) {
+                        attachment.setFile(AttachmentDaoImpl.getInstance().findById(attachment.getId()).getFile());
+                    }
+                }
+            }
+
+
         }
         return attachments;
     }
