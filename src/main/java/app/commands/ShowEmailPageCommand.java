@@ -22,9 +22,14 @@ public class ShowEmailPageCommand implements ActionCommand {
         for (String id : idsForEmail.split(",")) {
             contactIds.add(Integer.valueOf(id));
         }
-        List<String> recipients = new ArrayList<>();
-        ContactDaoImpl.getInstance().findAllByIds(contactIds).forEach(contact -> recipients.add(contact.getEmail()));
-        request.setAttribute("recipients", recipients);
+        List<String> emails = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+        ContactDaoImpl.getInstance().findAllByIds(contactIds).forEach(contact -> {
+            emails.add(contact.getEmail());
+            names.add(contact.getSurname());
+        });
+        request.setAttribute("recipients", emails);
+        request.setAttribute("names", names);
         return PagePaths.EMAILS.getJspPath();
     }
 }

@@ -13,8 +13,12 @@ public class DeleteContactsCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
         //TODO IllegalArgumentException
-        //TODO: no contact for delete selected!!
-        Set<Integer> contactIds = Arrays.stream(request.getParameterMap().get("id"))
+        String[] ids = request.getParameterMap().get("id");
+        if (ids == null) {
+            request.getSession().setAttribute("error", "Select contacts for delete via checkboxes, then press button 'Delete'");
+            return new ShowAllContactsCommand().execute(request, response);
+        }
+        Set<Integer> contactIds = Arrays.stream(ids)
                 .map(Integer::valueOf).collect(Collectors.toSet());
         ContactDaoImpl.getInstance().deleteAllByIds(contactIds);
         return new ShowAllContactsCommand().execute(request, response);
