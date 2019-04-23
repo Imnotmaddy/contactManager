@@ -22,12 +22,13 @@
     <a onclick="headerModule.toSearchPage();"><i class="fa fa-fw fa-search"></i> Search</a>
 </div>
 
-<c:if test="${not empty error}">
+<c:if test="${not empty sessionScope.error}">
     <div class="alert">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <span class="closebtn" onclick="this.parentElement.style.display = 'none';">&times;</span>
         <strong>Error!</strong> ${error}
     </div>
+    <c:remove var="error" scope="session"/>
 </c:if>
-<script type="text/javascript" src="../js/header.js?date=15.04.2019"></script>
+<script type="text/javascript" src="../js/header.js?date=24.04.2019"></script>
 </body>
 </html>

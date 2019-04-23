@@ -11,13 +11,9 @@ import java.util.List;
 public class ShowAllContactsCommand implements ActionCommand {
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            List<Contact> contacts = ContactDaoImpl.getInstance().findAll();
-            request.setAttribute("contacts", contacts);
-        } catch (AppException ex) {
-            request.setAttribute("error", ex.getMessage());
-        }
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
+        List<Contact> contacts = ContactDaoImpl.getInstance().findAll();
+        request.setAttribute("contacts", contacts);
         return PagePaths.CONTACT_LIST.getJspPath();
     }
 }

@@ -17,22 +17,16 @@ import java.util.HashSet;
 @Log4j2
 public class UpdateContactCommand implements ActionCommand {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Contact contact = ContactService.getContactParameters(request);
-            contact.setId(Integer.valueOf(request.getParameter("id")));
-            PhoneDaoImpl.getInstance().deleteAllById(PhoneService.getPhoneNumberIdsForDelete(request));
-            AttachmentDaoImpl.getInstance().deleteAllById(
-                    new HashSet<>(AttachmentService.parseStringForIds(request.getParameter("attachmentsForDelete"))));
-            contact.setAttachments(AttachmentService.getAllAttachments(request, contact.getId()));
-            contact.setPhoneNumbers(PhoneService.getAllPhoneNumbers(request, contact.getId()));
-            ContactDaoImpl.getInstance().updateContact(contact);
-        } catch (AppException | IllegalArgumentException e) {
-            request.setAttribute("error", e.getMessage());
-        } catch (Exception ex) {
-            request.setAttribute("error", "Unknown error occurred");
-            log.error(ex);
-        }
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
+        //TODO  IllegalArgumentException
+        Contact contact = ContactService.getContactParameters(request);
+        contact.setId(Integer.valueOf(request.getParameter("id")));
+        PhoneDaoImpl.getInstance().deleteAllById(PhoneService.getPhoneNumberIdsForDelete(request));
+        AttachmentDaoImpl.getInstance().deleteAllById(
+                new HashSet<>(AttachmentService.parseStringForIds(request.getParameter("attachmentsForDelete"))));
+        contact.setAttachments(AttachmentService.getAllAttachments(request, contact.getId()));
+        contact.setPhoneNumbers(PhoneService.getAllPhoneNumbers(request, contact.getId()));
+        ContactDaoImpl.getInstance().updateContact(contact);
         return new ShowAllContactsCommand().execute(request, response);
     }
 

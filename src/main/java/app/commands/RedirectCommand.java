@@ -1,5 +1,6 @@
 package app.commands;
 
+import app.exception.AppException;
 import app.services.ContactService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 public class RedirectCommand implements ActionCommand {
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
         final String toPage = request.getParameter("page");
         final String error = request.getParameter("error");
         switch (toPage) {
@@ -19,7 +20,7 @@ public class RedirectCommand implements ActionCommand {
             }
             case "contactList": {
                 if (error != null) {
-                    request.setAttribute("error", error);
+                    request.getSession().setAttribute("error", error);
                 }
                 return new ShowAllContactsCommand().execute(request, response);
             }

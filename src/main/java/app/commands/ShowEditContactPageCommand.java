@@ -13,20 +13,14 @@ import java.util.Base64;
 public class ShowEditContactPageCommand implements ActionCommand {
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Contact contact = ContactService.getContactInfoById(Integer.valueOf(request.getParameter("contactId")));
-            request.setAttribute("contact", contact);
-            request.setAttribute("phoneNumbers", contact.getPhoneNumbers());
-            request.setAttribute("attachments", contact.getAttachments());
-            request.setAttribute("command", "updateContact");
-            addPhotoToRequest(contact, request);
-        } catch (AppException | IllegalArgumentException ex) {
-            request.setAttribute("error", ex.getMessage());
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-            request.setAttribute("error", "Unknown error occurred");
-        }
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
+        //TODO: IllegalArgumentException
+        Contact contact = ContactService.getContactInfoById(Integer.valueOf(request.getParameter("contactId")));
+        request.setAttribute("contact", contact);
+        request.setAttribute("phoneNumbers", contact.getPhoneNumbers());
+        request.setAttribute("attachments", contact.getAttachments());
+        request.setAttribute("command", "updateContact");
+        addPhotoToRequest(contact, request);
         return PagePaths.ADD_CONTACT.getJspPath();
     }
 

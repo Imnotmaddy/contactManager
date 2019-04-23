@@ -2,8 +2,10 @@ package app.servlets;
 
 import app.commands.ActionCommand;
 import app.commands.factory.ActionFactory;
+import app.exception.AppException;
 import app.sql.pool.ConnectionPool;
 import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
+import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -15,6 +17,7 @@ import java.io.IOException;
 
 @WebServlet("/contactManager")
 @MultipartConfig
+@Log4j2
 public class ControllerServlet extends HttpServlet {
 
     @Override
@@ -26,10 +29,18 @@ public class ControllerServlet extends HttpServlet {
     private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String page;
         ActionFactory client = new ActionFactory();
-        ActionCommand command;
-        command = client.defineCommand(req);
-        page = command != null ? command.execute(req, resp) : null;
-        getServletContext().getRequestDispatcher(page).forward(req, resp);
+        ActionCommand command = client.defineCommand(req);
+        try {
+            page = command != null ? command.execute(req, resp) : null;
+            getServletContext().getRequestDispatcher(page).forward(req, resp);
+        } catch (AppException ex) {
+            command.showError(req, resp, ex.getMessage());
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            log.error(ex.getStackTrace());
+            command.showError(req, resp, "Unknown error occurred");
+            //TODO showError may produce nullpointer. WTF? !
+        }
     }
 
 
