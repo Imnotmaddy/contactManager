@@ -294,7 +294,6 @@ function editPhoneNumber(index) {
                 countryCodeInput.value = "";
                 operatorCodeInput.value = "";
                 phoneNumberInput.value = "";
-                phoneTypeInput.value = "";
                 commentaryInput.value = "";
 
                 submitButton.onclick = function () {
@@ -396,7 +395,7 @@ function addAttachmentToTable(submittedFile) {
     file.name = 'attachment';
     file.id = '';
     file.style.display = "none";
-    file.onchange = function (){
+    file.onchange = function () {
         fileNameInput.value = file.files[0].name;
     };
 
@@ -495,6 +494,7 @@ function changeAttachment(index) {
         fileNameInput.value = "";
 
         attachmentSubmitButton.innerText = "Submit Attachment";
+        attachmentCancelButton.innerText = "Cancel";
         document.getElementsByName('attachmentEditButton').forEach(button => {
             button.disabled = false;
         });
@@ -512,7 +512,7 @@ function changeAttachment(index) {
         attachmentCancelButton.innerText = "Close";
         attachmentSubmitButton.onclick = function () {
             addAttachment();
-        }
+        };
         attachmentCancelButton.onclick = function () {
             document.getElementById('attachmentModal').style.display = 'none'
         };
@@ -559,6 +559,7 @@ function editExistingAttachment(caller) {
     let oldFile = document.getElementsByName('attachment')[index];
 
     let attachmentSubmitButton = document.getElementById('attachmentSubmitButton');
+    let attachmentCancelButton = document.getElementById('attachmentCancelButton');
 
     let commentary = document.getElementsByName('fileCommentary')[index];
     let fileExtension = document.getElementsByName('fileExtension')[index];
@@ -578,6 +579,7 @@ function editExistingAttachment(caller) {
     fileNameInput.value = fileName.value;
 
     attachmentSubmitButton.innerText = "Confirm Edit";
+    attachmentCancelButton.innerText = "Cancel Edit";
     fileInput.onchange = function () {
         fileNameInput.value = fileInput.files[0].name;
     };
@@ -629,10 +631,31 @@ function editExistingAttachment(caller) {
         fileNameInput.value = "";
 
         attachmentSubmitButton.innerText = "Submit Attachment";
+        attachmentCancelButton.innerText = "Cancel";
         attachmentSubmitButton.onclick = function () {
             addAttachment();
+        };
+        attachmentCancelButton.onclick = function () {
+            document.getElementById('attachmentModal').style.display = 'none';
         }
-    }
+    };
+
+    attachmentCancelButton.onclick = function () {
+        fileInput.value = "";
+        commentaryInput.value = "";
+        fileNameInput.value = "";
+        document.getElementsByName('attachmentEditButton').forEach(button => {
+            button.disabled = false;
+        });
+        attachmentSubmitButton.innerText = "Submit Attachment";
+        attachmentCancelButton.innerText = "Close";
+        attachmentSubmitButton.onclick = function () {
+            addAttachment();
+        };
+        attachmentCancelButton.onclick = function () {
+            document.getElementById('attachmentModal').style.display = 'none'
+        };
+    };
 }
 
 function deleteAttachments() {
@@ -684,10 +707,4 @@ function undoAttachmentDelete() {
         }
         box.checked = false;
     }
-}
-
-function initializeFieldsInBody() {
-    document.getElementsByName('fileExtension').forEach(element => {
-        element.value = getExtension(element.parentNode.firstElementChild.value);
-    });
 }

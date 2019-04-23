@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="../css/centralModal.css?version=20"/>
     <title>New Contact</title>
 </head>
-<body onload="initializeFieldsInBody(${contact.sex})">
+<body>
 <jsp:include page="header.jsp"/>
 <form action="/contactManager?command=${command}&id=${contact.id}" method="post" id="contactForm"
       enctype="multipart/form-data">
@@ -71,8 +71,8 @@
 
                     <label for="sex" class="control-label col-xs-4">Sex:</label>
                     <select id="sex" name="sex" class="form-control">
-                        <option selected="selected" value="Male">Male</option>
-                        <option value="Female">Female</option>
+                        <option value="Male" ${contact.sex == 'Male' ? 'selected' : ''}>Male</option>
+                        <option value="Female" ${contact.sex == 'Female' ? 'selected' : ''}>Female</option>
                     </select>
 
                     <label for="citizenship" class="control-label col-xs-4">Citizenship:</label>
@@ -85,7 +85,7 @@
 
                     <label for="webSite" class="control-label col-xs-8">Your webSite:</label>
                     <input type="text" id="webSite" name="webSite" class="form-control"
-                           value="${contact.familyName}"/>
+                           value="${contact.webSite}"/>
 
                     <label for="currentJob" class="control-label col-xs-8">Your current job:</label>
                     <input type="text" id="currentJob" name="currentJob" class="form-control"
@@ -307,7 +307,7 @@
 
 
 <script type="text/javascript" src="../js/collapse.js?v=3"></script>
-<script type="text/javascript" src="../js/addContact.js?version"></script>
+<script type="text/javascript" src="../js/addContact.js?versy"></script>
 <script type="text/javascript" src="../js/popup.js?v=3"></script>
 </body>
 </html>
