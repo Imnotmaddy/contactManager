@@ -37,7 +37,7 @@ public class ControllerServlet extends HttpServlet {
             command.showError(req, resp, ex.getMessage());
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            command.showError(req, resp, "Unknown error occurred");
+            command.showError(req, resp, "Unknown error occurred. Please try again");
             //TODO showError may produce nullpointer. WTF? !
         }
     }

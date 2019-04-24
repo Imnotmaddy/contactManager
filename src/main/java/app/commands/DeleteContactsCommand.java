@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 public class DeleteContactsCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
-        //TODO IllegalArgumentException
         String[] ids = request.getParameterMap().get("id");
         if (ids == null) {
             throw new AppException("Select contacts for delete via checkboxes, then press button 'Delete'");

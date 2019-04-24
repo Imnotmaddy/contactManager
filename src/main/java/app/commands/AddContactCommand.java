@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 public class AddContactCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
-        //TODO IllegalArgumentException
         Contact contact = ContactDaoImpl.getInstance().save(ContactService.getContactParameters(request));
         PhoneDaoImpl.getInstance().saveAll(PhoneService.getAllPhoneNumbers(request, contact.getId()));
         AttachmentDaoImpl.getInstance().saveAll(AttachmentService.getAllAttachments(request, contact.getId()));

@@ -14,7 +14,6 @@ public class ShowEditContactPageCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
-        //TODO: IllegalArgumentException
         Contact contact = ContactService.getContactInfoById(Integer.valueOf(request.getParameter("contactId")));
         request.setAttribute("contact", contact);
         request.setAttribute("phoneNumbers", contact.getPhoneNumbers());

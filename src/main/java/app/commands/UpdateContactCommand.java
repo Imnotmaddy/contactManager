@@ -18,7 +18,6 @@ import java.util.HashSet;
 public class UpdateContactCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
-        //TODO  IllegalArgumentException
         Contact contact = ContactService.getContactParameters(request);
         contact.setId(Integer.valueOf(request.getParameter("id")));
         PhoneDaoImpl.getInstance().deleteAllById(PhoneService.getPhoneNumberIdsForDelete(request));
