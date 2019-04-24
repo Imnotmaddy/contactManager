@@ -27,12 +27,12 @@
         <input type="text" id="familyName" name="familyName" class="form-control"
         />
 
-        <label for="dateAfter" class="control-label col-xs-4">Born after:</label>
-        <input type="date" id="dateAfter" name="dateAfter" class="form-control"
+        <label for="bornAfterDate" class="control-label col-xs-4">Born after:</label>
+        <input type="date" id="bornAfterDate" name="bornAfterDate" class="form-control"
                min="1940-01-02"/>
 
-        <label for="dateBefore" class="control-label col-xs-4">Born before:</label>
-        <input type="date" id="dateBefore" name="dateBefore" class="form-control"
+        <label for="bornBeforeDate" class="control-label col-xs-4">Born before:</label>
+        <input type="date" id="bornBeforeDate" name="bornBeforeDate" class="form-control"
                min="1940-01-02"/>
 
         <label for="sex" class="control-label col-xs-4">Sex:</label>

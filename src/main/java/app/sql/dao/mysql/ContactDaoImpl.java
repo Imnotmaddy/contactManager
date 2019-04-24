@@ -41,6 +41,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
 
     private static final String SQL_FIND_ALL = "SELECT * FROM " + CONTACTS;
     private static final String SQL_FIND_BY_ID = "SELECT * FROM " + CONTACTS + " WHERE `id` = ? ";
+    private static final String SQL_FIND_WITH_OFFSET = "SELECT * FROM " + CONTACTS + " limit ? offset ?";
 
     static {
         fields = new HashMap<>();
@@ -258,6 +259,41 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
 
         if (query.contains("`bornBeforeDate`")) {
             statement.setDate(index, bornBeforeDate);
+        }
+    }
+
+    public List<Contact> getContactsWithOffset(int offset, int limit) throws AppException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_WITH_OFFSET)) {
+            statement.setInt(1, limit);
+            statement.setInt(2, offset);
+            ResultSet resultSet = statement.executeQuery();
+            List<Contact> contacts = new ArrayList<>();
+            while (resultSet.next()) {
+                contacts.add(buildContact(resultSet));
+            }
+            return contacts;
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            throw new AppException("An error occurred while retrieving contacts");
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
+    }
+
+    public int getTableRowCount() throws AppException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM contacts")) {
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+            return 0;
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            throw new AppException("An error occurred while retrieving contacts");
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
         }
     }
 }

@@ -50,9 +50,15 @@ public enum CommandEnum {
             this.command = new SearchCommand();
         }
     },
-    DOWNLOAD {{
-        this.command = new DownloadCommand();
-    }
+    DOWNLOAD {
+        {
+            this.command = new DownloadCommand();
+        }
+    },
+    CHANGEPAGE {
+        {
+            this.command = new ShowAllContactsCommand();
+        }
     };
 
 

@@ -42,6 +42,17 @@
                 </tr>
             </c:forEach>
         </table>
+
+        <c:if test="${not empty requestScope.numberOfPages}">
+            <ul class="pagination pagination-lg" id="paginationElement" style="margin-top: 0px; margin-bottom: 10px">
+                <c:forEach begin="1" end="${requestScope.numberOfPages}" varStatus="status">
+                    <li>
+                        <a href="/contactManager?command=changePage&requestedPage=${status.index}"
+                        >${status.index}</a>
+                    </li>
+                </c:forEach>
+            </ul>
+        </c:if>
         <div>
             <button type="submit" class="btn btn-primary  btn-md" onclick="
                     document.getElementById('contactForm').submit();">Delete

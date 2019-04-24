@@ -45,13 +45,13 @@ public class SearchService {
         java.sql.Date bornAfterDate;
         java.sql.Date bornBeforeDate;
         try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("dateAfter"));
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("bornAfterDate"));
             bornAfterDate = new java.sql.Date(date.getTime());
         } catch (ParseException e) {
             bornAfterDate = null;
         }
         try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("dateBefore"));
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("bornBeforeDate"));
             bornBeforeDate = new java.sql.Date(date.getTime());
         } catch (ParseException e) {
             bornBeforeDate = null;
