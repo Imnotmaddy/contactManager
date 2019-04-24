@@ -9,24 +9,38 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Log4j2
 public class SearchService {
+    private static Map<String, String> fields = new HashMap<>();
+
+    static {
+        fields.put("name", "");
+        fields.put("surname", "");
+        fields.put("familyName", "");
+        fields.put("sex", "");
+        fields.put("citizenship", "");
+        fields.put("relationship", "");
+        fields.put("residenceCountry", "");
+        fields.put("residenceCity", "");
+        fields.put("residenceStreet", "");
+        fields.put("residenceHouseNumber", "");
+        fields.put("residenceApartmentNumber", "");
+    }
+
     public static List<Contact> getSearchedUsers(HttpServletRequest request) throws AppException {
         boolean isQueryEmpty = true;
-        String name = request.getParameter("name");
-        String surname = request.getParameter("surname");
-        String familyName = request.getParameter("familyName");
-        String sex = request.getParameter("sex");
-        String citizenship = request.getParameter("citizenship");
-        String relationship = request.getParameter("relationship");
-        String residenceCountry = request.getParameter("residenceCountry");
-        String residenceCity = request.getParameter("residenceCity");
-        String residenceStreet = request.getParameter("residenceStreet");
-        String residenceHouseNumber = request.getParameter("residenceHouseNumber");
-        String residenceApartmentNumber = request.getParameter("residenceApartmentNumber");
+        Map<String, String> searchFields = new HashMap<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM `contacts` WHERE ");
+        for (Map.Entry<String, String> entry : fields.entrySet()) {
+            entry.setValue(request.getParameter(entry.getKey()));
+            if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                sql.append("`").append(entry.getKey()).append("` LIKE ? AND ");
+                isQueryEmpty = false;
+                searchFields.put(entry.getKey(), entry.getValue());
+            }
+        }
 
         java.sql.Date bornAfterDate;
         java.sql.Date bornBeforeDate;
@@ -41,57 +55,6 @@ public class SearchService {
             bornBeforeDate = new java.sql.Date(date.getTime());
         } catch (ParseException e) {
             bornBeforeDate = null;
-        }
-
-        StringBuilder sql = new StringBuilder("SELECT * FROM `contacts` WHERE ");
-
-        if (!name.isEmpty()) {
-            sql.append("`name` LIKE ? AND ");
-            isQueryEmpty = false;
-        }
-
-        if (!surname.isEmpty()) {
-            sql.append("`surname` LIKE ? AND ");
-            isQueryEmpty = false;
-        }
-        if (!familyName.isEmpty()) {
-            sql.append("`familyName` LIKE ? AND ");
-            isQueryEmpty = false;
-        }
-        if (sex != null) {
-            sql.append("`sex` LIKE ? AND ");
-            isQueryEmpty = false;
-        }
-        if (!citizenship.isEmpty()) {
-            sql.append("`citizenship` LIKE ? AND ");
-            isQueryEmpty = false;
-        }
-
-        if (!relationship.isEmpty()) {
-            sql.append("`relationship` LIKE ? AND ");
-            isQueryEmpty = false;
-        }
-        if (!residenceCountry.isEmpty()) {
-            sql.append("`residenceCountry` LIKE ? AND ");
-            isQueryEmpty = false;
-        }
-
-        if (!residenceCity.isEmpty()) {
-            sql.append("`residenceCity` LIKE ? AND ");
-            isQueryEmpty = false;
-        }
-        if (!residenceStreet.isEmpty()) {
-            sql.append("`residenceStreet` LIKE ? AND ");
-            isQueryEmpty = false;
-        }
-        if (!residenceHouseNumber.isEmpty()) {
-            sql.append("`residenceHouseNumber` LIKE ? AND ");
-            isQueryEmpty = false;
-        }
-
-        if (!residenceApartmentNumber.isEmpty()) {
-            sql.append("`residenceApartmentNumber` LIKE ? AND ");
-            isQueryEmpty = false;
         }
 
         if (bornAfterDate != null) {
@@ -111,8 +74,7 @@ public class SearchService {
         sql.delete(sql.length() - " AND ".length(), sql.length()); // deleting " AND "
 
         try {
-            return ContactDaoImpl.getInstance().executeSqlSelect(sql.toString(), name, surname, familyName, sex, citizenship, relationship,
-                    residenceCountry, residenceCity, residenceStreet, residenceHouseNumber, residenceApartmentNumber, bornAfterDate, bornBeforeDate);
+            return ContactDaoImpl.getInstance().executeSqlSelect(sql.toString(), searchFields, bornAfterDate, bornBeforeDate);
         } catch (SQLException ex) {
             log.error(ex);
             throw new AppException("Something happened while searching for users. Try again");

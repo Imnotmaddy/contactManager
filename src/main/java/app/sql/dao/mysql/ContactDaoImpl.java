@@ -225,15 +225,11 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         return contact;
     }
 
-    public List<Contact> executeSqlSelect(String sql, String name, String surname, String familyName,
-                                          String sex, String citizenship, String relationship, String residenceCountry,
-                                          String residenceCity, String residenceStreet, String residenceHouseNumber,
-                                          String residenceApartmentNumber, Date bornAfterDate, Date bornBeforeDate) throws SQLException {
+    public List<Contact> executeSqlSelect(String sql, Map<String, String> searchFields, Date bornAfterDate, Date bornBeforeDate) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            buildStatementForSearch(statement, sql, name, surname, familyName, sex, citizenship, relationship,
-                    residenceCountry, residenceCity, residenceStreet, residenceHouseNumber, residenceApartmentNumber, bornAfterDate, bornBeforeDate);
+            buildStatementForSearch(statement, sql, searchFields, bornAfterDate, bornBeforeDate);
 
             ResultSet resultSet = statement.executeQuery();
             List<Contact> contacts = new ArrayList<>();
@@ -246,65 +242,12 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         }
     }
 
-    private void buildStatementForSearch(PreparedStatement statement, String query, String name,
-                                         String surname, String familyName, String sex, String citizenship,
-                                         String relationship, String residenceCountry, String residenceCity,
-                                         String residenceStreet, String residenceHouseNumber, String residenceApartmentNumber,
+    private void buildStatementForSearch(PreparedStatement statement, String query, Map<String, String> searchFields,
                                          Date bornAfterDate, Date bornBeforeDate) throws SQLException {
         int index = 1;
 
-        if (query.contains("`name`")) {
-            statement.setString(index, "%" + name + "%");
-            index++;
-        }
-
-        if (query.contains("`surname`")) {
-            statement.setString(index, "%" + surname + "%");
-            index++;
-        }
-
-        if (query.contains("`familyName`")) {
-            statement.setString(index, "%" + familyName + "%");
-            index++;
-        }
-
-        if (query.contains("`sex`")) {
-            statement.setString(index, "%" + sex + "%");
-            index++;
-        }
-
-        if (query.contains("`citizenship`")) {
-            statement.setString(index, "%" + citizenship + "%");
-            index++;
-        }
-
-        if (query.contains("`relationship`")) {
-            statement.setString(index, "%" + relationship + "%");
-            index++;
-        }
-
-        if (query.contains("`residenceCountry`")) {
-            statement.setString(index, "%" + residenceCountry + "%");
-            index++;
-        }
-
-        if (query.contains("`residenceCity`")) {
-            statement.setString(index, "%" + residenceCity + "%");
-            index++;
-        }
-
-        if (query.contains("`residenceStreet`")) {
-            statement.setString(index, "%" + residenceStreet + "%");
-            index++;
-        }
-
-        if (query.contains("`residenceHouseNumber`")) {
-            statement.setString(index, "%" + residenceHouseNumber + "%");
-            index++;
-        }
-
-        if (query.contains("`residenceApartmentNumber`")) {
-            statement.setString(index, "%" + residenceApartmentNumber + "%");
+        for (Map.Entry<String, String> entry : searchFields.entrySet()) {
+            statement.setString(index, entry.getValue());
             index++;
         }
 
