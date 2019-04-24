@@ -15,8 +15,7 @@ public class DeleteContactsCommand implements ActionCommand {
         //TODO IllegalArgumentException
         String[] ids = request.getParameterMap().get("id");
         if (ids == null) {
-            request.getSession().setAttribute("error", "Select contacts for delete via checkboxes, then press button 'Delete'");
-            return new ShowAllContactsCommand().execute(request, response);
+            throw new AppException("Select contacts for delete via checkboxes, then press button 'Delete'");
         }
         Set<Integer> contactIds = Arrays.stream(ids)
                 .map(Integer::valueOf).collect(Collectors.toSet());

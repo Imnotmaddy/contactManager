@@ -18,6 +18,9 @@ public class SendEmailCommand implements ActionCommand {
         String currentRecipients = request.getParameter("currentRecipients");
 
         Set<String> recipients = new HashSet<>(Arrays.asList(currentRecipients.split(",")));
+        if (recipients.isEmpty()){
+            throw new AppException("Please select recipients via checkboxes, then press send email button");
+        }
         MailService.sendEmail(recipients, msgText, msgSubject);
         return new ShowAllContactsCommand().execute(request, response);
     }

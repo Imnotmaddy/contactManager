@@ -42,6 +42,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
     private static final String SQL_FIND_ALL = "SELECT * FROM " + CONTACTS;
     private static final String SQL_FIND_BY_ID = "SELECT * FROM " + CONTACTS + " WHERE `id` = ? ";
     private static final String SQL_FIND_WITH_OFFSET = "SELECT * FROM " + CONTACTS + " limit ? offset ?";
+    private static final String SQL_FIND_BY_BIRTHDAY = "SELECT * FROM " + CONTACTS + " WHERE `dateOfBirth` = ?";
 
     static {
         fields = new HashMap<>();
@@ -292,6 +293,24 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new AppException("An error occurred while retrieving contacts");
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
+    }
+
+    public List<Contact> getContactsByBirthday(Date date) throws AppException {
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_BIRTHDAY)) {
+            statement.setDate(1, date);
+            ResultSet resultSet = statement.executeQuery();
+            List<Contact> contacts = new ArrayList<>();
+            while (resultSet.next()) {
+                contacts.add(buildContact(resultSet));
+            }
+            return contacts;
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            throw new AppException("Could not retrieve contacts");
         } finally {
             ConnectionPool.getInstance().releaseConnection(connection);
         }

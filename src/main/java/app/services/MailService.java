@@ -46,6 +46,7 @@ public class MailService {
             msg.setSubject(subject);
             msg.setText(message);
             Transport.send(msg);
+            log.debug("message was probably sent");
         } catch (MessagingException e) {
             log.error(e);
             log.error(session.getDebug());
