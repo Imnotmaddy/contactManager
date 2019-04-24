@@ -17,7 +17,6 @@ public class MailService {
     private final static String PORT = "465";
 
     public static void sendEmail(Set<String> recipients, String message, String subject) throws AppException {
-        //TODO: add templates
         Properties props = new Properties();
         props.put("mail.smtp.host", HOST);
         props.put("mail.smtp.starttls.enable", "true");

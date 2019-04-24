@@ -40,7 +40,6 @@ abstract class AbstractDaoImpl<T extends Entity> {
         connection.rollback();
     }
 
-    //TODO: consider adding another ABSTRACT CLASS for PHONE and ATTACHMENTS
     void saveAll(List<T> entities, String sql, Map<Integer, Function<T, Object>> fields, Connection connection) throws SQLException {
         if (entities == null) {
             throw new IllegalArgumentException("Can not save null entities!");
