@@ -16,7 +16,7 @@
     <title>Contacts</title>
 </head>
 <body
-onload="changeUrl();">
+onload="changeUrl()">
 <jsp:include page="header.jsp"/>
 <div class="container">
     <form action="/contactManager?command=deleteContacts" method="post" id="contactForm" role="form">
@@ -61,6 +61,6 @@ onload="changeUrl();">
         </div>
     </form>
 </div>
-<script type="text/javascript" src="../js/contactList.js?v=4"></script>
+<script type="text/javascript" src="../js/contactList.js?v=2"></script>
 </body>
 </html>

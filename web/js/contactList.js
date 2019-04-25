@@ -37,7 +37,5 @@ function submitContactsForDelete() {
 }
 
 function changeUrl() {
-    window.history.replaceState({}, document.title, "/" + "ContactList");
+    window.history.replaceState({}, document.title, "/contactManager");
 }
-
-//TODO: add event listeners(onfocusout event) on every fields to validate them

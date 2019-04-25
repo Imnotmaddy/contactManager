@@ -26,18 +26,20 @@ public class ControllerServlet extends HttpServlet {
         AbandonedConnectionCleanupThread.checkedShutdown();
     }
 
-    private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String page;
         ActionFactory client = new ActionFactory();
-        ActionCommand command = client.defineCommand(req);
+        ActionCommand command = client.defineCommand(request);
         try {
-            page = command.execute(req, resp);
-            getServletContext().getRequestDispatcher(page).forward(req, resp);
+            page = command.execute(request, response);
+            if (command.isCommandForwarded()) {
+                getServletContext().getRequestDispatcher(page).forward(request, response);
+            }
         } catch (AppException ex) {
-            command.showError(req, resp, ex.getMessage());
+            command.showError(request, response, ex.getMessage());
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
-            command.showError(req, resp, "Unknown error occurred. Please try again");
+            command.showError(request, response, "Unknown error occurred. Please try again");
         }
     }
 

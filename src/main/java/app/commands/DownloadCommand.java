@@ -15,6 +15,13 @@ import java.io.OutputStream;
 
 @Log4j2
 public class DownloadCommand implements ActionCommand {
+
+
+    @Override
+    public boolean isCommandForwarded() {
+        return false;
+    }
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
         ServletContext context = request.getServletContext();

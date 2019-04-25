@@ -42,7 +42,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
     private static final String SQL_FIND_ALL = "SELECT * FROM " + CONTACTS;
     private static final String SQL_FIND_BY_ID = "SELECT * FROM " + CONTACTS + " WHERE `id` = ? ";
     private static final String SQL_FIND_WITH_OFFSET = "SELECT * FROM " + CONTACTS + " limit ? offset ?";
-    private static final String SQL_FIND_BY_BIRTHDAY = "SELECT * FROM " + CONTACTS + " WHERE `dateOfBirth` = ?";
+    private static final String SQL_FIND_BY_BIRTHDAY = "SELECT * FROM " + CONTACTS + "WHERE MONTH(`dateOfBirth`) = MONTH(?) AND DAY(`dateOfBirth`) = DAY(?)";
 
     static {
         fields = new HashMap<>();
@@ -302,6 +302,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         Connection connection = ConnectionPool.getInstance().getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_BIRTHDAY)) {
             statement.setDate(1, date);
+            statement.setDate(2, date);
             ResultSet resultSet = statement.executeQuery();
             List<Contact> contacts = new ArrayList<>();
             while (resultSet.next()) {
