@@ -11,7 +11,8 @@ import java.util.Enumeration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
-final public class ConnectionPool {
+//TODO i removed final for the sake of tests. why tho?
+public class ConnectionPool {
     private static Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
 
     private DbInitializer dbInitializer = DbInitializer.getInstance();
