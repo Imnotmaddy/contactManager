@@ -19,27 +19,36 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Base64;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Log4j2
 public class ContactService {
 
-    public static Contact getContactParameters(HttpServletRequest request) {
-        String name = request.getParameter("name");
-        String surname = request.getParameter("surname");
-        String familyName = request.getParameter("familyName");
-        String email = request.getParameter("email");
-        String sex = request.getParameter("sex");
-        String citizenship = request.getParameter("citizenship");
-        String relationship = request.getParameter("relationship");
-        String webSite = request.getParameter("webSite");
-        String currentJob = request.getParameter("currentJob");
-        String jobAddress = request.getParameter("jobAddress");
-        String residenceCountry = request.getParameter("residenceCountry");
-        String residenceCity = request.getParameter("residenceCity");
-        String residenceStreet = request.getParameter("residenceStreet");
-        String residenceHouseNumber = request.getParameter("residenceHouseNumber");
-        String residenceApartmentNumber = request.getParameter("residenceApartmentNumber");
-        String index = request.getParameter("index");
+    public static Contact getContactParameters(HttpServletRequest request) throws AppException{
+        String name = request.getParameter("name").trim();
+        String surname = request.getParameter("surname").trim();
+        String familyName = request.getParameter("familyName").trim();
+        String email = request.getParameter("email").trim();
+        String sex = request.getParameter("sex").trim();
+        String citizenship = request.getParameter("citizenship").trim();
+        String relationship = request.getParameter("relationship").trim();
+        String webSite = request.getParameter("webSite").trim();
+        String currentJob = request.getParameter("currentJob").trim();
+        String jobAddress = request.getParameter("jobAddress").trim();
+        String residenceCountry = request.getParameter("residenceCountry").trim();
+        String residenceCity = request.getParameter("residenceCity").trim();
+        String residenceStreet = request.getParameter("residenceStreet").trim();
+        String residenceHouseNumber = request.getParameter("residenceHouseNumber").trim();
+        String residenceApartmentNumber = request.getParameter("residenceApartmentNumber").trim();
+        String index = request.getParameter("index").trim();
+
+        Pattern emailPattern = Pattern.compile("^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$");
+        Matcher matcher = emailPattern.matcher(email);
+        if (!matcher.find()){
+            throw new AppException("Your email is invalid.");
+        }
+
         Date sqlStartDate;
         try {
             LocalDate date = LocalDate.parse(request.getParameter("date"));

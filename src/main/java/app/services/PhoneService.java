@@ -21,12 +21,12 @@ public class PhoneService {
         for (int i = 0; i < phones.length; i++) {
             numbers.add(
                     PhoneNumber.builder()
-                            .phoneNumber(phones[i])
-                            .phoneType(phoneTypes[i])
-                            .commentary(commentaries[i])
+                            .phoneNumber(phones[i].trim())
+                            .phoneType(phoneTypes[i].trim())
+                            .commentary(commentaries[i].trim())
                             .contactId(contactId)
-                            .countryCode(countryCodes[i])
-                            .operatorCode(operatorCodes[i])
+                            .countryCode(countryCodes[i].trim())
+                            .operatorCode(operatorCodes[i].trim())
                             .build()
             );
         }

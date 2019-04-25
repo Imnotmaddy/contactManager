@@ -42,8 +42,8 @@ public class MailService {
             for (String recipient : recipients) {
                 msg.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             }
-            msg.setSubject(subject);
-            msg.setText(message);
+            msg.setSubject(subject.trim());
+            msg.setText(message.trim());
             Transport.send(msg);
             log.debug("message was probably sent");
         } catch (MessagingException e) {

@@ -38,7 +38,7 @@ public class SearchService {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
                 sql.append("`").append(entry.getKey()).append("` LIKE ? AND ");
                 isQueryEmpty = false;
-                searchFields.put(entry.getKey(), entry.getValue());
+                searchFields.put(entry.getKey(), entry.getValue().trim());
             }
         }
 

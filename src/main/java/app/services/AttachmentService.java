@@ -42,9 +42,9 @@ public class AttachmentService {
             List<String> fullFileNames = new ArrayList<>();
             for (int i = 0; i < fileNames.length; i++) {
                 if (fileNames[i].contains(".")) {
-                    fullFileNames.add(fileNames[i]);
+                    fullFileNames.add(fileNames[i].trim());
                 } else {
-                    fullFileNames.add(fileNames[i].concat(".").concat(fileExtensions[i]));
+                    fullFileNames.add(fileNames[i].concat(".").concat(fileExtensions[i]).trim());
                 }
             }
 
@@ -62,7 +62,7 @@ public class AttachmentService {
                 for (int i = 0; i < fileParts.size(); i++) {
                     Part filePart = fileParts.get(i);
                     byte[] attachmentBytes = IOUtils.toByteArray(filePart.getInputStream());
-                    attachments.add(new Attachment(fullFileNames.get(i), fileCommentaries[i], attachmentBytes, dates.get(i), contactId));
+                    attachments.add(new Attachment(fullFileNames.get(i), fileCommentaries[i].trim(), attachmentBytes, dates.get(i), contactId));
                 }
             } catch (IOException ex) {
                 log.error(ex);
