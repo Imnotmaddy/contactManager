@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class emailJob implements Job {
     public void execute(JobExecutionContext context)
             throws JobExecutionException {
-//TODO somehow date is not valid for SQL. although the date is fking perfect
         LocalDate date = LocalDate.now();
         date = date.plusDays(1);
         date.format(DateTimeFormatter.ISO_DATE);

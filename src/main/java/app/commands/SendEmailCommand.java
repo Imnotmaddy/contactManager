@@ -12,7 +12,6 @@ import java.util.Set;
 public class SendEmailCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
-        //TODO: validate all the fields
         String msgText = request.getParameter("msgText");
         String msgSubject = request.getParameter("msgSubject");
         String currentRecipients = request.getParameter("currentRecipients");
