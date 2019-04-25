@@ -6,6 +6,23 @@ function isPhoneFormValid() {
     let countryCode = document.getElementById('countryCodeInput').value;
     let operatorCode = document.getElementById('operatorCodeInput').value;
     let phoneNumber = document.getElementById('phoneNumberInput').value;
+    let numberFormat = /^[0-9]+$/;
+
+    if (!countryCode.match(numberFormat)) {
+        alert("Only numbers are fitting for PhoneNumber");
+        return false;
+    }
+
+    if (!operatorCode.match(numberFormat)) {
+        alert("Only numbers are fitting for PhoneNumber");
+        return false;
+    }
+
+    if (!phoneNumber.match(numberFormat)) {
+
+        alert("Only numbers are fitting for PhoneNumber");
+        return false;
+    }
     if (countryCode.length < 1 || countryCode.length > 3) {
         alert("Country Code requires 1-3 digits");
         return false;

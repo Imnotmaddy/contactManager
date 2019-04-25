@@ -281,13 +281,13 @@
 <div class="form-popup" id="popupPhoneNumber">
     <div class="form-container">
         <label for="phoneNumberInput"><b>Phone Number</b></label>
-        <input type="number" id="phoneNumberInput" required>
+        <input type="number" id="phoneNumberInput" min="0" required>
 
         <label for="countryCodeInput"><b>Country Code</b></label>
-        <input type="number" id="countryCodeInput" required>
+        <input type="number" id="countryCodeInput" min="0" required>
 
         <label for="operatorCodeInput"><b>Operator Code</b></label>
-        <input type="number" id="operatorCodeInput" required>
+        <input type="number" id="operatorCodeInput" min="0" required>
 
         <label for="phoneTypeInput"><b>Phone Type</b></label>
         <select id="phoneTypeInput" required>
@@ -306,7 +306,7 @@
 
 
 <script type="text/javascript" src="../js/collapse.js?v=3"></script>
-<script type="text/javascript" src="../js/addContact.js?versionNow"></script>
+<script type="text/javascript" src="../js/addContact.js?versionNow123"></script>
 <script type="text/javascript" src="../js/popup.js?v=3"></script>
 </body>
 </html>
