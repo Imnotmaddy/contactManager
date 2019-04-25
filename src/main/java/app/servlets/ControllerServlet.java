@@ -31,14 +31,13 @@ public class ControllerServlet extends HttpServlet {
         ActionFactory client = new ActionFactory();
         ActionCommand command = client.defineCommand(req);
         try {
-            page = command != null ? command.execute(req, resp) : null;
+            page = command.execute(req, resp);
             getServletContext().getRequestDispatcher(page).forward(req, resp);
         } catch (AppException ex) {
             command.showError(req, resp, ex.getMessage());
         } catch (Exception ex) {
-            log.error(ex.getMessage());
+            log.error(ex.getMessage(), ex);
             command.showError(req, resp, "Unknown error occurred. Please try again");
-            //TODO showError may produce nullpointer. WTF? !
         }
     }
 

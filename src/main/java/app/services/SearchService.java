@@ -36,7 +36,7 @@ public class SearchService {
         for (Map.Entry<String, String> entry : fields.entrySet()) {
             entry.setValue(request.getParameter(entry.getKey()));
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                sql.append("`").append(entry.getKey()).append("` LIKE ? AND ");
+                sql.append("LOWER(`").append(entry.getKey()).append("`) LIKE LOWER(?) AND ");
                 isQueryEmpty = false;
                 searchFields.put(entry.getKey(), entry.getValue().trim());
             }

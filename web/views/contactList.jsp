@@ -11,11 +11,12 @@
 <html>
 <head>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/contactList.css">
+    <link rel="stylesheet" href="../css/contactList.css?v=1">
     <link rel="stylesheet" href="../css/myTable.css">
     <title>Contacts</title>
 </head>
-<body>
+<body
+onload="changeUrl();">
 <jsp:include page="header.jsp"/>
 <div class="container">
     <form action="/contactManager?command=deleteContacts" method="post" id="contactForm" role="form">
@@ -54,12 +55,12 @@
             </ul>
         </c:if>
         <div>
-            <button type="submit" class="btn btn-primary  btn-md" onclick="
-                    document.getElementById('contactForm').submit();">Delete
+            <button type="button" class="btn btn-primary  btn-md" onclick="
+                    submitContactsForDelete()">Delete
             </button>
         </div>
     </form>
 </div>
-<script type="text/javascript" src="../js/contactList.js"></script>
+<script type="text/javascript" src="../js/contactList.js?v=4"></script>
 </body>
 </html>

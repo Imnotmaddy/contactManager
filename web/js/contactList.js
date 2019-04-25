@@ -20,4 +20,24 @@ function gatherEmails() {
         submitForm.submit();
     }
 }
+
+function submitContactsForDelete() {
+    let checkboxes = document.getElementsByName('id');
+    let isAnyChecked = false;
+    checkboxes.forEach(el =>{
+       if (el.checked){
+           isAnyChecked = true;
+       }
+    });
+    if (isAnyChecked) {
+        let form = document.getElementById('contactForm');
+        form.action = '/contactManager?command=deleteContacts';
+        form.submit();
+    }
+}
+
+function changeUrl() {
+    window.history.replaceState({}, document.title, "/" + "ContactList");
+}
+
 //TODO: add event listeners(onfocusout event) on every fields to validate them

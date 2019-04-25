@@ -249,7 +249,7 @@ public class ContactDaoImpl extends AbstractDaoImpl<Contact> implements ContactD
         int index = 1;
 
         for (Map.Entry<String, String> entry : searchFields.entrySet()) {
-            statement.setString(index, entry.getValue());
+            statement.setString(index, "%" + entry.getValue()+ "%");
             index++;
         }
 
