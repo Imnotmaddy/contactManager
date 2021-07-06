@@ -10,11 +10,17 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
+@Builder
 public class Contact extends Entity {
     private List<PhoneNumber> phoneNumbers = new ArrayList<>();
-    @NonNull private String email;
-    @NonNull private String name;
-    @NonNull private String surname;
+    private List<Attachment> attachments = new ArrayList<>();
+    @NonNull
+    private String email;
+    @NonNull
+    private String name;
+    @NonNull
+    private String surname;
     private String familyName;
     private Date dateOfBirth;
     private String sex;
@@ -29,4 +35,5 @@ public class Contact extends Entity {
     private String residenceHouseNumber;
     private String residenceApartmentNumber;
     private String index;
+    private byte[] photo;
 }

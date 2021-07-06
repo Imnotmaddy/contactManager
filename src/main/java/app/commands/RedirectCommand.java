@@ -1,27 +1,32 @@
 package app.commands;
 
+import app.exception.AppException;
+import app.services.ContactService;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class RedirectCommand implements ActionCommand {
-    private final String NEWCONTACT = "/views/addContact.jsp";
-    private final String PHONENUMBERLIST = "/views/phoneNumberList.jsp";
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws AppException {
         final String toPage = request.getParameter("page");
         switch (toPage) {
             case "addContact": {
                 request.setAttribute("command", "addContact");
-                return NEWCONTACT;
+                ContactService.addDefaultPhoto(request);
+                return PagePaths.ADD_CONTACT.getJspPath();
             }
             case "contactList": {
                 return new ShowAllContactsCommand().execute(request, response);
             }
-            case "phoneNumberList": {
-                return PHONENUMBERLIST;
+            case "sendEmail": {
+                return PagePaths.EMAILS.getJspPath();
+            }
+            case "searchPage": {
+                return PagePaths.SEARCH_PAGE.getJspPath();
             }
         }
-        return NEWCONTACT;
+        return PagePaths.ADD_CONTACT.getJspPath();
     }
 }

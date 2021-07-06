@@ -6,6 +6,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PhoneNumber extends Entity {
     @NonNull
     private String phoneNumber;

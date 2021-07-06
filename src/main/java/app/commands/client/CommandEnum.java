@@ -2,6 +2,7 @@ package app.commands.client;
 
 import app.commands.*;
 import app.commands.DeleteContactsCommand;
+import app.commands.SearchCommand;
 
 public enum CommandEnum {
     LISTOFCONTACTS {
@@ -26,7 +27,7 @@ public enum CommandEnum {
     },
     EDITCONTACT {
         {
-            this.command = new EditContactCommand();
+            this.command = new ShowEditContactPageCommand();
         }
     },
     UPDATECONTACT {
@@ -34,14 +35,29 @@ public enum CommandEnum {
             this.command = new UpdateContactCommand();
         }
     },
-    ADDPHONENUMBER {
+    SHOWSENDEMAILS {
         {
-            this.command = new AddPhoneNumberCommand();
+            this.command = new ShowEmailPageCommand();
         }
     },
-    DELETEPHONENUMBERS {
+    SENDEMAILS {
         {
-            this.command = new DeletePhoneNumbersCommand();
+            this.command = new SendEmailCommand();
+        }
+    },
+    SEARCHCONTACTS {
+        {
+            this.command = new SearchCommand();
+        }
+    },
+    DOWNLOAD {
+        {
+            this.command = new DownloadCommand();
+        }
+    },
+    CHANGEPAGE {
+        {
+            this.command = new ShowAllContactsCommand();
         }
     };
 

@@ -11,10 +11,11 @@ import java.util.Enumeration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
-final public class ConnectionPool {
+//TODO i removed final for the sake of tests. why tho?
+public class ConnectionPool {
     private static Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
 
-    private DbInitializer dbInitializer;
+    private DbInitializer dbInitializer = DbInitializer.getInstance();
 
     private ArrayBlockingQueue<Connection> freeConnections;
     private ArrayBlockingQueue<Connection> usedConnections;
@@ -30,13 +31,12 @@ final public class ConnectionPool {
     }
 
     private ConnectionPool() {
+        freeConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_INITIAL_CAPACITY());
+        usedConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_MAX_CAPACITY());
         try {
-            dbInitializer = new DbInitializer();
-            freeConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_INITIAL_CAPACITY());
-            usedConnections = new ArrayBlockingQueue<>(dbInitializer.getDB_MAX_CAPACITY());
             Class.forName(dbInitializer.getDB_DRIVER());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         init();
     }
@@ -81,11 +81,11 @@ final public class ConnectionPool {
                     throw new SQLException();
                 }
                 usedConnections.add(connection);
-                LOGGER.debug(
+                /*LOGGER.debug(
                         String.format("Connection was received from pool. " +
                                         "Current pool size: %d used connections;" +
                                         " %d free connection", usedConnections.size(),
-                                freeConnections.size()));
+                                freeConnections.size()));*/
             }
 
 
@@ -104,13 +104,13 @@ final public class ConnectionPool {
                 connection.setAutoCommit(true);
                 usedConnections.remove(connection);
                 freeConnections.offer(connection);
-                LOGGER.debug(
+                /*LOGGER.debug(
                         String.format("Connection was returned into pool. " +
                                         "Current pool size: %d used " +
                                         "connections;" +
                                         " %d free connection",
                                 usedConnections.size(),
-                                freeConnections.size()));
+                                freeConnections.size()));*/
             }
         } catch (SQLException e) {
             LOGGER.error("Failed to return a Connection to freeConnections");
@@ -119,7 +119,7 @@ final public class ConnectionPool {
         }
     }
 
-    public void destroy(){
+    public void destroy() {
         for (Connection connection : freeConnections) {
             try {
                 connection.close();

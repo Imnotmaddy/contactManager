@@ -11,15 +11,16 @@
 <html>
 <head>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/contactList.css">
+    <link rel="stylesheet" href="../css/contactList.css?v=1">
     <link rel="stylesheet" href="../css/myTable.css">
     <title>Contacts</title>
 </head>
-<body>
+<body
+onload="changeUrl()">
 <jsp:include page="header.jsp"/>
 <div class="container">
     <form action="/contactManager?command=deleteContacts" method="post" id="contactForm" role="form">
-        <table class="table table-striped">
+        <table class="table table-striped" id="allContactsTable">
             <thead>
             <tr>
                 <td></td>
@@ -42,12 +43,24 @@
                 </tr>
             </c:forEach>
         </table>
+
+        <c:if test="${not empty requestScope.numberOfPages}">
+            <ul class="pagination pagination-lg" id="paginationElement" style="margin-top: 0px; margin-bottom: 10px">
+                <c:forEach begin="1" end="${requestScope.numberOfPages}" varStatus="status">
+                    <li>
+                        <a href="/contactManager?command=changePage&requestedPage=${status.index}"
+                        >${status.index}</a>
+                    </li>
+                </c:forEach>
+            </ul>
+        </c:if>
         <div>
-            <button type="submit" class="btn btn-primary  btn-md" onclick="
-                    document.getElementById('contactForm').submit();">Delete
+            <button type="button" class="btn btn-primary  btn-md" onclick="
+                    submitContactsForDelete()">Delete
             </button>
         </div>
     </form>
 </div>
+<script type="text/javascript" src="../js/contactList.js?v=2"></script>
 </body>
 </html>

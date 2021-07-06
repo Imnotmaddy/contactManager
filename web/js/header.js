@@ -1,13 +1,18 @@
-var headerModule = (function () {
+let headerModule = (function () {
     return {
         toCreateContact: function () {
-            window.location = "http://localhost:8080/contactManager?command=redirect&page=addContact";
+            window.location = `/contactManager?command=redirect&page=addContact`;
         },
         toContactList: function () {
-            window.location = "http://localhost:8080/contactManager?command=redirect&page=contactList";
+            window.location = `/contactManager?command=redirect&page=contactList`;
         },
-        toPhoneNumbersList:function () {
-            window.location="http://localhost:8080/contactManager?command=redirect&page=phoneNumberList"
+        sendEmail: function () {
+            document.getElementById('allContactsTable') ? gatherEmails()
+                : headerModule.toContactList();
+        },
+        toSearchPage: function () {
+            window.location = `/contactManager?command=redirect&page=searchPage`
         }
     }
 }());
+

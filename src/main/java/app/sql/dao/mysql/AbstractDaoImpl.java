@@ -1,88 +1,65 @@
 package app.sql.dao.mysql;
 
-import app.exception.AppException;
 import app.models.Entity;
-import app.sql.pool.ConnectionPool;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 abstract class AbstractDaoImpl<T extends Entity> {
 
-    T save(T entity, String sql, Map<Integer, Function<T, Object>> fields) throws SQLException {
-        if (entity == null) {
-            throw new IllegalArgumentException("Can not save null entity!");
-        }
-        Connection connection = ConnectionPool.getInstance().getConnection();
-        try {
-            save(entity, sql, connection, fields);
-        } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
-        }
-        return entity;
-    }
-
-    void save(T entity, String sql, Connection connection, Map<Integer, Function<T, Object>> fields) throws SQLException {
+    T persist(T entity, String sql, Connection connection, Map<Integer, Function<T, Object>> fields) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             for (Map.Entry<Integer, Function<T, Object>> entry : fields.entrySet()) {
                 Integer field = entry.getKey();
                 Function<T, Object> value = entry.getValue();
                 statement.setObject(field, value.apply(entity));
             }
+            if (entity.getId() != null) {
+                statement.setObject(fields.size() + 1, entity.getId());
+            }
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 entity.setId(resultSet.getInt(1));
             }
+            return entity;
         }
     }
 
-    T update(T entity, String sql, Map<Integer, Function<T, Object>> fields) throws SQLException {
-        if (entity == null) {
-            throw new IllegalArgumentException("Can not update null entity!");
-        }
-        Connection connection = ConnectionPool.getInstance().getConnection();
-        try {
-            update(entity, sql, connection, fields);
-        } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
-        }
-        return entity;
+    void deleteById(Integer id, String sql, Connection connection) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1, id);
+        statement.executeUpdate();
     }
 
-    void update(T entity, String sql, Connection connection, Map<Integer, Function<T, Object>> fields) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            for (Map.Entry<Integer, Function<T, Object>> entry : fields.entrySet()) {
-                Integer field = entry.getKey();
-                Function<T, Object> value = entry.getValue();
-                statement.setObject(field, value.apply(entity));
-            }
-            statement.setObject(18, entity.getId());
-            statement.executeUpdate();
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                entity.setId(resultSet.getInt(1));
-            }
-        }
+    void rollbackConnection(Connection connection) throws SQLException {
+        connection.rollback();
     }
 
-    void delete(T entity, String sql) throws SQLException {
-        Connection connection = ConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, entity.getId());
-            statement.executeUpdate();
-        } finally {
-            ConnectionPool.getInstance().releaseConnection(connection);
+    void saveAll(List<T> entities, String sql, Map<Integer, Function<T, Object>> fields, Connection connection) throws SQLException {
+        if (entities == null) {
+            throw new IllegalArgumentException("Can not save null entities!");
         }
+        if (entities.isEmpty()) return;
+
+        connection.setAutoCommit(false);
+        for (T entity : entities) {
+            persist(entity, sql, connection, fields);
+        }
+        connection.commit();
     }
 
-    void rollbackConnection(Connection connection) throws AppException {
-        try {
-            connection.rollback();
-        } catch (SQLException e) {
-            throw new AppException("Error during phone number save");
+    void deleteByGivenIds(Connection connection, Set<Integer> ids, String sql) throws SQLException {
+        if (ids == null || ids.isEmpty()) {
+            return;
         }
+        String str = ids.stream().map(Object::toString).collect(Collectors.joining(", "));
+        String query = String.format(sql, str);
+        connection.prepareStatement(query).executeUpdate();
     }
 
 }
